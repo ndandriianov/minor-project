@@ -17,7 +17,8 @@ export default function AppInit({ children }: { children: React.ReactNode }) {
       return
     }
     if (data) {
-      dispatch(setUser(data))
+      dispatch(setUser({ ...data.user, student: data.student, company: data.company }))
+      return
     }
     if (isError) {
       dispatch(setLoading(false))

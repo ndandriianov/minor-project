@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useUpdateProfileMutation, useUploadResumeMutation } from '@/store/api'
 import { useAppDispatch } from '@/hooks/useAppDispatch'
 import { setUser } from '@/store/authSlice'
-import type { Skill } from '@/types'
+import type { Skill, Student } from '@/types'
+import { Link } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
 import SkillsAutocomplete from '@/components/skills/SkillsAutocomplete'
+import Spinner from '@/components/ui/Spinner'
 
 const WORK_FORMAT_OPTIONS = [
   { value: 'any', label: 'Любой' },
@@ -24,85 +26,115 @@ const HOURS_OPTIONS = [
   { value: '<20', label: 'До 20 ч/нед' },
 ]
 
+function createInitialForm(student?: Student) {
+  return {
+    first_name: student?.first_name ?? '',
+    last_name: student?.last_name ?? '',
+    patronymic: student?.patronymic ?? '',
+    university: student?.university ?? '',
+    course: String(student?.course ?? ''),
+    speciality: student?.speciality ?? '',
+    city: student?.city ?? '',
+    faculty: student?.faculty ?? '',
+    work_format: student?.work_format ?? 'any',
+    desired_hours: student?.desired_hours ?? 'any',
+    bio: student?.bio ?? '',
+    portfolio_url: student?.portfolio_url ?? '',
+    github_url: student?.github_url ?? '',
+    experience: student?.experience ?? '',
+    certificates: student?.certificates ?? '',
+  }
+}
+
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
   const dispatch = useAppDispatch()
   const student = user?.student
   const [updateProfile, { isLoading: saving }] = useUpdateProfileMutation()
   const [uploadResume, { isLoading: uploading }] = useUploadResumeMutation()
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+  const [resumeFilename, setResumeFilename] = useState(student?.resume_filename ?? '')
+  const [form, setForm] = useState(() => createInitialForm(student))
+  const [skills, setSkills] = useState<Skill[]>(() => student?.skills ?? [])
 
-  const [form, setForm] = useState({
-    first_name: '', last_name: '', university: '', course: '',
-    speciality: '', city: '', faculty: '',
-    work_format: 'any', desired_hours: 'any',
-    bio: '', portfolio_url: '', github_url: '',
-    experience: '', certificates: '',
-  })
-  const [skills, setSkills] = useState<Skill[]>([])
-
-  useEffect(() => {
-    if (student) {
-      setForm({
-        first_name: student.first_name ?? '',
-        last_name: student.last_name ?? '',
-        university: student.university ?? '',
-        course: String(student.course ?? ''),
-        speciality: student.speciality ?? '',
-        city: student.city ?? '',
-        faculty: student.faculty ?? '',
-        work_format: student.work_format ?? 'any',
-        desired_hours: student.desired_hours ?? 'any',
-        bio: student.bio ?? '',
-        portfolio_url: student.portfolio_url ?? '',
-        github_url: student.github_url ?? '',
-        experience: student.experience ?? '',
-        certificates: student.certificates ?? '',
-      })
-      setSkills(student.skills ?? [])
-    }
-  }, [student])
+  if (isLoading) return <Spinner />
+  if (!student) return <Spinner />
 
   const set = (field: string, value: string) => setForm((f) => ({ ...f, [field]: value }))
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setSuccess(false)
-    const updated = await updateProfile({
-      first_name: form.first_name,
-      last_name: form.last_name,
-      university: form.university,
-      course: form.course ? Number(form.course) : undefined,
-      speciality: form.speciality,
-      city: form.city,
-      faculty: form.faculty,
-      work_format: form.work_format as 'office' | 'hybrid' | 'remote' | 'any',
-      desired_hours: form.desired_hours as '40' | '20-40' | '<20' | 'any',
-      bio: form.bio,
-      portfolio_url: form.portfolio_url,
-      github_url: form.github_url,
-      experience: form.experience,
-      certificates: form.certificates,
-      skills: skills.map((s) => s.name),
-    }).unwrap()
-    if (user) {
-      dispatch(setUser({ ...user, student: updated }))
+    setError('')
+    try {
+      const updated = await updateProfile({
+        first_name: form.first_name,
+        last_name: form.last_name,
+        patronymic: form.patronymic,
+        university: form.university,
+        course: form.course ? Number(form.course) : undefined,
+        speciality: form.speciality,
+        city: form.city,
+        faculty: form.faculty,
+        work_format: form.work_format as 'office' | 'hybrid' | 'remote' | 'any',
+        desired_hours: form.desired_hours as '40' | '20-40' | '<20' | 'any',
+        bio: form.bio,
+        portfolio_url: form.portfolio_url,
+        github_url: form.github_url,
+        experience: form.experience,
+        certificates: form.certificates,
+        skills: skills.map((s) => s.name),
+      }).unwrap()
+      if (user) {
+        dispatch(setUser({ ...user, student: updated }))
+      }
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch {
+      setError('Не удалось сохранить профиль')
     }
-    setSuccess(true)
-    setTimeout(() => setSuccess(false), 3000)
   }
 
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     const fd = new FormData()
-    fd.append('resume', file)
-    await uploadResume(fd)
+    fd.append('file', file)
+    setError('')
+    try {
+      const result = await uploadResume(fd).unwrap()
+      setResumeFilename(result.filename)
+      if (user?.student) {
+        dispatch(setUser({
+          ...user,
+          student: { ...user.student, resume_filename: result.filename },
+        }))
+      }
+    } catch {
+      setError('Не удалось загрузить резюме. Проверьте, что это PDF-файл.')
+    }
   }
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Мой профиль</h1>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Мой профиль</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Заполните данные, чтобы получать более точные рекомендации и откликаться быстрее.
+          </p>
+        </div>
+        <Link to="/student/dashboard" className="text-sm text-blue-600 hover:underline whitespace-nowrap">
+          ← К дашборду
+        </Link>
+      </div>
+
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Personal */}
@@ -112,6 +144,7 @@ export default function ProfilePage() {
             <Input label="Имя *" required value={form.first_name} onChange={(e) => set('first_name', e.target.value)} />
             <Input label="Фамилия *" required value={form.last_name} onChange={(e) => set('last_name', e.target.value)} />
           </div>
+          <Input label="Отчество" value={form.patronymic} onChange={(e) => set('patronymic', e.target.value)} />
           <Input label="Университет" value={form.university} onChange={(e) => set('university', e.target.value)} />
           <div className="grid grid-cols-2 gap-3">
             <Input label="Факультет" value={form.faculty} onChange={(e) => set('faculty', e.target.value)} />
@@ -154,8 +187,18 @@ export default function ProfilePage() {
         {/* Resume */}
         <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-3">
           <h2 className="font-semibold text-gray-800">Резюме (PDF)</h2>
-          {student?.resume_filename && (
-            <p className="text-sm text-gray-500">Текущий файл: {student.resume_filename}</p>
+          {resumeFilename && (
+            <p className="text-sm text-gray-500">
+              Текущий файл:{' '}
+              <a
+                href={`http://localhost:5051/uploads/${resumeFilename}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                {resumeFilename}
+              </a>
+            </p>
           )}
           <label className="flex items-center gap-3 cursor-pointer">
             <span className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition">

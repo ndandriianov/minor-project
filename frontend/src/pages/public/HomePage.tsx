@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 import Button from '@/components/ui/Button'
 
 export default function HomePage() {
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,6 +56,11 @@ export default function HomePage() {
         <Button variant="secondary" size="lg" onClick={() => navigate('/register/company')}>
           Я работодатель
         </Button>
+        {user?.role === 'student' && (
+          <Button variant="ghost" size="lg" onClick={() => navigate('/student/profile')}>
+            Мой профиль
+          </Button>
+        )}
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks/useAppDispatch'
 import { setCredentials, setLoading } from '@/store/authSlice'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import type { AuthUser } from '@/types'
+import type { AuthSession } from '@/types'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -22,18 +22,15 @@ export default function LoginPage() {
     setError('')
     try {
       const result = await login({ email, password }).unwrap()
-      // Store tokens so the /me request will have auth header
-      localStorage.setItem('access_token', result.access_token)
-      localStorage.setItem('refresh_token', result.refresh_token)
+      const session = result as AuthSession
+      const user = {
+        ...session.user,
+        student: session.student ?? session.user.student,
+        company: session.company ?? session.user.company,
+      }
+      dispatch(setCredentials({ user, access_token: session.access_token, refresh_token: session.refresh_token }))
 
-      // Fetch user profile
-      const meRes = await fetch('http://localhost:5051/api/auth/me', {
-        headers: { Authorization: `Bearer ${result.access_token}` },
-      })
-      const user: AuthUser = await meRes.json()
-      dispatch(setCredentials({ user, access_token: result.access_token, refresh_token: result.refresh_token }))
-
-      navigate(from ?? (result.role === 'company' ? '/company/dashboard' : '/student/dashboard'))
+      navigate(from ?? (user.role === 'company' ? '/company/dashboard' : '/student/dashboard'))
     } catch {
       dispatch(setLoading(false))
       setError('Неверный email или пароль')

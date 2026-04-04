@@ -43,6 +43,9 @@ export default function Navbar() {
               <Link to="/student/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
                 Мои отклики
               </Link>
+              <Link to="/student/profile" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                Профиль
+              </Link>
               <Link to="/student/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
                 {user.student?.first_name ?? 'Профиль'}
               </Link>

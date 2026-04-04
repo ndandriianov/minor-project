@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReauth } from './baseQuery'
 import type {
-  AuthUser,
+  AuthSession,
   Internship,
   InternshipFilters,
   InternshipFormData,
@@ -19,10 +19,7 @@ export const platformApi = createApi({
   tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship'],
   endpoints: (b) => ({
     // ── Auth ──────────────────────────────────────────────────────────────
-    login: b.mutation<
-      { access_token: string; refresh_token: string; role: string },
-      { email: string; password: string }
-    >({
+    login: b.mutation<AuthSession, { email: string; password: string }>({
       query: (body) => ({ url: '/api/auth/login', method: 'POST', body }),
     }),
 
@@ -37,7 +34,7 @@ export const platformApi = createApi({
       query: (body) => ({ url: '/api/auth/register/company', method: 'POST', body }),
     }),
 
-    me: b.query<AuthUser, void>({
+    me: b.query<Omit<AuthSession, 'access_token' | 'refresh_token'>, void>({
       query: () => '/api/auth/me',
     }),
 

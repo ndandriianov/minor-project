@@ -88,6 +88,14 @@ export interface AuthUser {
   company?: Company
 }
 
+export interface AuthSession {
+  user: AuthUser
+  student?: Student
+  company?: Company
+  access_token: string
+  refresh_token?: string
+}
+
 export interface RecommendedInternship extends Internship {
   match_score: number
   match_reasons: string[]
