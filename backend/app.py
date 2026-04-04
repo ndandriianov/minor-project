@@ -35,7 +35,7 @@ app = Flask(__name__)
 app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", "sqlite:///internships.db"),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    JWT_SECRET_KEY=os.environ.get("JWT_SECRET", "dev-secret-change-in-production"),
+    JWT_SECRET_KEY=os.environ.get("JWT_SECRET", "dev-secret-change-in-production-32-bytes"),
     JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=2),
     JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30),
     MAX_CONTENT_LENGTH=10 * 1024 * 1024,

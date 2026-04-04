@@ -7,6 +7,9 @@ from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Explicitly use pbkdf2 for compatibility with Python builds where hashlib.scrypt is unavailable.
+PASSWORD_HASH_METHOD = "pbkdf2:sha256"
+
 db = SQLAlchemy()
 
 
@@ -54,10 +57,14 @@ class User(db.Model):
     company = db.relationship("Company", backref="user", uselist=False, cascade="all, delete-orphan")
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method=PASSWORD_HASH_METHOD)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        try:
+            return check_password_hash(self.password_hash, password)
+        except (AttributeError, ValueError):
+            # Some Python builds do not provide hashlib.scrypt; treat unsupported legacy hashes as invalid.
+            return False
 
     def to_dict(self):
         return {
