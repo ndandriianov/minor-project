@@ -46,6 +46,13 @@ export const platformApi = createApi({
 
     getInternship: b.query<Internship, number>({
       query: (id) => `/api/internships/${id}`,
+      transformResponse: (response: unknown): Internship => {
+        const data = response as { internship?: Internship } | Internship
+        if (data && typeof data === 'object' && 'internship' in data && data.internship) {
+          return data.internship
+        }
+        return data as Internship
+      },
       providesTags: (_r, _e, id) => [{ type: 'Internship', id }],
     }),
 
