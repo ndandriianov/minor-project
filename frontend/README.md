@@ -1,73 +1,136 @@
-# React + TypeScript + Vite
+# Фронтенд — Платформа стажировок для студентов
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Клиентская часть приложения на React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+Интерфейс поддерживает роли:
+- студент;
+- компания;
+- администратор (модератор).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Технологии
 
-## React Compiler
+- React 19
+- TypeScript
+- Vite
+- Redux Toolkit + RTK Query
+- React Router
+- Tailwind CSS 4
+- ESLint
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Быстрый старт
 
-## Expanding the ESLint configuration
+### 1) Установка зависимостей
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd frontend
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2) Запуск dev-сервера
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+По умолчанию Vite поднимает фронтенд на `http://localhost:5173`.
+
+### 3) Сборка production
+
+```bash
+npm run build
+```
+
+### 4) Проверка линтером
+
+```bash
+npm run lint
+```
+
+### 5) Локальный предпросмотр production-сборки
+
+```bash
+npm run preview
+```
+
+## Важная настройка API
+
+Сейчас base URL API захардкожен в `frontend/src/store/baseQuery.ts`:
+
+```ts
+baseUrl: 'http://localhost:5051'
+```
+
+Это значит, что для работы фронтенда backend должен быть запущен на `http://localhost:5051`.
+
+## Авторизация
+
+- Access/refresh токены хранятся в `localStorage`.
+- При старте приложения выполняется восстановление сессии через `/api/auth/me` (см. `frontend/src/AppInit.tsx`).
+- При `401` RTK Query делает попытку refresh токена (см. `frontend/src/store/baseQuery.ts`).
+
+## Тестовые аккаунты
+
+| Роль     | Email             | Пароль       |
+|----------|-------------------|--------------|
+| Студент  | ivan@student.ru   | password123  |
+| Студент  | maria@student.ru  | password123  |
+| Студент  | alex@student.ru   | password123  |
+| Компания | hr@yandex.ru      | password123  |
+| Компания | hr@sber.ru        | password123  |
+| Компания | hr@vk.ru          | password123  |
+| Компания | hr@tinkoff.ru     | password123  |
+| Админ    | admin@platform.ru | password123  |
+
+## Основные маршруты
+
+### Публичные
+
+- `/` — главная
+- `/internships` — список стажировок
+- `/internships/:id` — карточка стажировки
+- `/login` — вход
+- `/register/student` — регистрация студента
+- `/register/company` — регистрация компании
+
+### Студент
+
+- `/student/dashboard`
+- `/student/recommendations`
+- `/student/applications`
+- `/student/bookmarks`
+- `/student/profile`
+
+### Компания
+
+- `/company/dashboard`
+- `/company/internships`
+- `/company/internships/new`
+- `/company/internships/:id/edit`
+- `/company/internships/:id/applicants`
+- `/company/applications`
+
+### Админ
+
+- `/admin/moderation`
+- `/admin/applications`
+
+## Структура `src`
+
+```text
+src/
+├── components/   # UI и бизнес-компоненты
+├── guards/       # RequireAuth / RequireRole
+├── hooks/        # хелперы для Redux/Auth
+├── pages/        # страницы по ролям
+├── store/        # Redux store, RTK Query API, auth slice
+├── types/        # общие TypeScript-типы
+├── App.tsx       # роутинг
+├── AppInit.tsx   # восстановление сессии
+└── main.tsx      # точка входа
+```
+
+## Полезно для разработки
+
+- Алиас `@` настроен на `src` в `frontend/vite.config.ts`.
+- Если backend недоступен, авторизованные запросы и страницы с данными будут отдавать ошибки загрузки.
+
