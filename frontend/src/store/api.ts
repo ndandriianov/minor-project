@@ -13,6 +13,15 @@ import type {
   Student,
 } from '@/types'
 
+function unwrapArray<T>(response: unknown, key: string): T[] {
+  if (Array.isArray(response)) return response as T[]
+  if (response && typeof response === 'object' && key in response) {
+    const value = (response as Record<string, unknown>)[key]
+    if (Array.isArray(value)) return value as T[]
+  }
+  return []
+}
+
 export const platformApi = createApi({
   reducerPath: 'platformApi',
   baseQuery: baseQueryWithReauth,
@@ -58,6 +67,20 @@ export const platformApi = createApi({
 
     getRecommendations: b.query<RecommendedInternship[], void>({
       query: () => '/api/internships/recommendations',
+      transformResponse: (response: unknown): RecommendedInternship[] => {
+        const items = unwrapArray<{
+          internship: Internship
+          match_score: number
+          match_reasons: string[]
+        }>(response, 'recommendations')
+        return items
+          .filter((item) => item?.internship)
+          .map((item) => ({
+            ...item.internship,
+            match_score: item.match_score,
+            match_reasons: item.match_reasons,
+          }))
+      },
     }),
 
     // ── Student ───────────────────────────────────────────────────────────
@@ -83,6 +106,7 @@ export const platformApi = createApi({
     // ── Applications ──────────────────────────────────────────────────────
     listApplications: b.query<Application[], void>({
       query: () => '/api/applications',
+      transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
       providesTags: ['Application'],
     }),
 
@@ -99,6 +123,13 @@ export const platformApi = createApi({
     // ── Bookmarks ─────────────────────────────────────────────────────────
     listBookmarks: b.query<Bookmark[], void>({
       query: () => '/api/bookmarks',
+      transformResponse: (response: unknown): Bookmark[] => {
+        const data = response as { bookmarks?: Bookmark[] } | Bookmark[]
+        if (data && typeof data === 'object' && 'bookmarks' in data && Array.isArray(data.bookmarks)) {
+          return data.bookmarks
+        }
+        return (Array.isArray(data) ? data : []) as Bookmark[]
+      },
       providesTags: ['Bookmark'],
     }),
 
@@ -108,6 +139,13 @@ export const platformApi = createApi({
         method: 'POST',
         body: { internship_id },
       }),
+      transformResponse: (response: unknown): Bookmark => {
+        const data = response as { bookmark?: Bookmark } | Bookmark
+        if (data && typeof data === 'object' && 'bookmark' in data && data.bookmark) {
+          return data.bookmark
+        }
+        return data as Bookmark
+      },
       invalidatesTags: ['Bookmark'],
     }),
 
@@ -122,6 +160,7 @@ export const platformApi = createApi({
     // ── Company ───────────────────────────────────────────────────────────
     listCompanyInternships: b.query<Internship[], void>({
       query: () => '/api/company/internships',
+      transformResponse: (response: unknown): Internship[] => unwrapArray<Internship>(response, 'items'),
       providesTags: ['CompanyInternship'],
     }),
 
@@ -146,6 +185,7 @@ export const platformApi = createApi({
 
     getApplicants: b.query<Application[], number>({
       query: (internshipId) => `/api/company/internships/${internshipId}/applications`,
+      transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
       providesTags: ['Application'],
     }),
 
@@ -161,6 +201,7 @@ export const platformApi = createApi({
     // ── Admin ─────────────────────────────────────────────────────────────
     listPending: b.query<Internship[], void>({
       query: () => '/api/admin/internships/pending',
+      transformResponse: (response: unknown): Internship[] => unwrapArray<Internship>(response, 'items'),
       providesTags: ['Pending'],
     }),
 
@@ -176,6 +217,7 @@ export const platformApi = createApi({
     // ── Skills ────────────────────────────────────────────────────────────
     searchSkills: b.query<Skill[], string>({
       query: (search) => ({ url: '/api/skills', params: { search } }),
+      transformResponse: (response: unknown): Skill[] => unwrapArray<Skill>(response, 'skills'),
     }),
   }),
 })
