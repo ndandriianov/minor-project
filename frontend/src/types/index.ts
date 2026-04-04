@@ -94,7 +94,8 @@ export interface RecommendedInternship extends Internship {
 }
 
 export interface PaginatedInternships {
-  internships: Internship[]
+  items: Internship[]
+  internships?: Internship[]
   total: number
   page: number
   per_page: number

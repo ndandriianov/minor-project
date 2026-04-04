@@ -27,13 +27,16 @@ export default function InternshipsPage() {
 
   const debouncedFilters = useDebounce(filters, 300)
   const { data, isLoading, isFetching } = useListInternshipsQuery(debouncedFilters)
+  const internships = data?.items ?? data?.internships ?? []
+  const totalPages = data?.pages ?? 1
+  const currentPage = data?.page ?? 1
 
   const handleFiltersChange = useCallback((f: InternshipFilters) => setFilters(f), [])
 
   return (
     <div className="flex gap-6">
       {/* Filters sidebar */}
-      <aside className="hidden lg:block w-64 flex-shrink-0">
+      <aside className="hidden lg:block w-64 shrink-0">
         <InternshipFiltersPanel filters={filters} onChange={handleFiltersChange} />
       </aside>
 
@@ -53,7 +56,7 @@ export default function InternshipsPage() {
 
         {isLoading ? (
           <Spinner />
-        ) : !data?.internships.length ? (
+        ) : internships.length === 0 ? (
           <EmptyState
             title="Стажировки не найдены"
             description="Попробуйте изменить параметры поиска"
@@ -61,13 +64,13 @@ export default function InternshipsPage() {
         ) : (
           <>
             <div className={`grid sm:grid-cols-2 xl:grid-cols-3 gap-4 transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
-              {data.internships.map((internship) => (
+              {internships.map((internship) => (
                 <InternshipCard key={internship.id} internship={internship} />
               ))}
             </div>
             <Pagination
-              page={data.page}
-              pages={data.pages}
+              page={currentPage}
+              pages={totalPages}
               onPageChange={(p) => setFilters((f) => ({ ...f, page: p }))}
             />
           </>
