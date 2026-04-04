@@ -74,7 +74,7 @@ export default function InternshipForm({ initial, onSubmit, loading }: Internshi
       <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
         <h2 className="font-semibold text-gray-800">Основная информация</h2>
         <Input label="Название *" required value={form.title} onChange={(e) => set('title', e.target.value)} placeholder="Стажёр-разработчик" />
-        <Input label="Направление" value={form.direction} onChange={(e) => set('direction', e.target.value)} placeholder="Backend-разработка" />
+        <Input label="Направление *" required value={form.direction} onChange={(e) => set('direction', e.target.value)} placeholder="Backend-разработка" />
         <Textarea label="Описание *" required rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} />
         <Textarea label="Требования" rows={4} value={form.requirements} onChange={(e) => set('requirements', e.target.value)} />
         <Textarea label="Этапы отбора" rows={3} value={form.selection_stages} onChange={(e) => set('selection_stages', e.target.value)} />

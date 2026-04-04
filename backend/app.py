@@ -113,7 +113,7 @@ def role_required(role):
         @wraps(fn)
         @jwt_required()
         def wrapper(*args, **kwargs):
-            user = db.session.get(User, get_jwt_identity())
+            user = db.session.get(User, int(get_jwt_identity()))
             if not user or user.role != role:
                 return jsonify({"error": "Доступ запрещён"}), 403
             return fn(user, *args, **kwargs)
@@ -245,8 +245,8 @@ def register_student():
     db.session.add(student)
     db.session.commit()
 
-    token = create_access_token(identity=user.id, additional_claims={"role": "student"})
-    refresh = create_refresh_token(identity=user.id, additional_claims={"role": "student"})
+    token = create_access_token(identity=str(user.id), additional_claims={"role": "student"})
+    refresh = create_refresh_token(identity=str(user.id), additional_claims={"role": "student"})
     return jsonify({
         "user": user.to_dict(),
         "student": student.to_dict(),
@@ -321,8 +321,8 @@ def register_company():
     db.session.add(company)
     db.session.commit()
 
-    token = create_access_token(identity=user.id, additional_claims={"role": "company"})
-    refresh = create_refresh_token(identity=user.id, additional_claims={"role": "company"})
+    token = create_access_token(identity=str(user.id), additional_claims={"role": "company"})
+    refresh = create_refresh_token(identity=str(user.id), additional_claims={"role": "company"})
     return jsonify({
         "user": user.to_dict(),
         "company": company.to_dict(),
@@ -364,8 +364,8 @@ def login():
     if not user or not user.check_password(data.get("password", "")):
         return jsonify({"error": "Неверный email или пароль"}), 401
 
-    token = create_access_token(identity=user.id, additional_claims={"role": user.role})
-    refresh = create_refresh_token(identity=user.id, additional_claims={"role": user.role})
+    token = create_access_token(identity=str(user.id), additional_claims={"role": user.role})
+    refresh = create_refresh_token(identity=str(user.id), additional_claims={"role": user.role})
 
     result = {"user": user.to_dict(), "access_token": token, "refresh_token": refresh}
 
@@ -392,7 +392,7 @@ def refresh_token():
       200:
         description: Новый access_token
     """
-    uid = get_jwt_identity()
+    uid = str(get_jwt_identity())
     claims = get_jwt()
     token = create_access_token(identity=uid, additional_claims={"role": claims.get("role")})
     return jsonify({"access_token": token}), 200
@@ -414,7 +414,7 @@ def get_me():
       404:
         description: Пользователь не найден
     """
-    user = db.session.get(User, get_jwt_identity())
+    user = db.session.get(User, int(get_jwt_identity()))
     if not user:
         return jsonify({"error": "Пользователь не найден"}), 404
 
@@ -537,7 +537,7 @@ def get_student_profile(student_id):
     if not student:
         return jsonify({"error": "Студент не найден"}), 404
 
-    user = db.session.get(User, get_jwt_identity())
+    user = db.session.get(User, int(get_jwt_identity()))
     show_extended = (user.role == "company") or (user.student and user.student.id == student_id)
     return jsonify({"student": student.to_dict(extended=show_extended)}), 200
 
