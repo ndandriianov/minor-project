@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Internship, InternshipFormData, Skill } from '@/types'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -25,40 +25,26 @@ const EXP_OPTIONS = [
 ]
 
 export default function InternshipForm({ initial, onSubmit, loading }: InternshipFormProps) {
-  const [form, setForm] = useState<InternshipFormData>({
-    title: '', description: '', work_format: 'office',
-    direction: '', requirements: '', selection_stages: '', schedule: '',
-    min_hours: undefined, max_hours: undefined,
-    compatible_with_study: false, counts_as_practice: false,
-    salary_min: undefined, salary_max: undefined, is_paid: false,
-    city: '', required_experience: 'none', deadline: '',
-  })
-  const [skills, setSkills] = useState<Skill[]>([])
-
-  useEffect(() => {
-    if (initial) {
-      setForm({
-        title: initial.title,
-        description: initial.description,
-        work_format: initial.work_format,
-        direction: initial.direction ?? '',
-        requirements: initial.requirements ?? '',
-        selection_stages: initial.selection_stages ?? '',
-        schedule: initial.schedule ?? '',
-        min_hours: initial.min_hours,
-        max_hours: initial.max_hours,
-        compatible_with_study: initial.compatible_with_study,
-        counts_as_practice: initial.counts_as_practice,
-        salary_min: initial.salary_min,
-        salary_max: initial.salary_max,
-        is_paid: initial.is_paid,
-        city: initial.city ?? '',
-        required_experience: initial.required_experience,
-        deadline: initial.deadline ? initial.deadline.split('T')[0] : '',
-      })
-      setSkills(initial.required_skills ?? [])
-    }
-  }, [initial])
+  const [form, setForm] = useState<InternshipFormData>(() => ({
+    title: initial?.title ?? '',
+    description: initial?.description ?? '',
+    work_format: initial?.work_format ?? 'office',
+    direction: initial?.direction ?? '',
+    requirements: initial?.requirements ?? '',
+    selection_stages: initial?.selection_stages ?? '',
+    schedule: initial?.schedule ?? '',
+    min_hours: initial?.min_hours,
+    max_hours: initial?.max_hours,
+    compatible_with_study: initial?.compatible_with_study ?? false,
+    counts_as_practice: initial?.counts_as_practice ?? false,
+    salary_min: initial?.salary_min,
+    salary_max: initial?.salary_max,
+    is_paid: initial?.is_paid ?? false,
+    city: initial?.city ?? '',
+    required_experience: initial?.required_experience ?? 'none',
+    deadline: initial?.deadline ? initial.deadline.split('T')[0] : '',
+  }))
+  const [skills, setSkills] = useState<Skill[]>(() => initial?.required_skills ?? [])
 
   const set = <K extends keyof InternshipFormData>(key: K, value: InternshipFormData[K]) =>
     setForm((f) => ({ ...f, [key]: value }))

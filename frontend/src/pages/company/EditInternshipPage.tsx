@@ -27,7 +27,7 @@ export default function EditInternshipPage() {
         ← Назад
       </button>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Редактировать стажировку</h1>
-      <InternshipForm initial={internship} onSubmit={handleSubmit} loading={saving} />
+      <InternshipForm key={internship.id} initial={internship} onSubmit={handleSubmit} loading={saving} />
     </div>
   )
 }
