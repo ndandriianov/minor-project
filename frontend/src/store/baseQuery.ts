@@ -7,7 +7,7 @@ import {
 import { logout } from './authSlice'
 
 const rawBase = fetchBaseQuery({
-  baseUrl: 'http://localhost:5000',
+  baseUrl: 'http://localhost:5051',
   prepareHeaders: (headers) => {
     const token = localStorage.getItem('access_token')
     if (token) headers.set('Authorization', `Bearer ${token}`)

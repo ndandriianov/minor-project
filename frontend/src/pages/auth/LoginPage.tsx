@@ -27,7 +27,7 @@ export default function LoginPage() {
       localStorage.setItem('refresh_token', result.refresh_token)
 
       // Fetch user profile
-      const meRes = await fetch('http://localhost:5000/api/auth/me', {
+      const meRes = await fetch('http://localhost:5051/api/auth/me', {
         headers: { Authorization: `Bearer ${result.access_token}` },
       })
       const user: AuthUser = await meRes.json()

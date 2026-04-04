@@ -5,8 +5,8 @@ Flask + SQLAlchemy + JWT авторизация + Swagger UI (Flasgger).
 Запуск:
   python app.py
 
-API доступен на http://localhost:5000
-Swagger UI:   http://localhost:5000/apidocs
+API доступен на http://localhost:5051
+Swagger UI:   http://localhost:5051/apidocs
 """
 
 import os
@@ -35,7 +35,7 @@ app = Flask(__name__)
 app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", "sqlite:///internships.db"),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    JWT_SECRET_KEY=os.environ.get("JWT_SECRET", "dev-secret-change-in-production"),
+    JWT_SECRET_KEY=os.environ.get("JWT_SECRET", "dev-secret-change-in-production-32-bytes"),
     JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=2),
     JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30),
     MAX_CONTENT_LENGTH=10 * 1024 * 1024,
@@ -1503,6 +1503,6 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
         print("База данных создана.")
-        print("Сервер запущен:  http://localhost:5000")
-        print("Swagger UI:     http://localhost:5000/apidocs")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+        print("Сервер запущен:  http://localhost:5051")
+        print("Swagger UI:     http://localhost:5051/apidocs")
+    app.run(debug=True, host="0.0.0.0", port=5051)
