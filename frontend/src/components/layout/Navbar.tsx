@@ -58,6 +58,9 @@ export default function Navbar() {
               <Link to="/company/internships" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
                 Мои стажировки
               </Link>
+              <Link to="/company/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                Отклики
+              </Link>
               <Link to="/company/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
                 {user.company?.name ?? 'Компания'}
               </Link>
@@ -69,6 +72,9 @@ export default function Navbar() {
             <>
               <Link to="/admin/moderation" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
                 Модерация
+              </Link>
+              <Link to="/admin/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                Отклики
               </Link>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Выйти

@@ -72,6 +72,12 @@ export interface Application {
   student?: Student
 }
 
+export interface ApplicationFilters {
+  status?: Application['status']
+  internship_id?: number
+  company_id?: number
+}
+
 export interface Bookmark {
   id: number
   student_id: number

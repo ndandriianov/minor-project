@@ -38,6 +38,7 @@ export default function CompanyDashboardPage() {
         {[
           { to: '/company/internships/new', emoji: '➕', label: 'Создать стажировку', desc: 'Разместить новую вакансию' },
           { to: '/company/internships', emoji: '📋', label: 'Мои стажировки', desc: 'Управление и просмотр откликов' },
+          { to: '/company/applications', emoji: '📨', label: 'Все отклики', desc: 'Общий inbox по всем вакансиям' },
         ].map((item) => (
           <Link key={item.to} to={item.to}>
             <Card className="flex items-center gap-4 hover:border-blue-300 transition-colors">

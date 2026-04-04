@@ -13,7 +13,7 @@ import os
 from datetime import timedelta, datetime, timezone, date
 from functools import wraps
 
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
@@ -150,6 +150,15 @@ def paginate_query(query):
         "per_page": pagination.per_page,
         "pages": pagination.pages,
     }
+
+
+def serialize_application(app_item, include_student=False, include_internship=False):
+    data = app_item.to_dict()
+    if include_student and app_item.student:
+        data["student"] = app_item.student.to_dict(extended=True)
+    if include_internship and app_item.internship:
+        data["internship"] = app_item.internship.to_dict()
+    return data
 
 
 # ═══════════════════════════════════════════════════════
@@ -1124,15 +1133,13 @@ def list_my_applications(user):
       200:
         description: Список откликов с информацией о стажировках
     """
-    query = Application.query.filter_by(student_id=user.student.id)\
-        .order_by(Application.created_at.desc())
+    query = Application.query.filter_by(student_id=user.student.id)
+    if status := request.args.get("status"):
+        query = query.filter_by(status=status)
+    query = query.order_by(Application.created_at.desc())
 
     applications = query.all()
-    result = []
-    for app_item in applications:
-        data = app_item.to_dict()
-        data["internship"] = app_item.internship.to_dict()
-        result.append(data)
+    result = [serialize_application(app_item, include_internship=True) for app_item in applications]
 
     return jsonify({"applications": result}), 200
 
@@ -1194,15 +1201,29 @@ def list_internship_applications(user, internship_id):
     if not internship or internship.company_id != user.company.id:
         return jsonify({"error": "Стажировка не найдена"}), 404
 
-    applications = Application.query.filter_by(internship_id=internship_id)\
-        .order_by(Application.created_at.desc()).all()
+    query = Application.query.filter_by(internship_id=internship_id)
+    if status := request.args.get("status"):
+        query = query.filter_by(status=status)
+    applications = query.order_by(Application.created_at.desc()).all()
 
-    result = []
-    for app_item in applications:
-        data = app_item.to_dict()
-        data["student"] = app_item.student.to_dict(extended=True)
-        result.append(data)
+    result = [serialize_application(app_item, include_student=True) for app_item in applications]
 
+    return jsonify({"applications": result}), 200
+
+
+@app.route("/api/company/applications", methods=["GET"])
+@role_required("company")
+def list_company_applications(user):
+    """Все отклики на вакансии компании (с фильтрами)."""
+    query = Application.query.join(Internship).filter(Internship.company_id == user.company.id)
+
+    if internship_id := request.args.get("internship_id", type=int):
+        query = query.filter(Application.internship_id == internship_id)
+    if status := request.args.get("status"):
+        query = query.filter(Application.status == status)
+
+    applications = query.order_by(Application.created_at.desc()).all()
+    result = [serialize_application(app_item, include_student=True, include_internship=True) for app_item in applications]
     return jsonify({"applications": result}), 200
 
 
@@ -1449,6 +1470,30 @@ def moderate_internship(user, internship_id):
 
     db.session.commit()
     return jsonify({"internship": internship.to_dict()}), 200
+
+
+@app.route("/api/admin/applications", methods=["GET"])
+@role_required("admin")
+def list_admin_applications(user):
+    """Read-only список откликов для администратора с базовыми фильтрами."""
+    query = Application.query.join(Internship)
+
+    if internship_id := request.args.get("internship_id", type=int):
+        query = query.filter(Application.internship_id == internship_id)
+    if company_id := request.args.get("company_id", type=int):
+        query = query.filter(Internship.company_id == company_id)
+    if status := request.args.get("status"):
+        query = query.filter(Application.status == status)
+
+    applications = query.order_by(Application.created_at.desc()).all()
+    result = [serialize_application(app_item, include_student=True, include_internship=True) for app_item in applications]
+    return jsonify({"applications": result}), 200
+
+
+@app.route("/uploads/<path:filename>", methods=["GET"])
+def get_uploaded_file(filename):
+    """Отдача загруженных файлов резюме."""
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 # ═══════════════════════════════════════════════════════

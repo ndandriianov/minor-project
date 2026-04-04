@@ -7,9 +7,22 @@ import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 import StatusBadge from '@/components/applications/StatusBadge'
 import Card from '@/components/ui/Card'
+import Select from '@/components/ui/Select'
+
+const STATUS_OPTIONS = [
+  { value: '', label: 'Все статусы' },
+  { value: 'applied', label: 'Отправлен' },
+  { value: 'interview', label: 'Интервью' },
+  { value: 'offer', label: 'Оффер' },
+  { value: 'rejected', label: 'Отказ' },
+  { value: 'withdrawn', label: 'Отозван' },
+]
 
 export default function ApplicationsPage() {
-  const { data: applications = [], isLoading } = useListApplicationsQuery()
+  const [status, setStatus] = useState('')
+  const { data: applications = [], isLoading } = useListApplicationsQuery(
+    status ? { status: status as 'applied' | 'interview' | 'offer' | 'rejected' | 'withdrawn' } : undefined,
+  )
   const [withdraw, { isLoading: withdrawing }] = useWithdrawMutation()
   const [withdrawId, setWithdrawId] = useState<number | null>(null)
   const navigate = useNavigate()
@@ -25,7 +38,17 @@ export default function ApplicationsPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Мои отклики</h1>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Мои отклики</h1>
+        <div className="w-full sm:w-56">
+          <Select
+            label="Фильтр по статусу"
+            value={status}
+            options={STATUS_OPTIONS}
+            onChange={(e) => setStatus(e.target.value)}
+          />
+        </div>
+      </div>
 
       {applications.length === 0 ? (
         <EmptyState

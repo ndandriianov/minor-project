@@ -88,6 +88,7 @@ backend/
 | POST | `/api/applications` | Студент | Откликнуться |
 | GET  | `/api/applications` | Студент | Мои отклики + статусы |
 | POST | `/api/applications/<id>/withdraw` | Студент | Отозвать |
+| GET  | `/api/company/applications` | Компания | Все отклики на мои вакансии |
 | GET  | `/api/company/internships/<id>/applications` | Компания | Отклики на вакансию |
 | PUT  | `/api/company/applications/<id>/status` | Компания | Изменить статус |
 
@@ -114,6 +115,7 @@ backend/
 |-------|-----|----------|
 | GET  | `/api/admin/internships/pending` | Вакансии на модерации |
 | POST | `/api/admin/internships/<id>/moderate` | Одобрить / отклонить |
+| GET  | `/api/admin/applications` | Read-only список всех откликов |
 
 ### Прочее
 

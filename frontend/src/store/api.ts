@@ -11,6 +11,7 @@ import type {
   RecommendedInternship,
   Skill,
   Student,
+  ApplicationFilters,
 } from '@/types'
 
 function unwrapArray<T>(response: unknown, key: string): T[] {
@@ -104,8 +105,8 @@ export const platformApi = createApi({
     }),
 
     // ── Applications ──────────────────────────────────────────────────────
-    listApplications: b.query<Application[], void>({
-      query: () => '/api/applications',
+    listApplications: b.query<Application[], ApplicationFilters | void>({
+      query: (params) => (params ? { url: '/api/applications', params } : '/api/applications'),
       transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
       providesTags: ['Application'],
     }),
@@ -183,8 +184,11 @@ export const platformApi = createApi({
       invalidatesTags: ['CompanyInternship', 'Internship'],
     }),
 
-    getApplicants: b.query<Application[], number>({
-      query: (internshipId) => `/api/company/internships/${internshipId}/applications`,
+    getApplicants: b.query<Application[], { internshipId: number; params?: ApplicationFilters }>({
+      query: ({ internshipId, params }) => ({
+        url: `/api/company/internships/${internshipId}/applications`,
+        params,
+      }),
       transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
       providesTags: ['Application'],
     }),
@@ -196,6 +200,12 @@ export const platformApi = createApi({
         body: { status },
       }),
       invalidatesTags: ['Application'],
+    }),
+
+    listCompanyApplications: b.query<Application[], ApplicationFilters | void>({
+      query: (params) => (params ? { url: '/api/company/applications', params } : '/api/company/applications'),
+      transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
+      providesTags: ['Application'],
     }),
 
     // ── Admin ─────────────────────────────────────────────────────────────
@@ -212,6 +222,12 @@ export const platformApi = createApi({
         body,
       }),
       invalidatesTags: ['Pending', 'Internship', 'CompanyInternship'],
+    }),
+
+    listAdminApplications: b.query<Application[], ApplicationFilters | void>({
+      query: (params) => (params ? { url: '/api/admin/applications', params } : '/api/admin/applications'),
+      transformResponse: (response: unknown): Application[] => unwrapArray<Application>(response, 'applications'),
+      providesTags: ['Application'],
     }),
 
     // ── Skills ────────────────────────────────────────────────────────────
@@ -245,7 +261,9 @@ export const {
   useDeleteInternshipMutation,
   useGetApplicantsQuery,
   useUpdateAppStatusMutation,
+  useListCompanyApplicationsQuery,
   useListPendingQuery,
   useModerateMutation,
+  useListAdminApplicationsQuery,
   useSearchSkillsQuery,
 } = platformApi

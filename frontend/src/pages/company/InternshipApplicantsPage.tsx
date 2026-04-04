@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useGetApplicantsQuery, useUpdateAppStatusMutation } from '@/store/api'
 import Spinner from '@/components/ui/Spinner'
@@ -5,20 +6,28 @@ import EmptyState from '@/components/ui/EmptyState'
 import StatusBadge from '@/components/applications/StatusBadge'
 import Card from '@/components/ui/Card'
 import SkillTag from '@/components/skills/SkillTag'
+import Select from '@/components/ui/Select'
 
 const STATUS_OPTIONS = [
+  { value: '', label: 'Все статусы' },
   { value: 'applied', label: 'Отправлен' },
   { value: 'interview', label: 'Интервью' },
   { value: 'offer', label: 'Оффер' },
   { value: 'rejected', label: 'Отказ' },
 ]
 
+const UPDATE_STATUS_OPTIONS = STATUS_OPTIONS.filter((o) => o.value)
+
 export default function InternshipApplicantsPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const internshipId = Number(id)
+  const [status, setStatus] = useState('')
 
-  const { data: applications = [], isLoading } = useGetApplicantsQuery(internshipId)
+  const { data: applications = [], isLoading } = useGetApplicantsQuery({
+    internshipId,
+    params: status ? { status: status as 'applied' | 'interview' | 'offer' | 'rejected' } : undefined,
+  })
   const [updateStatus] = useUpdateAppStatusMutation()
 
   if (isLoading) return <Spinner />
@@ -31,6 +40,15 @@ export default function InternshipApplicantsPage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
         Отклики ({applications.length})
       </h1>
+
+      <div className="w-full sm:w-56 mb-4">
+        <Select
+          label="Фильтр по статусу"
+          value={status}
+          options={STATUS_OPTIONS}
+          onChange={(e) => setStatus(e.target.value)}
+        />
+      </div>
 
       {applications.length === 0 ? (
         <EmptyState
@@ -93,7 +111,7 @@ export default function InternshipApplicantsPage() {
                       onChange={(e) => updateStatus({ id: app.id, status: e.target.value })}
                       className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      {STATUS_OPTIONS.map((o) => (
+                      {UPDATE_STATUS_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>

@@ -26,9 +26,11 @@ import MyInternshipsPage from '@/pages/company/MyInternshipsPage'
 import CreateInternshipPage from '@/pages/company/CreateInternshipPage'
 import EditInternshipPage from '@/pages/company/EditInternshipPage'
 import InternshipApplicantsPage from '@/pages/company/InternshipApplicantsPage'
+import CompanyApplicationsPage from '@/pages/company/CompanyApplicationsPage'
 
 // Admin
 import AdminModerationPage from '@/pages/admin/AdminModerationPage'
+import AdminApplicationsPage from '@/pages/admin/AdminApplicationsPage'
 
 // 404
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -62,11 +64,13 @@ export default function App() {
             <Route path="company/internships/new" element={<CreateInternshipPage />} />
             <Route path="company/internships/:id/edit" element={<EditInternshipPage />} />
             <Route path="company/internships/:id/applicants" element={<InternshipApplicantsPage />} />
+            <Route path="company/applications" element={<CompanyApplicationsPage />} />
           </Route>
 
           {/* Admin */}
           <Route element={<RequireRole role="admin" />}>
             <Route path="admin/moderation" element={<AdminModerationPage />} />
+            <Route path="admin/applications" element={<AdminApplicationsPage />} />
           </Route>
         </Route>
 
