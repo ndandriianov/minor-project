@@ -65,6 +65,15 @@ export default function Navbar() {
                 Выйти
               </Button>
             </>
+          ) : user?.role === 'admin' ? (
+            <>
+              <Link to="/admin/moderation" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+                Модерация
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                Выйти
+              </Button>
+            </>
           ) : null}
         </div>
       </div>

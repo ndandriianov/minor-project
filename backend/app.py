@@ -74,7 +74,8 @@ swagger_template = {
             "- Студент: `ivan@student.ru` / `password123`\n"
             "- Студент: `maria@student.ru` / `password123`\n"
             "- Компания: `hr@yandex.ru` / `password123`\n"
-            "- Компания: `hr@tinkoff.ru` / `password123`"
+            "- Компания: `hr@tinkoff.ru` / `password123`\n"
+            "- Админ: `admin@platform.ru` / `password123`"
         ),
         "version": "1.0.0",
     },
@@ -108,13 +109,15 @@ def index():
 # ═══════════════════════════════════════════════════════
 
 def role_required(role):
-    """Декоратор: доступ только для указанной роли."""
+    """Декоратор: доступ только для одной или нескольких ролей."""
+    allowed_roles = {role} if isinstance(role, str) else set(role)
+
     def decorator(fn):
         @wraps(fn)
         @jwt_required()
         def wrapper(*args, **kwargs):
             user = db.session.get(User, int(get_jwt_identity()))
-            if not user or user.role != role:
+            if not user or user.role not in allowed_roles:
                 return jsonify({"error": "Доступ запрещён"}), 403
             return fn(user, *args, **kwargs)
         return wrapper
@@ -1366,8 +1369,8 @@ def remove_bookmark(user, internship_id):
 # ═══════════════════════════════════════════════════════
 
 @app.route("/api/admin/internships/pending", methods=["GET"])
-@jwt_required()
-def list_pending_internships():
+@role_required("admin")
+def list_pending_internships(user):
     """
     Вакансии на модерации
     ---
@@ -1394,8 +1397,8 @@ def list_pending_internships():
 
 
 @app.route("/api/admin/internships/<int:internship_id>/moderate", methods=["POST"])
-@jwt_required()
-def moderate_internship(internship_id):
+@role_required("admin")
+def moderate_internship(user, internship_id):
     """
     Одобрить или отклонить вакансию
     ---
@@ -1432,7 +1435,7 @@ def moderate_internship(internship_id):
     if not internship:
         return jsonify({"error": "Стажировка не найдена"}), 404
 
-    data = request.get_json()
+    data = request.get_json() or {}
     action = data.get("action")
 
     if action == "approve":

@@ -1,12 +1,14 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import type { AuthUser } from '@/types'
 
 interface RequireRoleProps {
-  role: 'student' | 'company'
+  role: AuthUser['role'] | AuthUser['role'][]
 }
 
 export default function RequireRole({ role }: RequireRoleProps) {
   const { user } = useAuth()
-  if (user?.role !== role) return <Navigate to="/" replace />
+  const allowedRoles = Array.isArray(role) ? role : [role]
+  if (!user || !allowedRoles.includes(user.role)) return <Navigate to="/" replace />
   return <Outlet />
 }

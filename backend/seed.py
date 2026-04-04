@@ -32,6 +32,12 @@ def seed():
             skills[name] = s
         db.session.flush()
 
+        # ── Администратор (модератор) ──
+        admin_user = User(email="admin@platform.ru", role="admin")
+        admin_user.set_password("password123")
+        db.session.add(admin_user)
+        db.session.flush()
+
         # ── Студенты ──
         students_data = [
             {
@@ -228,6 +234,19 @@ def seed():
                 "skills": ["Копирайтинг", "SMM"],
                 "status": "published",
             },
+            {
+                "company": 0, "title": "Стажёр QA-инженер",
+                "direction": "IT", "work_format": "hybrid",
+                "description": "Тестирование веб-сервисов, написание тест-кейсов и участие в регрессионном тестировании.",
+                "requirements": "Базовые знания тест-дизайна, внимательность, понимание клиент-серверной архитектуры.",
+                "selection_stages": "Тестовое задание → Интервью",
+                "schedule": "Свободный", "min_hours": 20, "max_hours": 30,
+                "compatible_with_study": True, "salary_min": 30000, "salary_max": 45000,
+                "city": "Москва", "required_experience": "none",
+                "deadline": date.today() + timedelta(days=50),
+                "skills": ["SQL", "Git"],
+                "status": "pending",
+            },
         ]
 
         internship_objects = []
@@ -294,6 +313,7 @@ def seed():
         print("  Компания: hr@sber.ru / password123")
         print("  Компания: hr@vk.ru / password123")
         print("  Компания: hr@tinkoff.ru / password123")
+        print("  Админ:    admin@platform.ru / password123")
 
 
 if __name__ == "__main__":

@@ -30,7 +30,14 @@ export default function LoginPage() {
       }
       dispatch(setCredentials({ user, access_token: session.access_token, refresh_token: session.refresh_token }))
 
-      navigate(from ?? (user.role === 'company' ? '/company/dashboard' : '/student/dashboard'))
+      const fallbackRoute =
+        user.role === 'company'
+          ? '/company/dashboard'
+          : user.role === 'admin'
+            ? '/admin/moderation'
+            : '/student/dashboard'
+
+      navigate(from ?? fallbackRoute)
     } catch {
       dispatch(setLoading(false))
       setError('Неверный email или пароль')

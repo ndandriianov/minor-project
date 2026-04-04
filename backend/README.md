@@ -28,6 +28,7 @@ python3 app.py
 | Компания | hr@sber.ru        | password123  |
 | Компания | hr@vk.ru          | password123  |
 | Компания | hr@tinkoff.ru     | password123  |
+| Админ    | admin@platform.ru | password123  |
 
 ## Структура проекта
 

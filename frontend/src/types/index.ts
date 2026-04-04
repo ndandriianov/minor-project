@@ -83,7 +83,7 @@ export interface Bookmark {
 export interface AuthUser {
   id: number
   email: string
-  role: 'student' | 'company'
+  role: 'student' | 'company' | 'admin'
   student?: Student
   company?: Company
 }

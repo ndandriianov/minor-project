@@ -39,14 +39,14 @@ class Skill(db.Model):
 class User(db.Model):
     """
     Базовая модель пользователя.
-    role: 'student' | 'company'
+    role: 'student' | 'company' | 'admin'
     """
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # 'student' или 'company'
+    role = db.Column(db.String(20), nullable=False)  # 'student' / 'company' / 'admin'
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Связи

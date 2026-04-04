@@ -65,7 +65,9 @@ export default function App() {
           </Route>
 
           {/* Admin */}
-          <Route path="admin/moderation" element={<AdminModerationPage />} />
+          <Route element={<RequireRole role="admin" />}>
+            <Route path="admin/moderation" element={<AdminModerationPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
