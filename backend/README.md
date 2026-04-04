@@ -11,11 +11,14 @@ pip install -r requirements.txt
 # Заполнение тестовыми данными
 python3 seed.py
 
+# (опционально) Порт сервера: сначала APP_PORT, затем PORT, по умолчанию 5051
+export APP_PORT=5051
+
 # Запуск сервера
 python3 app.py
 ```
 
-Сервер будет доступен на `http://localhost:5051`.
+Сервер будет доступен на `http://localhost:<APP_PORT>` (по умолчанию `http://localhost:5051`).
 
 ## Тестовые аккаунты
 
@@ -137,16 +140,18 @@ Authorization: Bearer <access_token>
 ## Примеры запросов (curl)
 
 ```bash
+BASE_URL="http://localhost:${APP_PORT:-5051}"
+
 # Логин
-curl -X POST http://localhost:5051/api/auth/login \
+curl -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"ivan@student.ru","password":"password123"}'
 
 # Лента стажировок с фильтрами
-curl "http://localhost:5051/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
+curl "$BASE_URL/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
 
 # Откликнуться (с токеном)
-curl -X POST http://localhost:5051/api/applications \
+curl -X POST "$BASE_URL/api/applications" \
   -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"internship_id": 1, "cover_letter": "Хочу у вас стажироваться!"}'

@@ -5,8 +5,8 @@ Flask + SQLAlchemy + JWT авторизация + Swagger UI (Flasgger).
 Запуск:
   python app.py
 
-API доступен на http://localhost:5051
-Swagger UI:   http://localhost:5051/apidocs
+API доступен на http://localhost:<APP_PORT>
+Swagger UI:   http://localhost:<APP_PORT>/apidocs
 """
 
 import os
@@ -27,6 +27,19 @@ from models import (
     student_skills, internship_skills,
 )
 
+
+def get_app_port() -> int:
+    """Возвращает порт сервера из APP_PORT/PORT с безопасным дефолтом."""
+    raw_port = os.environ.get("APP_PORT") or os.environ.get("PORT") or "5051"
+    try:
+        port = int(raw_port)
+        if not 1 <= port <= 65535:
+            raise ValueError
+        return port
+    except (TypeError, ValueError):
+        return 5051
+
+
 # ═══════════════════════════════════════════════════════
 #  Конфигурация
 # ═══════════════════════════════════════════════════════
@@ -40,6 +53,7 @@ app.config.update(
     JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30),
     MAX_CONTENT_LENGTH=10 * 1024 * 1024,
     UPLOAD_FOLDER=os.path.join(os.path.dirname(__file__), "uploads"),
+    APP_PORT=get_app_port(),
 )
 
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -1548,9 +1562,10 @@ def health():
 # ═══════════════════════════════════════════════════════
 
 if __name__ == "__main__":
+    app_port = app.config["APP_PORT"]
     with app.app_context():
         db.create_all()
         print("База данных создана.")
-        print("Сервер запущен:  http://localhost:5051")
-        print("Swagger UI:     http://localhost:5051/apidocs")
-    app.run(debug=True, host="0.0.0.0", port=5051)
+        print(f"Сервер запущен:  http://localhost:{app_port}")
+        print(f"Swagger UI:     http://localhost:{app_port}/apidocs")
+    app.run(debug=True, host="0.0.0.0", port=app_port)
