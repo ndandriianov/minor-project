@@ -80,7 +80,7 @@ export default function InternshipApplicantsPage() {
                   <div className="flex flex-col gap-2 flex-shrink-0">
                     {student?.resume_filename && (
                       <a
-                        href={`http://localhost:5000/uploads/${student.resume_filename}`}
+                        href={`http://localhost:5051/uploads/${student.resume_filename}`}
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs text-blue-600 hover:underline"

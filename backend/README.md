@@ -15,7 +15,7 @@ python3 seed.py
 python3 app.py
 ```
 
-Сервер будет доступен на `http://localhost:5000`.
+Сервер будет доступен на `http://localhost:5051`.
 
 ## Тестовые аккаунты
 
@@ -135,15 +135,15 @@ Authorization: Bearer <access_token>
 
 ```bash
 # Логин
-curl -X POST http://localhost:5000/api/auth/login \
+curl -X POST http://localhost:5051/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"ivan@student.ru","password":"password123"}'
 
 # Лента стажировок с фильтрами
-curl "http://localhost:5000/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
+curl "http://localhost:5051/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
 
 # Откликнуться (с токеном)
-curl -X POST http://localhost:5000/api/applications \
+curl -X POST http://localhost:5051/api/applications \
   -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"internship_id": 1, "cover_letter": "Хочу у вас стажироваться!"}'
