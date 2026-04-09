@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useUpdateProfileMutation, useUploadResumeMutation } from '@/store/api'
 import { useAppDispatch } from '@/hooks/useAppDispatch'
@@ -58,6 +58,13 @@ export default function ProfilePage() {
   const [resumeFilename, setResumeFilename] = useState(student?.resume_filename ?? '')
   const [form, setForm] = useState(() => createInitialForm(student))
   const [skills, setSkills] = useState<Skill[]>(() => student?.skills ?? [])
+
+  useEffect(() => {
+    if (!student) return
+    setForm(createInitialForm(student))
+    setSkills(student.skills ?? [])
+    setResumeFilename(student.resume_filename ?? '')
+  }, [student])
 
   if (isLoading) return <Spinner />
   if (!student) return <Spinner />
@@ -167,7 +174,12 @@ export default function ProfilePage() {
         {/* Skills */}
         <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">Навыки</h2>
-          <SkillsAutocomplete value={skills} onChange={setSkills} label="Добавьте навыки" />
+          <SkillsAutocomplete
+            value={skills}
+            onChange={setSkills}
+            label="Добавьте навыки"
+            placeholder="Например: Python, SQL, Figma"
+          />
         </section>
 
         {/* About */}

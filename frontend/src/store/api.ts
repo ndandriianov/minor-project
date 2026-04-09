@@ -23,6 +23,13 @@ function unwrapArray<T>(response: unknown, key: string): T[] {
   return []
 }
 
+function unwrapObject<T>(response: unknown, key: string): T {
+  if (response && typeof response === 'object' && key in response) {
+    return (response as Record<string, T>)[key]
+  }
+  return response as T
+}
+
 export const platformApi = createApi({
   reducerPath: 'platformApi',
   baseQuery: baseQueryWithReauth,
@@ -87,11 +94,13 @@ export const platformApi = createApi({
     // ── Student ───────────────────────────────────────────────────────────
     getStudent: b.query<Student, number>({
       query: (id) => `/api/students/${id}`,
+      transformResponse: (response: unknown): Student => unwrapObject<Student>(response, 'student'),
       providesTags: (_r, _e, id) => [{ type: 'Student', id }],
     }),
 
     updateProfile: b.mutation<Student, Omit<Partial<Student>, 'skills'> & { skills?: string[] }>({
       query: (body) => ({ url: '/api/students/profile', method: 'PUT', body }),
+      transformResponse: (response: unknown): Student => unwrapObject<Student>(response, 'student'),
       invalidatesTags: ['Student'],
     }),
 
