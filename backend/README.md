@@ -20,6 +20,18 @@ python3 app.py
 
 Сервер будет доступен на `http://localhost:<APP_PORT>` (по умолчанию `http://localhost:5051`).
 
+## Запуск в Docker
+
+```bash
+docker compose up --build
+```
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:5051`
+- Swagger UI: `http://localhost:5051/apidocs`
+
+При первом запуске backend автоматически создаёт SQLite-базу и заполняет её тестовыми данными.
+
 ## Тестовые аккаунты
 
 | Роль     | Email             | Пароль       |

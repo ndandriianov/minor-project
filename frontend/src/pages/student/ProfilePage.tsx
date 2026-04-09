@@ -11,6 +11,7 @@ import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
 import SkillsAutocomplete from '@/components/skills/SkillsAutocomplete'
 import Spinner from '@/components/ui/Spinner'
+import { buildAssetUrl } from '@/config/api'
 
 const WORK_FORMAT_OPTIONS = [
   { value: 'any', label: 'Любой' },
@@ -191,7 +192,7 @@ export default function ProfilePage() {
             <p className="text-sm text-gray-500">
               Текущий файл:{' '}
               <a
-                href={`http://localhost:5051/uploads/${resumeFilename}`}
+                href={buildAssetUrl(`/uploads/${resumeFilename}`)}
                 target="_blank"
                 rel="noreferrer"
                 className="text-blue-600 hover:underline"

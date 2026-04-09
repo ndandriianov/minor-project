@@ -6,8 +6,10 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { logout } from './authSlice'
 
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+
 const rawBase = fetchBaseQuery({
-  baseUrl: 'http://localhost:5051',
+  baseUrl: apiBaseUrl,
   prepareHeaders: (headers) => {
     if (!headers.has('Authorization')) {
       const token = localStorage.getItem('access_token')

@@ -7,6 +7,7 @@ import StatusBadge from '@/components/applications/StatusBadge'
 import Card from '@/components/ui/Card'
 import SkillTag from '@/components/skills/SkillTag'
 import Select from '@/components/ui/Select'
+import { buildAssetUrl } from '@/config/api'
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Все статусы' },
@@ -98,7 +99,7 @@ export default function InternshipApplicantsPage() {
                   <div className="flex flex-col gap-2 flex-shrink-0">
                     {student?.resume_filename && (
                       <a
-                        href={`http://localhost:5051/uploads/${student.resume_filename}`}
+                        href={buildAssetUrl(`/uploads/${student.resume_filename}`)}
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs text-blue-600 hover:underline"

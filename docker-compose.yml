@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: minor-project-backend
+    environment:
+      APP_PORT: 5051
+      SEED_DB: "1"
+    ports:
+      - "5051:5051"
+    volumes:
+      - backend_instance:/app/instance
+      - backend_uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: minor-project-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  backend_instance:
+  backend_uploads:
