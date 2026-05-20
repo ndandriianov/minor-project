@@ -62,7 +62,7 @@ export default function InternshipCard({ internship }: InternshipCardProps) {
           disabled={adding || removing}
           className="absolute top-4 right-4 text-xl text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50"
         >
-          {isBookmarked ? '🔖' : '🏷️'}
+          {isBookmarked ? '❤️' : '🤍'}
         </button>
       )}
 
