@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useLocation, Navigate, useNavigate } from 'react-router-dom'
-import { useGetPaymentQuery } from '@/store/api'
+import { useGetPaymentQuery, useMeQuery } from '@/store/api'
+import { useAppDispatch } from '@/hooks/useAppDispatch'
+import { setUser } from '@/store/authSlice'
 import type { CheckoutResult } from '@/types'
 import Button from '@/components/ui/Button'
 
 export default function CheckoutPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const state = location.state as CheckoutResult | null
   const [paid, setPaid] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -20,9 +23,25 @@ export default function CheckoutPage() {
     skip: !paymentId || paid,
   })
 
+  const { data: meData, refetch: refetchMe } = useMeQuery(undefined, { skip: !paid })
+
   useEffect(() => {
-    if (payment?.status === 'paid') setPaid(true)
-  }, [payment?.status])
+    if (payment?.status === 'paid') {
+      setPaid(true)
+      refetchMe()
+    }
+  }, [payment?.status, refetchMe])
+
+  useEffect(() => {
+    if (meData && paid) {
+      dispatch(setUser({
+        ...meData.user,
+        student: meData.student,
+        company: meData.company,
+        subscription: meData.subscription,
+      }))
+    }
+  }, [meData, paid, dispatch])
 
   if (!state) return <Navigate to="/subscription" replace />
 
@@ -39,6 +58,15 @@ export default function CheckoutPage() {
     setMockConfirming(true)
     try {
       await fetch(state.payment_url)
+      const me = await refetchMe()
+      if (me.data) {
+        dispatch(setUser({
+          ...me.data.user,
+          student: me.data.student,
+          company: me.data.company,
+          subscription: me.data.subscription,
+        }))
+      }
       setPaid(true)
     } catch {
       // ignore

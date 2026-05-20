@@ -10,6 +10,13 @@ import mimetypes
 from datetime import timedelta, datetime, timezone, date
 from functools import wraps
 
+try:
+    from dotenv import load_dotenv
+    # Only loads from .env if env vars are not already set (Docker sets them via env_file)
+    load_dotenv(override=False)
+except ImportError:
+    pass
+
 from flask import Flask, request, jsonify, redirect, send_from_directory, abort
 from flask_cors import CORS
 from flask_jwt_extended import (
@@ -583,6 +590,8 @@ def login():
         result["student"] = user.student.to_dict(extended=True)
     elif user.role == "company" and user.company:
         result["company"] = user.company.to_dict()
+    if user.subscription:
+        result["subscription"] = user.subscription.to_dict()
     return jsonify(result), 200
 
 
@@ -1901,7 +1910,8 @@ def checkout():
 
     price = PLAN_PRICES[plan]
     code = _generate_payment_code()
-    provider = "donationalerts" if da_pay.is_configured() else "mock"
+    force_mock = os.environ.get("ALLOW_MOCK_PAYMENTS") == "1"
+    provider = "mock" if (force_mock or not da_pay.is_configured()) else "donationalerts"
 
     payment = Payment(
         user_id=user.id, plan=plan,
@@ -2160,7 +2170,8 @@ def ai_resume_adapt(user):
             adapted = _openai_adapt_resume(api_key, student, intern, matched, missing)
             provider = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
         except Exception as e:
-            app.logger.warning("OpenAI call failed: %s", e)
+            import traceback
+            app.logger.warning("OpenAI call failed: %s\n%s", e, traceback.format_exc())
             adapted = None
     if not adapted:
         adapted = _mock_adapt_resume(student, intern, matched, missing)

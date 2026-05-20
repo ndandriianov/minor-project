@@ -32,6 +32,7 @@ export default function InternshipDetailPage() {
   const [aiOpen, setAiOpen] = useState(false)
   const [upgradeOpen, setUpgradeOpen] = useState(false)
   const [aiAdaptResume, { isLoading: adapting }] = useAiAdaptResumeMutation()
+  const [copied, setCopied] = useState(false)
   const [aiResult, setAiResult] = useState<{
     matched_skills: string[]
     missing_skills: string[]
@@ -254,6 +255,18 @@ export default function InternshipDetailPage() {
               <div>
                 <p className="font-medium text-gray-900 mb-1">Адаптированное описание</p>
                 <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3">{aiResult.adapted_resume}</p>
+                <div className="mt-2">
+                  <button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(aiResult.adapted_resume)
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 2000)
+                    }}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition"
+                  >
+                    {copied ? '✓ Скопировано' : 'Копировать'}
+                  </button>
+                </div>
               </div>
             )}
             {aiResult.tips.length > 0 && (

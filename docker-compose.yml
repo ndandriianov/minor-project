@@ -6,20 +6,27 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      APP_PORT: 5051
+      APP_PORT: "5051"
       SEED_DB: "1"
     ports:
       - "5051:5051"
     volumes:
       - backend_instance:/app/instance
       - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5051/api/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
 
   frontend:
     build:
       context: ./frontend
     container_name: minor-project-frontend
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "3000:80"
 

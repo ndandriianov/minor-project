@@ -78,7 +78,10 @@ def seed():
                 "university": "НИУ ВШЭ", "faculty": "Факультет компьютерных наук",
                 "course": 3, "speciality": "Программная инженерия",
                 "city": "Москва", "work_format": "hybrid", "desired_hours": "20-40",
-                "skills": ["Python", "JavaScript", "React", "Git", "SQL"],
+                "skills": ["Python", "SQL", "Git", "JavaScript", "React"],
+                "experience": "Учебные проекты с применением Python и SQL. Разработка клиент-серверных приложений.",
+                "bio": "Стажёр-разработчик Python. Готов развиваться в написании микросервисов и осваивать Docker.",
+                "subscription": "premium",
             },
             {
                 "email": "maria@student.ru", "password": "password123",
@@ -108,15 +111,22 @@ def seed():
             student = Student(
                 user_id=user.id,
                 first_name=sd["first_name"], last_name=sd["last_name"],
-                university=sd["university"], faculty=sd["faculty"],
-                course=sd["course"], speciality=sd["speciality"],
-                city=sd["city"], work_format=sd["work_format"],
-                desired_hours=sd["desired_hours"],
+                university=sd["university"], faculty=sd.get("faculty"),
+                course=sd["course"], speciality=sd.get("speciality"),
+                city=sd["city"], work_format=sd.get("work_format"),
+                desired_hours=sd.get("desired_hours"),
+                experience=sd.get("experience"),
+                bio=sd.get("bio"),
             )
             student.skills = [skills[s] for s in sd["skills"]]
             db.session.add(student)
             student_objects.append(student)
-            db.session.add(Subscription(user_id=user.id, plan="free", status="active"))
+            plan = sd.get("subscription", "free")
+            expires = datetime.now(timezone.utc) + timedelta(days=30) if plan != "free" else None
+            db.session.add(Subscription(
+                user_id=user.id, plan=plan, status="active",
+                started_at=datetime.now(timezone.utc), expires_at=expires,
+            ))
 
         db.session.flush()
 
