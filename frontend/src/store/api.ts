@@ -65,7 +65,14 @@ export const platformApi = createApi({
 
     // ── Internships (public) ──────────────────────────────────────────────
     listInternships: b.query<PaginatedInternships, InternshipFilters>({
-      query: (params) => ({ url: '/api/internships', params }),
+      query: ({ skills, ...rest }) => {
+        const sp = new URLSearchParams()
+        Object.entries(rest).forEach(([k, v]) => {
+          if (v !== undefined && v !== '') sp.set(k, String(v))
+        })
+        skills?.forEach((s) => sp.append('skills', s))
+        return { url: `/api/internships?${sp.toString()}` }
+      },
       providesTags: ['Internship'],
     }),
 

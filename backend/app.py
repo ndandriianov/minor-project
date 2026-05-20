@@ -851,8 +851,15 @@ def list_internships():
     if search := request.args.get("search"):
         pattern = f"%{search}%"
         query = query.filter(
-            db.or_(Internship.title.ilike(pattern), Internship.description.ilike(pattern))
+            db.or_(
+                Internship.title.ilike(pattern),
+                Internship.description.ilike(pattern),
+                Internship.required_skills.any(Skill.name.ilike(pattern)),
+            )
         )
+    if skill_names := request.args.getlist("skills"):
+        for sk in skill_names:
+            query = query.filter(Internship.required_skills.any(Skill.name.ilike(sk)))
 
     sort = request.args.get("sort", "newest")
     # Промо-вакансии всегда сверху

@@ -8,6 +8,7 @@ interface SkillsAutocompleteProps {
   onChange: (skills: Skill[]) => void
   label?: string
   placeholder?: string
+  showHint?: boolean
 }
 
 type SkillOption =
@@ -26,6 +27,7 @@ export default function SkillsAutocomplete({
   onChange,
   label,
   placeholder = 'Начните вводить навык',
+  showHint = true,
 }: SkillsAutocompleteProps) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -175,9 +177,11 @@ export default function SkillsAutocomplete({
         )}
       </div>
 
-      <p className="text-xs text-gray-500">
-        Выберите навык из справочника или нажмите Enter, чтобы добавить свой вариант.
-      </p>
+      {showHint && (
+        <p className="text-xs text-gray-500">
+          Выберите навык из справочника или нажмите Enter, чтобы добавить свой вариант.
+        </p>
+      )}
     </div>
   )
 }
