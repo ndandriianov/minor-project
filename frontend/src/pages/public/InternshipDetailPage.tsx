@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation, useListCompanyReviewsQuery } from '@/store/api'
+import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation, useListCompanyReviewsQuery, useCreateReviewMutation } from '@/store/api'
 import Spinner from '@/components/ui/Spinner'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -20,22 +20,89 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-function CompanyReviews({ companyId, companyName }: { companyId: number; companyName: string }) {
+function CompanyReviews({ companyId, companyName, internshipId, isStudent }: {
+  companyId: number
+  companyName: string
+  internshipId: number
+  isStudent: boolean
+}) {
   const { data } = useListCompanyReviewsQuery(companyId)
+  const [createReview, { isLoading: submitting }] = useCreateReviewMutation()
+  const [formOpen, setFormOpen] = useState(false)
+  const [rating, setRating] = useState(5)
+  const [text, setText] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = async () => {
+    await createReview({ company_id: companyId, internship_id: internshipId, rating, text })
+    setSubmitted(true)
+    setFormOpen(false)
+    setText('')
+    setRating(5)
+  }
+
   if (!data) return null
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 mt-4">
-      <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Отзывы о {companyName}</h2>
-        {data.average_rating != null && (
-          <span className="flex items-center gap-1 text-sm text-gray-600">
-            <StarRating rating={Math.round(data.average_rating)} />
-            <span className="font-medium">{data.average_rating.toFixed(1)}</span>
-            <span className="text-gray-400">({data.count})</span>
-          </span>
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-gray-900">Отзывы о {companyName}</h2>
+          {data.average_rating != null && (
+            <span className="flex items-center gap-1 text-sm text-gray-600">
+              <StarRating rating={Math.round(data.average_rating)} />
+              <span className="font-medium">{data.average_rating.toFixed(1)}</span>
+              <span className="text-gray-400">({data.count})</span>
+            </span>
+          )}
+        </div>
+        {isStudent && !submitted && !formOpen && (
+          <button
+            onClick={() => setFormOpen(true)}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            + Оставить отзыв
+          </button>
         )}
       </div>
+
+      {formOpen && (
+        <div className="bg-gray-50 rounded-xl p-4 mb-4 space-y-3">
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-1">Оценка</p>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setRating(n)}
+                  className={`text-2xl transition ${n <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-1">Комментарий (необязательно)</p>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={3}
+              placeholder="Расскажите о своём опыте..."
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" loading={submitting} onClick={handleSubmit}>Отправить</Button>
+            <Button size="sm" variant="secondary" onClick={() => setFormOpen(false)}>Отмена</Button>
+          </div>
+        </div>
+      )}
+
+      {submitted && (
+        <p className="text-sm text-green-600 mb-4">Спасибо! Ваш отзыв отправлен.</p>
+      )}
+
       {data.reviews.length === 0 ? (
         <p className="text-sm text-gray-400">Пока нет отзывов</p>
       ) : (
@@ -250,7 +317,12 @@ export default function InternshipDetailPage() {
         </div>
       )}
 
-      <CompanyReviews companyId={internship.company.id} companyName={internship.company.name} />
+      <CompanyReviews
+        companyId={internship.company.id}
+        companyName={internship.company.name}
+        internshipId={internshipId}
+        isStudent={isStudent}
+      />
 
       <Modal
         isOpen={applyOpen}

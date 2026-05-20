@@ -387,6 +387,10 @@ export const platformApi = createApi({
       query: (companyId) => `/api/companies/${companyId}/reviews`,
       providesTags: ['Review'],
     }),
+    createReview: b.mutation<Review, { company_id: number; internship_id?: number; rating: number; text?: string }>({
+      query: (body) => ({ url: '/api/reviews', method: 'POST', body }),
+      invalidatesTags: ['Review'],
+    }),
   }),
 })
 
@@ -440,4 +444,5 @@ export const {
   useListNewsQuery,
   useGetNewsPostQuery,
   useListCompanyReviewsQuery,
+  useCreateReviewMutation,
 } = platformApi
