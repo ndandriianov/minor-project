@@ -12,6 +12,14 @@ import type {
   Skill,
   Student,
   ApplicationFilters,
+  Subscription,
+  SubscriptionPlan,
+  Payment,
+  CheckoutResult,
+  NotificationsResponse,
+  Article,
+  NewsPost,
+  Review,
 } from '@/types'
 
 function unwrapArray<T>(response: unknown, key: string): T[] {
@@ -23,10 +31,17 @@ function unwrapArray<T>(response: unknown, key: string): T[] {
   return []
 }
 
+function unwrapObject<T>(response: unknown, key: string): T {
+  if (response && typeof response === 'object' && key in response) {
+    return (response as Record<string, T>)[key]
+  }
+  return response as T
+}
+
 export const platformApi = createApi({
   reducerPath: 'platformApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship'],
+  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship', 'Subscription', 'Notification', 'Payment', 'Article', 'News', 'Review'],
   endpoints: (b) => ({
     // ── Auth ──────────────────────────────────────────────────────────────
     login: b.mutation<AuthSession, { email: string; password: string }>({
@@ -87,11 +102,13 @@ export const platformApi = createApi({
     // ── Student ───────────────────────────────────────────────────────────
     getStudent: b.query<Student, number>({
       query: (id) => `/api/students/${id}`,
+      transformResponse: (response: unknown): Student => unwrapObject<Student>(response, 'student'),
       providesTags: (_r, _e, id) => [{ type: 'Student', id }],
     }),
 
     updateProfile: b.mutation<Student, Omit<Partial<Student>, 'skills'> & { skills?: string[] }>({
       query: (body) => ({ url: '/api/students/profile', method: 'PUT', body }),
+      transformResponse: (response: unknown): Student => unwrapObject<Student>(response, 'student'),
       invalidatesTags: ['Student'],
     }),
 
@@ -102,6 +119,9 @@ export const platformApi = createApi({
         body,
         formData: true,
       }),
+    }),
+    deleteResume: b.mutation<void, void>({
+      query: () => ({ url: '/api/students/resume', method: 'DELETE' }),
     }),
 
     // ── Applications ──────────────────────────────────────────────────────
@@ -235,6 +255,187 @@ export const platformApi = createApi({
       query: (search) => ({ url: '/api/skills', params: { search } }),
       transformResponse: (response: unknown): Skill[] => unwrapArray<Skill>(response, 'skills'),
     }),
+
+    // ── Autocomplete справочники ──────────────────────────────────────────
+    searchUniversities: b.query<{ id: number; name: string; city?: string }[], string>({
+      query: (search) => ({ url: '/api/universities', params: { search } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string; city?: string }>(response, 'items'),
+    }),
+
+    searchFaculties: b.query<{ id: number; name: string }[], { search: string; university_id?: number }>({
+      query: ({ search, university_id }) => ({ url: '/api/faculties', params: { search, university_id } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string }>(response, 'items'),
+    }),
+
+    searchCities: b.query<{ id: number; name: string }[], string>({
+      query: (search) => ({ url: '/api/cities', params: { search } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string }>(response, 'items'),
+    }),
+
+    // ── Подписки ─────────────────────────────────────────────────────────
+    getSubscriptionPlans: b.query<SubscriptionPlan[], void>({
+      query: () => '/api/subscriptions/plans',
+      transformResponse: (response: unknown) => unwrapArray<SubscriptionPlan>(response, 'plans'),
+    }),
+
+    getMySubscription: b.query<Subscription | null, void>({
+      query: () => '/api/subscriptions/me',
+      transformResponse: (response: unknown) => unwrapObject<Subscription | null>(response, 'subscription'),
+      providesTags: ['Subscription'],
+    }),
+
+    checkout: b.mutation<CheckoutResult, { plan: 'premium' | 'b2b' }>({
+      query: (body) => ({ url: '/api/subscriptions/checkout', method: 'POST', body }),
+      invalidatesTags: ['Subscription', 'Payment'],
+    }),
+
+    cancelSubscription: b.mutation<void, void>({
+      query: () => ({ url: '/api/subscriptions/cancel', method: 'POST' }),
+      invalidatesTags: ['Subscription'],
+    }),
+
+    // ── Платежи ───────────────────────────────────────────────────────────
+    getPayments: b.query<Payment[], void>({
+      query: () => '/api/payments',
+      transformResponse: (response: unknown) => unwrapArray<Payment>(response, 'payments'),
+      providesTags: ['Payment'],
+    }),
+
+    getPayment: b.query<Payment, number>({
+      query: (id) => `/api/payments/${id}`,
+      transformResponse: (response: unknown) => unwrapObject<Payment>(response, 'payment'),
+      providesTags: (_r, _e, id) => [{ type: 'Payment', id }],
+    }),
+
+    // ── Уведомления ───────────────────────────────────────────────────────
+    getNotifications: b.query<NotificationsResponse, { unread?: boolean } | void>({
+      query: (params) => ({ url: '/api/notifications', params: params ?? {} }),
+      providesTags: ['Notification'],
+    }),
+
+    markNotificationRead: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/notifications/${id}/read`, method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+
+    markAllRead: b.mutation<void, void>({
+      query: () => ({ url: '/api/notifications/read-all', method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+
+    // ── ИИ-резюме (Premium) ───────────────────────────────────────────────
+    aiAdaptResume: b.mutation<{
+      provider: string
+      matched_skills: string[]
+      missing_skills: string[]
+      adapted_resume: string
+      tips: string[]
+    }, { internship_id: number }>({
+      query: (body) => ({ url: '/api/students/resume/ai-adapt', method: 'POST', body }),
+    }),
+
+    // ── Логотип компании ──────────────────────────────────────────────────
+    uploadLogo: b.mutation<{ logo_url: string }, FormData>({
+      query: (body) => ({ url: '/api/companies/logo', method: 'POST', body, formData: true }),
+    }),
+
+    // ── B2B ───────────────────────────────────────────────────────────────
+    searchStudents: b.query<Student[], {
+      city?: string
+      university?: string
+      course?: number
+      skills?: string[]
+    }>({
+      query: ({ skills, ...rest }) => {
+        const sp = new URLSearchParams()
+        if (rest.city) sp.set('city', rest.city)
+        if (rest.university) sp.set('university', rest.university)
+        if (rest.course) sp.set('course', String(rest.course))
+        skills?.forEach((s) => sp.append('skills', s))
+        return { url: `/api/company/students/search?${sp.toString()}` }
+      },
+      transformResponse: (response: unknown) => unwrapArray<Student>(response, 'items'),
+    }),
+
+    getAnalytics: b.query<{
+      per_internship: {
+        internship_id: number
+        title: string
+        views: number
+        applications: number
+        by_status: { applied: number; interview: number; offer: number; rejected: number; withdrawn: number }
+        conversion_to_offer_pct: number
+      }[]
+      totals: { views: number; applied: number; interview: number; offer: number; rejected: number }
+    }, void>({
+      query: () => '/api/company/analytics',
+    }),
+
+    promoteInternship: b.mutation<void, { id: number; days: number }>({
+      query: ({ id, days }) => ({
+        url: `/api/company/internships/${id}/promote`,
+        method: 'POST',
+        body: { days },
+      }),
+      invalidatesTags: ['CompanyInternship', 'Internship'],
+    }),
+
+    // ── Статьи ───────────────────────────────────────────────────────────
+    listArticles: b.query<{ items: Article[]; total: number; page: number; per_page: number; pages: number }, { category?: string; page?: number; per_page?: number }>({
+      query: (params) => ({ url: '/api/articles', params }),
+      providesTags: ['Article'],
+    }),
+    getArticle: b.query<Article, number>({
+      query: (id) => `/api/articles/${id}`,
+      transformResponse: (r: unknown) => unwrapObject<Article>(r, 'article'),
+      providesTags: ['Article'],
+    }),
+
+    createArticle: b.mutation<Article, { title: string; body: string; image_url?: string; category?: string }>({
+      query: (body) => ({ url: '/api/articles', method: 'POST', body }),
+      invalidatesTags: ['Article'],
+    }),
+    updateArticle: b.mutation<Article, { id: number; title: string; body: string; image_url?: string; category?: string }>({
+      query: ({ id, ...body }) => ({ url: `/api/articles/${id}`, method: 'PUT', body }),
+      invalidatesTags: ['Article'],
+    }),
+    deleteArticle: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/articles/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['Article'],
+    }),
+
+    // ── Новости ───────────────────────────────────────────────────────────
+    listNews: b.query<{ items: NewsPost[]; total: number; page: number; per_page: number; pages: number }, { page?: number; per_page?: number }>({
+      query: (params) => ({ url: '/api/news', params }),
+      providesTags: ['News'],
+    }),
+    getNewsPost: b.query<NewsPost, number>({
+      query: (id) => `/api/news/${id}`,
+      transformResponse: (r: unknown) => unwrapObject<NewsPost>(r, 'news'),
+      providesTags: ['News'],
+    }),
+    createNews: b.mutation<NewsPost, { title: string; body: string; image_url?: string; category?: string }>({
+      query: (body) => ({ url: '/api/news', method: 'POST', body }),
+      invalidatesTags: ['News'],
+    }),
+    updateNews: b.mutation<NewsPost, { id: number; title: string; body: string; image_url?: string; category?: string }>({
+      query: ({ id, ...body }) => ({ url: `/api/news/${id}`, method: 'PUT', body }),
+      invalidatesTags: ['News'],
+    }),
+    deleteNews: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/news/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['News'],
+    }),
+
+    // ── Отзывы ───────────────────────────────────────────────────────────
+    listCompanyReviews: b.query<{ reviews: Review[]; average_rating: number | null; count: number }, number>({
+      query: (companyId) => `/api/companies/${companyId}/reviews`,
+      providesTags: ['Review'],
+    }),
+    createReview: b.mutation<Review, { company_id: number; internship_id?: number; rating: number; text?: string }>({
+      query: (body) => ({ url: '/api/reviews', method: 'POST', body }),
+      invalidatesTags: ['Review'],
+    }),
   }),
 })
 
@@ -249,6 +450,7 @@ export const {
   useGetStudentQuery,
   useUpdateProfileMutation,
   useUploadResumeMutation,
+  useDeleteResumeMutation,
   useListApplicationsQuery,
   useApplyMutation,
   useWithdrawMutation,
@@ -266,4 +468,33 @@ export const {
   useModerateMutation,
   useListAdminApplicationsQuery,
   useSearchSkillsQuery,
+  useSearchUniversitiesQuery,
+  useSearchFacultiesQuery,
+  useSearchCitiesQuery,
+  useGetSubscriptionPlansQuery,
+  useGetMySubscriptionQuery,
+  useCheckoutMutation,
+  useCancelSubscriptionMutation,
+  useGetPaymentsQuery,
+  useGetPaymentQuery,
+  useGetNotificationsQuery,
+  useMarkNotificationReadMutation,
+  useMarkAllReadMutation,
+  useAiAdaptResumeMutation,
+  useUploadLogoMutation,
+  useSearchStudentsQuery,
+  useGetAnalyticsQuery,
+  usePromoteInternshipMutation,
+  useListArticlesQuery,
+  useGetArticleQuery,
+  useCreateArticleMutation,
+  useUpdateArticleMutation,
+  useDeleteArticleMutation,
+  useListNewsQuery,
+  useGetNewsPostQuery,
+  useCreateNewsMutation,
+  useUpdateNewsMutation,
+  useDeleteNewsMutation,
+  useListCompanyReviewsQuery,
+  useCreateReviewMutation,
 } = platformApi

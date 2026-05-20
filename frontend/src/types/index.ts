@@ -32,6 +32,7 @@ export interface Student {
   experience?: string
   certificates?: string
   skills: Skill[]
+  is_boosted: boolean
 }
 
 export interface Internship {
@@ -55,6 +56,9 @@ export interface Internship {
   deadline?: string
   moderation_status: 'pending' | 'published' | 'rejected' | 'archived'
   is_verified: boolean
+  is_promoted: boolean
+  views_count: number
+  last_confirmed_at: string | null
   created_at: string
   company: Company
   required_skills: Skill[]
@@ -86,10 +90,62 @@ export interface Bookmark {
   internship: Internship
 }
 
+export interface Subscription {
+  plan: 'free' | 'premium' | 'b2b'
+  status: 'active' | 'expired' | 'cancelled'
+  started_at: string
+  expires_at: string | null
+}
+
+export interface SubscriptionPlan {
+  id: string
+  name: string
+  price_rub: number
+  features: string[]
+}
+
+export interface Payment {
+  id: number
+  status: 'pending' | 'paid' | 'failed' | 'cancelled'
+  amount_rub: number
+  payment_code: string
+  created_at: string
+}
+
+export interface CheckoutResult {
+  // DonationAlerts-режим
+  donate_url?: string
+  payment_code?: string
+  amount_rub?: number
+  instructions?: string
+  // Mock-режим (DA не настроен)
+  payment_url?: string
+  note?: string
+  provider: string
+  payment: { id: number }
+}
+
+export interface Notification {
+  id: number
+  type: string
+  text: string
+  is_read: boolean
+  application_id: number | null
+  internship_id: number | null
+  created_at: string
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[]
+  unread_count: number
+}
+
 export interface AuthUser {
   id: number
   email: string
   role: 'student' | 'company' | 'admin'
+  is_premium: boolean
+  is_b2b: boolean
   student?: Student
   company?: Company
 }
@@ -98,8 +154,38 @@ export interface AuthSession {
   user: AuthUser
   student?: Student
   company?: Company
+  subscription?: Subscription
   access_token: string
   refresh_token?: string
+}
+
+export interface Article {
+  id: number
+  title: string
+  body: string
+  image_url?: string
+  category: string
+  created_at: string
+}
+
+export interface NewsPost {
+  id: number
+  title: string
+  body: string
+  image_url?: string
+  category: string
+  created_at: string
+}
+
+export interface Review {
+  id: number
+  student_id: number
+  company_id: number
+  internship_id: number | null
+  rating: number
+  text: string
+  created_at: string
+  student_name?: string
 }
 
 export interface RecommendedInternship extends Internship {

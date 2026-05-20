@@ -1,0 +1,39 @@
+# Caddy автоматически выпустит и обновит Let's Encrypt сертификат для {$DOMAIN}.
+# Просто запусти контейнер, направь A-запись домена на IP сервера — TLS заработает сам.
+
+{$DOMAIN} {
+    encode gzip
+
+    # API на бэкенд
+    handle_path /api/* {
+        rewrite * /api{path}
+        reverse_proxy backend:5051
+    }
+    handle /apispec.json {
+        reverse_proxy backend:5051
+    }
+    handle /apidocs/* {
+        reverse_proxy backend:5051
+    }
+    handle /uploads/* {
+        reverse_proxy backend:5051
+    }
+
+    # Всё остальное — фронт
+    handle {
+        reverse_proxy frontend:80
+    }
+
+    # Безопасные заголовки
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    log {
+        output stdout
+        format console
+    }
+}

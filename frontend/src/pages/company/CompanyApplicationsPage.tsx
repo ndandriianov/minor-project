@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useListCompanyApplicationsQuery, useUpdateAppStatusMutation } from '@/store/api'
+import { buildAssetUrl } from '@/config/api'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
 import StatusBadge from '@/components/applications/StatusBadge'
@@ -88,6 +89,16 @@ export default function CompanyApplicationsPage() {
                     </p>
                     {app.cover_letter && (
                       <p className="text-sm text-gray-700 mt-2 line-clamp-2">{app.cover_letter}</p>
+                    )}
+                    {student?.resume_filename && (
+                      <a
+                        href={buildAssetUrl(`/uploads/${student.resume_filename}`)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1"
+                      >
+                        📄 Скачать резюме
+                      </a>
                     )}
                   </div>
 
