@@ -11,6 +11,8 @@ import ArticlesPage from '@/pages/public/ArticlesPage'
 import ArticleDetailPage from '@/pages/public/ArticleDetailPage'
 import NewsPage from '@/pages/public/NewsPage'
 import NewsDetailPage from '@/pages/public/NewsDetailPage'
+import PrivacyPolicyPage from '@/pages/public/PrivacyPolicyPage'
+import TermsPage from '@/pages/public/TermsPage'
 
 // Auth
 import LoginPage from '@/pages/auth/LoginPage'
@@ -60,6 +62,8 @@ export default function App() {
         <Route path="articles/:id" element={<ArticleDetailPage />} />
         <Route path="news" element={<NewsPage />} />
         <Route path="news/:id" element={<NewsDetailPage />} />
+        <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="terms" element={<TermsPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register/student" element={<RegisterStudentPage />} />
         <Route path="register/company" element={<RegisterCompanyPage />} />
