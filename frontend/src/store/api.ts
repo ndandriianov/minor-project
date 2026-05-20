@@ -12,6 +12,11 @@ import type {
   Skill,
   Student,
   ApplicationFilters,
+  Subscription,
+  SubscriptionPlan,
+  Payment,
+  CheckoutResult,
+  NotificationsResponse,
 } from '@/types'
 
 function unwrapArray<T>(response: unknown, key: string): T[] {
@@ -33,7 +38,7 @@ function unwrapObject<T>(response: unknown, key: string): T {
 export const platformApi = createApi({
   reducerPath: 'platformApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship'],
+  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship', 'Subscription', 'Notification', 'Payment'],
   endpoints: (b) => ({
     // ── Auth ──────────────────────────────────────────────────────────────
     login: b.mutation<AuthSession, { email: string; password: string }>({
@@ -244,6 +249,113 @@ export const platformApi = createApi({
       query: (search) => ({ url: '/api/skills', params: { search } }),
       transformResponse: (response: unknown): Skill[] => unwrapArray<Skill>(response, 'skills'),
     }),
+
+    // ── Autocomplete справочники ──────────────────────────────────────────
+    searchUniversities: b.query<{ id: number; name: string; city?: string }[], string>({
+      query: (search) => ({ url: '/api/universities', params: { search } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string; city?: string }>(response, 'items'),
+    }),
+
+    searchFaculties: b.query<{ id: number; name: string }[], { search: string; university_id?: number }>({
+      query: ({ search, university_id }) => ({ url: '/api/faculties', params: { search, university_id } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string }>(response, 'items'),
+    }),
+
+    searchCities: b.query<{ id: number; name: string }[], string>({
+      query: (search) => ({ url: '/api/cities', params: { search } }),
+      transformResponse: (response: unknown) => unwrapArray<{ id: number; name: string }>(response, 'items'),
+    }),
+
+    // ── Подписки ─────────────────────────────────────────────────────────
+    getSubscriptionPlans: b.query<SubscriptionPlan[], void>({
+      query: () => '/api/subscriptions/plans',
+      transformResponse: (response: unknown) => unwrapArray<SubscriptionPlan>(response, 'plans'),
+    }),
+
+    getMySubscription: b.query<Subscription | null, void>({
+      query: () => '/api/subscriptions/me',
+      transformResponse: (response: unknown) => unwrapObject<Subscription | null>(response, 'subscription'),
+      providesTags: ['Subscription'],
+    }),
+
+    checkout: b.mutation<CheckoutResult, { plan: 'premium' | 'b2b' }>({
+      query: (body) => ({ url: '/api/subscriptions/checkout', method: 'POST', body }),
+      invalidatesTags: ['Subscription', 'Payment'],
+    }),
+
+    cancelSubscription: b.mutation<void, void>({
+      query: () => ({ url: '/api/subscriptions/cancel', method: 'POST' }),
+      invalidatesTags: ['Subscription'],
+    }),
+
+    // ── Платежи ───────────────────────────────────────────────────────────
+    getPayments: b.query<Payment[], void>({
+      query: () => '/api/payments',
+      transformResponse: (response: unknown) => unwrapArray<Payment>(response, 'payments'),
+      providesTags: ['Payment'],
+    }),
+
+    getPayment: b.query<Payment, number>({
+      query: (id) => `/api/payments/${id}`,
+      transformResponse: (response: unknown) => unwrapObject<Payment>(response, 'payment'),
+      providesTags: (_r, _e, id) => [{ type: 'Payment', id }],
+    }),
+
+    // ── Уведомления ───────────────────────────────────────────────────────
+    getNotifications: b.query<NotificationsResponse, { unread?: boolean } | void>({
+      query: (params) => ({ url: '/api/notifications', params: params ?? {} }),
+      providesTags: ['Notification'],
+    }),
+
+    markNotificationRead: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/notifications/${id}/read`, method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+
+    markAllRead: b.mutation<void, void>({
+      query: () => ({ url: '/api/notifications/read-all', method: 'POST' }),
+      invalidatesTags: ['Notification'],
+    }),
+
+    // ── ИИ-резюме (Premium) ───────────────────────────────────────────────
+    aiAdaptResume: b.mutation<{
+      provider: string
+      matched_skills: string[]
+      missing_skills: string[]
+      adapted_resume: string
+      tips: string[]
+    }, { internship_id: number }>({
+      query: (body) => ({ url: '/api/students/resume/ai-adapt', method: 'POST', body }),
+    }),
+
+    // ── Логотип компании ──────────────────────────────────────────────────
+    uploadLogo: b.mutation<{ logo_url: string }, FormData>({
+      query: (body) => ({ url: '/api/companies/logo', method: 'POST', body, formData: true }),
+    }),
+
+    // ── B2B ───────────────────────────────────────────────────────────────
+    searchStudents: b.query<Student[], {
+      city?: string
+      university?: string
+      course?: number
+      skills?: string[]
+    }>({
+      query: (params) => ({ url: '/api/company/students/search', params }),
+      transformResponse: (response: unknown) => unwrapArray<Student>(response, 'students'),
+    }),
+
+    getAnalytics: b.query<Record<string, unknown>, void>({
+      query: () => '/api/company/analytics',
+    }),
+
+    promoteInternship: b.mutation<void, { id: number; days: number }>({
+      query: ({ id, days }) => ({
+        url: `/api/company/internships/${id}/promote`,
+        method: 'POST',
+        body: { days },
+      }),
+      invalidatesTags: ['CompanyInternship', 'Internship'],
+    }),
   }),
 })
 
@@ -275,4 +387,21 @@ export const {
   useModerateMutation,
   useListAdminApplicationsQuery,
   useSearchSkillsQuery,
+  useSearchUniversitiesQuery,
+  useSearchFacultiesQuery,
+  useSearchCitiesQuery,
+  useGetSubscriptionPlansQuery,
+  useGetMySubscriptionQuery,
+  useCheckoutMutation,
+  useCancelSubscriptionMutation,
+  useGetPaymentsQuery,
+  useGetPaymentQuery,
+  useGetNotificationsQuery,
+  useMarkNotificationReadMutation,
+  useMarkAllReadMutation,
+  useAiAdaptResumeMutation,
+  useUploadLogoMutation,
+  useSearchStudentsQuery,
+  useGetAnalyticsQuery,
+  usePromoteInternshipMutation,
 } = platformApi
