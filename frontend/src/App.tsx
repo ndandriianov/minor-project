@@ -7,6 +7,10 @@ import RequireRole from '@/guards/RequireRole'
 import HomePage from '@/pages/public/HomePage'
 import InternshipsPage from '@/pages/public/InternshipsPage'
 import InternshipDetailPage from '@/pages/public/InternshipDetailPage'
+import ArticlesPage from '@/pages/public/ArticlesPage'
+import ArticleDetailPage from '@/pages/public/ArticleDetailPage'
+import NewsPage from '@/pages/public/NewsPage'
+import NewsDetailPage from '@/pages/public/NewsDetailPage'
 
 // Auth
 import LoginPage from '@/pages/auth/LoginPage'
@@ -48,6 +52,10 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="internships" element={<InternshipsPage />} />
         <Route path="internships/:id" element={<InternshipDetailPage />} />
+        <Route path="articles" element={<ArticlesPage />} />
+        <Route path="articles/:id" element={<ArticleDetailPage />} />
+        <Route path="news" element={<NewsPage />} />
+        <Route path="news/:id" element={<NewsDetailPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register/student" element={<RegisterStudentPage />} />
         <Route path="register/company" element={<RegisterCompanyPage />} />

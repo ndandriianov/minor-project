@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation } from '@/store/api'
+import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation, useListCompanyReviewsQuery } from '@/store/api'
 import Spinner from '@/components/ui/Spinner'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -11,6 +11,50 @@ import { useAuth } from '@/hooks/useAuth'
 
 const FORMAT_LABEL: Record<string, string> = { office: 'Офис', hybrid: 'Гибрид', remote: 'Удалённо' }
 const EXP_LABEL: Record<string, string> = { none: 'Без опыта', '<1year': 'До 1 года', '1-3years': '1–3 года' }
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <span className="text-yellow-400 text-sm">
+      {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
+    </span>
+  )
+}
+
+function CompanyReviews({ companyId, companyName }: { companyId: number; companyName: string }) {
+  const { data } = useListCompanyReviewsQuery(companyId)
+  if (!data) return null
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-6 mt-4">
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">Отзывы о {companyName}</h2>
+        {data.average_rating != null && (
+          <span className="flex items-center gap-1 text-sm text-gray-600">
+            <StarRating rating={Math.round(data.average_rating)} />
+            <span className="font-medium">{data.average_rating.toFixed(1)}</span>
+            <span className="text-gray-400">({data.count})</span>
+          </span>
+        )}
+      </div>
+      {data.reviews.length === 0 ? (
+        <p className="text-sm text-gray-400">Пока нет отзывов</p>
+      ) : (
+        <div className="space-y-4">
+          {data.reviews.map((r) => (
+            <div key={r.id} className="border-t border-gray-100 pt-4 first:border-t-0 first:pt-0">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium text-gray-700">{r.student_name ?? 'Студент'}</span>
+                <span className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+              </div>
+              <StarRating rating={r.rating} />
+              {r.text && <p className="text-sm text-gray-600 mt-1">{r.text}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function InternshipDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -205,6 +249,8 @@ export default function InternshipDetailPage() {
           </div>
         </div>
       )}
+
+      <CompanyReviews companyId={internship.company.id} companyName={internship.company.name} />
 
       <Modal
         isOpen={applyOpen}

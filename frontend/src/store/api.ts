@@ -17,6 +17,9 @@ import type {
   Payment,
   CheckoutResult,
   NotificationsResponse,
+  Article,
+  NewsPost,
+  Review,
 } from '@/types'
 
 function unwrapArray<T>(response: unknown, key: string): T[] {
@@ -38,7 +41,7 @@ function unwrapObject<T>(response: unknown, key: string): T {
 export const platformApi = createApi({
   reducerPath: 'platformApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship', 'Subscription', 'Notification', 'Payment'],
+  tagTypes: ['Internship', 'Application', 'Bookmark', 'Student', 'Pending', 'CompanyInternship', 'Subscription', 'Notification', 'Payment', 'Article', 'News', 'Review'],
   endpoints: (b) => ({
     // ── Auth ──────────────────────────────────────────────────────────────
     login: b.mutation<AuthSession, { email: string; password: string }>({
@@ -356,6 +359,34 @@ export const platformApi = createApi({
       }),
       invalidatesTags: ['CompanyInternship', 'Internship'],
     }),
+
+    // ── Статьи ───────────────────────────────────────────────────────────
+    listArticles: b.query<{ items: Article[]; total: number; page: number; per_page: number; pages: number }, { category?: string; page?: number; per_page?: number }>({
+      query: (params) => ({ url: '/api/articles', params }),
+      providesTags: ['Article'],
+    }),
+    getArticle: b.query<Article, number>({
+      query: (id) => `/api/articles/${id}`,
+      transformResponse: (r: unknown) => unwrapObject<Article>(r, 'article'),
+      providesTags: ['Article'],
+    }),
+
+    // ── Новости ───────────────────────────────────────────────────────────
+    listNews: b.query<{ items: NewsPost[]; total: number; page: number; per_page: number; pages: number }, { page?: number; per_page?: number }>({
+      query: (params) => ({ url: '/api/news', params }),
+      providesTags: ['News'],
+    }),
+    getNewsPost: b.query<NewsPost, number>({
+      query: (id) => `/api/news/${id}`,
+      transformResponse: (r: unknown) => unwrapObject<NewsPost>(r, 'news'),
+      providesTags: ['News'],
+    }),
+
+    // ── Отзывы ───────────────────────────────────────────────────────────
+    listCompanyReviews: b.query<{ reviews: Review[]; average_rating: number | null; count: number }, number>({
+      query: (companyId) => `/api/companies/${companyId}/reviews`,
+      providesTags: ['Review'],
+    }),
   }),
 })
 
@@ -404,4 +435,9 @@ export const {
   useSearchStudentsQuery,
   useGetAnalyticsQuery,
   usePromoteInternshipMutation,
+  useListArticlesQuery,
+  useGetArticleQuery,
+  useListNewsQuery,
+  useGetNewsPostQuery,
+  useListCompanyReviewsQuery,
 } = platformApi

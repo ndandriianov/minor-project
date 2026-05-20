@@ -159,6 +159,35 @@ export interface AuthSession {
   refresh_token?: string
 }
 
+export interface Article {
+  id: number
+  title: string
+  body: string
+  image_url?: string
+  category: string
+  created_at: string
+}
+
+export interface NewsPost {
+  id: number
+  title: string
+  body: string
+  image_url?: string
+  category: string
+  created_at: string
+}
+
+export interface Review {
+  id: number
+  student_id: number
+  company_id: number
+  internship_id: number | null
+  rating: number
+  text: string
+  created_at: string
+  student_name?: string
+}
+
 export interface RecommendedInternship extends Internship {
   match_score: number
   match_reasons: string[]
