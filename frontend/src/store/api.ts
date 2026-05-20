@@ -120,6 +120,9 @@ export const platformApi = createApi({
         formData: true,
       }),
     }),
+    deleteResume: b.mutation<void, void>({
+      query: () => ({ url: '/api/students/resume', method: 'DELETE' }),
+    }),
 
     // ── Applications ──────────────────────────────────────────────────────
     listApplications: b.query<Application[], ApplicationFilters | void>({
@@ -405,6 +408,7 @@ export const {
   useGetStudentQuery,
   useUpdateProfileMutation,
   useUploadResumeMutation,
+  useDeleteResumeMutation,
   useListApplicationsQuery,
   useApplyMutation,
   useWithdrawMutation,

@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth'
 import {
   useUpdateProfileMutation,
   useUploadResumeMutation,
+  useDeleteResumeMutation,
   useSearchUniversitiesQuery,
   useSearchFacultiesQuery,
   useSearchCitiesQuery,
@@ -60,6 +61,7 @@ export default function ProfilePage() {
   const student = user?.student
   const [updateProfile, { isLoading: saving }] = useUpdateProfileMutation()
   const [uploadResume, { isLoading: uploading }] = useUploadResumeMutation()
+  const [deleteResume, { isLoading: deleting }] = useDeleteResumeMutation()
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [resumeFilename, setResumeFilename] = useState(student?.resume_filename ?? '')
@@ -140,6 +142,19 @@ export default function ProfilePage() {
       }
     } catch {
       setError('Не удалось загрузить резюме. Проверьте, что это PDF-файл.')
+    }
+  }
+
+  const handleResumeDelete = async () => {
+    if (!window.confirm('Удалить резюме?')) return
+    try {
+      await deleteResume().unwrap()
+      setResumeFilename('')
+      if (user?.student) {
+        dispatch(setUser({ ...user, student: { ...user.student, resume_filename: '' } }))
+      }
+    } catch {
+      setError('Не удалось удалить резюме')
     }
   }
 
@@ -242,26 +257,44 @@ export default function ProfilePage() {
         </section>
 
         {/* Resume */}
-        <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-3">
+        <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">Резюме (PDF)</h2>
-          {resumeFilename && (
-            <p className="text-sm text-gray-500">
-              Текущий файл:{' '}
+          {resumeFilename ? (
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <svg className="w-8 h-8 text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {resumeFilename.replace(/^resume_\d+_[a-f0-9]+_/, '')}
+                </p>
+                <p className="text-xs text-gray-400">PDF-файл</p>
+              </div>
               <a
                 href={buildAssetUrl(`/uploads/${resumeFilename}`)}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-600 hover:underline"
+                className="text-sm text-blue-600 hover:underline whitespace-nowrap"
               >
-                {resumeFilename}
+                Скачать
               </a>
-            </p>
+              <button
+                type="button"
+                onClick={handleResumeDelete}
+                disabled={deleting}
+                className="text-sm text-red-500 hover:text-red-700 transition whitespace-nowrap"
+              >
+                {deleting ? '...' : 'Удалить'}
+              </button>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Резюме не загружено</p>
           )}
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <span className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition">
-              {uploading ? 'Загрузка...' : 'Выбрать файл'}
+              {uploading ? 'Загрузка...' : resumeFilename ? 'Заменить файл' : 'Загрузить PDF'}
             </span>
-            <span className="text-xs text-gray-400">Только PDF</span>
+            <span className="text-xs text-gray-400">Только PDF, до 10 МБ</span>
             <input
               type="file"
               accept=".pdf"

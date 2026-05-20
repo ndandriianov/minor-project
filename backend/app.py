@@ -761,6 +761,29 @@ def download_resume(student_id):
     return send_from_directory(app.config["UPLOAD_FOLDER"], student.resume_filename, as_attachment=True)
 
 
+@app.route("/api/students/resume", methods=["DELETE"])
+@role_required("student")
+def delete_resume(user):
+    """Удалить своё резюме.
+    ---
+    tags: [2. Студент]
+    security:
+      - Bearer: []
+    responses:
+      200: {description: Резюме удалено}
+      404: {description: Резюме не найдено}
+    """
+    student = user.student
+    if not student or not student.resume_filename:
+        return jsonify({"error": "Резюме не найдено"}), 404
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], student.resume_filename)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+    student.resume_filename = ""
+    db.session.commit()
+    return jsonify({"message": "Резюме удалено"}), 200
+
+
 # ─── Логотип компании ───
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
