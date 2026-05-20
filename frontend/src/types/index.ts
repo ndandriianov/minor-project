@@ -113,10 +113,15 @@ export interface Payment {
 }
 
 export interface CheckoutResult {
-  donate_url: string
-  payment_code: string
-  amount_rub: number
-  instructions: string
+  // DonationAlerts-режим
+  donate_url?: string
+  payment_code?: string
+  amount_rub?: number
+  instructions?: string
+  // Mock-режим (DA не настроен)
+  payment_url?: string
+  note?: string
+  provider: string
   payment: { id: number }
 }
 

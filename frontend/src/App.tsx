@@ -27,6 +27,11 @@ import CreateInternshipPage from '@/pages/company/CreateInternshipPage'
 import EditInternshipPage from '@/pages/company/EditInternshipPage'
 import InternshipApplicantsPage from '@/pages/company/InternshipApplicantsPage'
 import CompanyApplicationsPage from '@/pages/company/CompanyApplicationsPage'
+import StudentSearchPage from '@/pages/company/StudentSearchPage'
+
+// Subscription
+import SubscriptionPage from '@/pages/subscription/SubscriptionPage'
+import CheckoutPage from '@/pages/subscription/CheckoutPage'
 
 // Admin
 import AdminModerationPage from '@/pages/admin/AdminModerationPage'
@@ -47,8 +52,12 @@ export default function App() {
         <Route path="register/student" element={<RegisterStudentPage />} />
         <Route path="register/company" element={<RegisterCompanyPage />} />
 
-        {/* Student */}
         <Route element={<RequireAuth />}>
+          {/* Subscription (all authenticated roles) */}
+          <Route path="subscription" element={<SubscriptionPage />} />
+          <Route path="subscription/checkout" element={<CheckoutPage />} />
+
+          {/* Student */}
           <Route element={<RequireRole role="student" />}>
             <Route path="student/dashboard" element={<StudentDashboardPage />} />
             <Route path="student/recommendations" element={<RecommendationsPage />} />
@@ -65,6 +74,7 @@ export default function App() {
             <Route path="company/internships/:id/edit" element={<EditInternshipPage />} />
             <Route path="company/internships/:id/applicants" element={<InternshipApplicantsPage />} />
             <Route path="company/applications" element={<CompanyApplicationsPage />} />
+            <Route path="company/students/search" element={<StudentSearchPage />} />
           </Route>
 
           {/* Admin */}

@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useUpdateProfileMutation, useUploadResumeMutation } from '@/store/api'
+import {
+  useUpdateProfileMutation,
+  useUploadResumeMutation,
+  useSearchUniversitiesQuery,
+  useSearchFacultiesQuery,
+  useSearchCitiesQuery,
+} from '@/store/api'
 import { useAppDispatch } from '@/hooks/useAppDispatch'
 import { setUser } from '@/store/authSlice'
 import type { Skill, Student } from '@/types'
@@ -10,6 +16,7 @@ import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
 import SkillsAutocomplete from '@/components/skills/SkillsAutocomplete'
+import AutocompleteInput from '@/components/ui/AutocompleteInput'
 import Spinner from '@/components/ui/Spinner'
 import { buildAssetUrl } from '@/config/api'
 
@@ -58,6 +65,18 @@ export default function ProfilePage() {
   const [resumeFilename, setResumeFilename] = useState(student?.resume_filename ?? '')
   const [form, setForm] = useState(() => createInitialForm(student))
   const [skills, setSkills] = useState<Skill[]>(() => student?.skills ?? [])
+
+  const [uniQuery, setUniQuery] = useState('')
+  const [facultyQuery, setFacultyQuery] = useState('')
+  const [cityQuery, setCityQuery] = useState('')
+  const [selectedUniversityId, setSelectedUniversityId] = useState<number | undefined>()
+
+  const { data: universities = [], isFetching: uniFetching } = useSearchUniversitiesQuery(uniQuery, { skip: uniQuery.length < 2 })
+  const { data: faculties = [], isFetching: facultyFetching } = useSearchFacultiesQuery(
+    { search: facultyQuery, university_id: selectedUniversityId },
+    { skip: facultyQuery.length < 2 },
+  )
+  const { data: cities = [], isFetching: cityFetching } = useSearchCitiesQuery(cityQuery, { skip: cityQuery.length < 2 })
 
   useEffect(() => {
     if (!student) return
@@ -153,14 +172,39 @@ export default function ProfilePage() {
             <Input label="Фамилия *" required value={form.last_name} onChange={(e) => set('last_name', e.target.value)} />
           </div>
           <Input label="Отчество" value={form.patronymic} onChange={(e) => set('patronymic', e.target.value)} />
-          <Input label="Университет" value={form.university} onChange={(e) => set('university', e.target.value)} />
+          <AutocompleteInput
+            label="Университет"
+            value={form.university}
+            onChange={(v) => set('university', v)}
+            onSearch={setUniQuery}
+            onSelectItem={(item) => setSelectedUniversityId(item.id)}
+            options={universities}
+            isLoading={uniFetching}
+            placeholder="Начните вводить название вуза"
+          />
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Факультет" value={form.faculty} onChange={(e) => set('faculty', e.target.value)} />
+            <AutocompleteInput
+              label="Факультет"
+              value={form.faculty}
+              onChange={(v) => set('faculty', v)}
+              onSearch={setFacultyQuery}
+              options={faculties}
+              isLoading={facultyFetching}
+              placeholder="Введите название факультета"
+            />
             <Input label="Специальность" value={form.speciality} onChange={(e) => set('speciality', e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input label="Курс" type="number" min={1} max={6} value={form.course} onChange={(e) => set('course', e.target.value)} />
-            <Input label="Город" value={form.city} onChange={(e) => set('city', e.target.value)} />
+            <AutocompleteInput
+              label="Город"
+              value={form.city}
+              onChange={(v) => set('city', v)}
+              onSearch={setCityQuery}
+              options={cities}
+              isLoading={cityFetching}
+              placeholder="Москва"
+            />
           </div>
         </section>
 

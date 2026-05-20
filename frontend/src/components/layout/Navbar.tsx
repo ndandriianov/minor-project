@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import Button from '@/components/ui/Button'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -46,9 +47,14 @@ export default function Navbar() {
               <Link to="/student/profile" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
                 Профиль
               </Link>
-              <Link to="/student/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+              <Link to="/subscription" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                Подписка
+              </Link>
+              <Link to="/student/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition flex items-center gap-1">
+                {user.is_premium && <span title="Premium">⭐</span>}
                 {user.student?.first_name ?? 'Профиль'}
               </Link>
+              <NotificationBell />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Выйти
               </Button>
@@ -61,9 +67,21 @@ export default function Navbar() {
               <Link to="/company/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
                 Отклики
               </Link>
-              <Link to="/company/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+              {user.is_b2b && (
+                <Link to="/company/students/search" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                  Поиск студентов
+                </Link>
+              )}
+              <Link to="/subscription" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                Подписка
+              </Link>
+              <Link to="/company/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition flex items-center gap-1">
+                {user.is_b2b && (
+                  <span className="text-xs bg-blue-100 text-blue-700 rounded px-1 font-medium">B2B</span>
+                )}
                 {user.company?.name ?? 'Компания'}
               </Link>
+              <NotificationBell />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Выйти
               </Button>
@@ -76,6 +94,7 @@ export default function Navbar() {
               <Link to="/admin/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
                 Отклики
               </Link>
+              <NotificationBell />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Выйти
               </Button>

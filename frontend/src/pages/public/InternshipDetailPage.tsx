@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery } from '@/store/api'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation } from '@/store/api'
 import Spinner from '@/components/ui/Spinner'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -29,9 +29,32 @@ export default function InternshipDetailPage() {
 
   const [applyOpen, setApplyOpen] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
+  const [aiOpen, setAiOpen] = useState(false)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [aiAdaptResume, { isLoading: adapting }] = useAiAdaptResumeMutation()
+  const [aiResult, setAiResult] = useState<{
+    matched_skills: string[]
+    missing_skills: string[]
+    adapted_resume: string
+    tips: string[]
+  } | null>(null)
 
   const alreadyApplied = applications.some((a) => a.internship_id === internshipId)
   const isBookmarked = bookmarks.some((b) => b.internship_id === internshipId)
+  const isPremiumStudent = isStudent && user?.is_premium
+
+  const handleAdaptResume = async () => {
+    try {
+      const result = await aiAdaptResume({ internship_id: internshipId }).unwrap()
+      setAiResult(result)
+      setAiOpen(true)
+    } catch (err: unknown) {
+      const e = err as { status?: number }
+      if (e.status === 402) {
+        setUpgradeOpen(true)
+      }
+    }
+  }
 
   const handleApply = async () => {
     await apply({ internship_id: internshipId, cover_letter: coverLetter || undefined })
@@ -130,11 +153,16 @@ export default function InternshipDetailPage() {
         </div>
 
         {isStudent && (
-          <div className="mb-4">
+          <div className="mb-4 flex flex-wrap gap-3">
             {alreadyApplied ? (
               <Button variant="secondary" disabled>Вы уже откликнулись</Button>
             ) : (
               <Button onClick={() => setApplyOpen(true)}>Откликнуться</Button>
+            )}
+            {isPremiumStudent && (
+              <Button variant="secondary" onClick={handleAdaptResume} loading={adapting}>
+                ✨ Адаптировать резюме
+              </Button>
             )}
           </div>
         )}
@@ -193,6 +221,67 @@ export default function InternshipDetailPage() {
           value={coverLetter}
           onChange={(e) => setCoverLetter(e.target.value)}
         />
+      </Modal>
+
+      <Modal
+        isOpen={aiOpen}
+        onClose={() => setAiOpen(false)}
+        title="✨ Адаптация резюме"
+      >
+        {aiResult && (
+          <div className="space-y-4 text-sm">
+            {aiResult.matched_skills.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Навыки, которые у вас есть</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {aiResult.matched_skills.map((s) => (
+                    <span key={s} className="bg-green-100 text-green-700 rounded-full px-2 py-0.5 text-xs">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {aiResult.missing_skills.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Стоит освоить</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {aiResult.missing_skills.map((s) => (
+                    <span key={s} className="bg-red-100 text-red-600 rounded-full px-2 py-0.5 text-xs">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {aiResult.adapted_resume && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Адаптированное описание</p>
+                <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3">{aiResult.adapted_resume}</p>
+              </div>
+            )}
+            {aiResult.tips.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Советы</p>
+                <ul className="space-y-1">
+                  {aiResult.tips.map((tip, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-blue-500 flex-shrink-0">•</span>
+                      <span className="text-gray-700">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        title="Требуется Premium-подписка"
+      >
+        <p className="mb-4">ИИ-адаптация резюме доступна только пользователям с активной Premium-подпиской.</p>
+        <Link to="/subscription" onClick={() => setUpgradeOpen(false)} className="text-blue-600 hover:underline font-medium">
+          Подключить Premium →
+        </Link>
       </Modal>
     </div>
   )
