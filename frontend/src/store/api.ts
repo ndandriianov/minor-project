@@ -346,8 +346,15 @@ export const platformApi = createApi({
       course?: number
       skills?: string[]
     }>({
-      query: (params) => ({ url: '/api/company/students/search', params }),
-      transformResponse: (response: unknown) => unwrapArray<Student>(response, 'students'),
+      query: ({ skills, ...rest }) => {
+        const sp = new URLSearchParams()
+        if (rest.city) sp.set('city', rest.city)
+        if (rest.university) sp.set('university', rest.university)
+        if (rest.course) sp.set('course', String(rest.course))
+        skills?.forEach((s) => sp.append('skills', s))
+        return { url: `/api/company/students/search?${sp.toString()}` }
+      },
+      transformResponse: (response: unknown) => unwrapArray<Student>(response, 'items'),
     }),
 
     getAnalytics: b.query<Record<string, unknown>, void>({
