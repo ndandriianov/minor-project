@@ -463,6 +463,26 @@ class Subscription(db.Model):
         }
 
 
+class AppSetting(db.Model):
+    """Key-value хранилище админских настроек (цены тарифов, лимиты и т.д.)."""
+    __tablename__ = "app_settings"
+    key = db.Column(db.String(100), primary_key=True)
+    value = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(20), default="string")  # string/int/bool/json
+    description = db.Column(db.String(255), default="")
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),
+                           onupdate=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            "key": self.key,
+            "value": self.value,
+            "type": self.type,
+            "description": self.description,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+
 class Payment(db.Model):
     """Запись о платеже. Шлюз: DonationAlerts (или mock, если не настроен)."""
     __tablename__ = "payments"

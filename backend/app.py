@@ -24,7 +24,7 @@ from models import (
     Application, Bookmark, Skill,
     University, Faculty, City,
     Article, NewsPost, Notification, Review,
-    Subscription, Payment,
+    Subscription, Payment, AppSetting,
 )
 
 try:
@@ -237,12 +237,87 @@ def custom_apidocs_no_slash():
 #  Тарифы
 # ═══════════════════════════════════════════════════════
 
-PLAN_PRICES = {
-    "premium": {"amount": 499, "period_days": 30},
-    "b2b": {"amount": 9900, "period_days": 30},
+# ─── Настройки приложения (читаются из БД через AppSetting, с дефолтами) ───
+
+DEFAULT_SETTINGS = {
+    "price_premium":        {"value": "499",  "type": "int",  "description": "Цена премиум-подписки (₽/мес)"},
+    "price_b2b":            {"value": "9900", "type": "int",  "description": "Цена B2B-подписки (₽/мес)"},
+    "period_days_premium":  {"value": "30",   "type": "int",  "description": "Длительность premium (дней)"},
+    "period_days_b2b":      {"value": "30",   "type": "int",  "description": "Длительность B2B (дней)"},
+    "free_posting_limit":   {"value": "3",    "type": "int",  "description": "Лимит активных вакансий для бесплатной компании"},
+    "b2b_posting_limit":    {"value": "100",  "type": "int",  "description": "Лимит активных вакансий для B2B-компании"},
+    "stale_days":           {"value": "14",   "type": "int",  "description": "Через сколько дней без подтверждения вакансия архивируется"},
+    "min_payment_amount":   {"value": "15",   "type": "int",  "description": "Минимальная сумма доната, принимаемая поллером (₽)"},
+    "platform_name":        {"value": "Платформа стажировок", "type": "string", "description": "Название платформы"},
+    "support_email":        {"value": "",     "type": "string", "description": "Email поддержки"},
 }
-B2B_POSTING_LIMIT = 100
-FREE_POSTING_LIMIT = 3
+
+
+def _cast_setting(value, type_):
+    if type_ == "int":
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return 0
+    if type_ == "bool":
+        return str(value).lower() in ("1", "true", "yes", "on")
+    if type_ == "json":
+        import json as _j
+        try:
+            return _j.loads(value)
+        except Exception:
+            return None
+    return value
+
+
+def get_setting(key, default=None):
+    """Прочитать значение настройки из БД (с дефолтом из DEFAULT_SETTINGS)."""
+    s = db.session.get(AppSetting, key)
+    if s is not None:
+        return _cast_setting(s.value, s.type)
+    if key in DEFAULT_SETTINGS:
+        d = DEFAULT_SETTINGS[key]
+        return _cast_setting(d["value"], d["type"])
+    return default
+
+
+def set_setting(key, value, type_=None, description=None):
+    s = db.session.get(AppSetting, key)
+    if s is None:
+        s = AppSetting(key=key, value=str(value),
+                       type=type_ or DEFAULT_SETTINGS.get(key, {}).get("type", "string"),
+                       description=description or DEFAULT_SETTINGS.get(key, {}).get("description", ""))
+        db.session.add(s)
+    else:
+        s.value = str(value)
+        if type_:
+            s.type = type_
+        if description is not None:
+            s.description = description
+    return s
+
+
+def ensure_default_settings():
+    """При первом запуске заполняем таблицу AppSetting дефолтами."""
+    for key, meta in DEFAULT_SETTINGS.items():
+        if db.session.get(AppSetting, key) is None:
+            db.session.add(AppSetting(
+                key=key, value=meta["value"],
+                type=meta["type"], description=meta["description"],
+            ))
+    db.session.commit()
+
+
+def get_plan_price(plan):
+    """Возвращает {amount, period_days} для тарифа."""
+    return {
+        "amount": get_setting(f"price_{plan}", 0),
+        "period_days": get_setting(f"period_days_{plan}", 30),
+    }
+
+
+def get_posting_limit(is_b2b):
+    return get_setting("b2b_posting_limit" if is_b2b else "free_posting_limit", 3)
 
 
 # ═══════════════════════════════════════════════════════
@@ -531,7 +606,7 @@ def register_company():
     company = Company(
         user_id=user.id, name=data["name"],
         description=data.get("description", ""), website=data.get("website", ""),
-        city=data.get("city", ""), posting_limit=FREE_POSTING_LIMIT,
+        city=data.get("city", ""), posting_limit=get_posting_limit(False),
     )
     db.session.add(company)
     db.session.add(Subscription(user_id=user.id, plan="free", status="active"))
@@ -949,7 +1024,8 @@ def create_internship(user):
         Internship.company_id == company.id,
         Internship.moderation_status.in_(["pending", "published"]),
     ).count()
-    limit = B2B_POSTING_LIMIT if user.has_active_b2b() else (company.posting_limit or FREE_POSTING_LIMIT)
+    limit = get_posting_limit(user.has_active_b2b()) if user.has_active_b2b() \
+        else (company.posting_limit or get_posting_limit(False))
     if active >= limit:
         return jsonify({
             "error": f"Достигнут лимит активных вакансий ({limit}). Подключите B2B-подписку для расширения.",
@@ -1428,6 +1504,432 @@ def admin_run_stale_check(user):
     return jsonify({"archived": n}), 200
 
 
+# ═══════════════════════════════════════════════════════
+#  ADMIN PANEL — настройки, пользователи, статистика
+# ═══════════════════════════════════════════════════════
+
+@app.route("/api/admin/settings", methods=["GET"])
+@role_required("admin")
+def admin_list_settings(user):
+    """Список всех настроек приложения.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    responses:
+      200: {description: Список настроек}
+    """
+    items = AppSetting.query.order_by(AppSetting.key).all()
+    # Добавляем дефолты, которых ещё нет в БД (защита от рассинхрона)
+    keys_in_db = {i.key for i in items}
+    result = [i.to_dict() for i in items]
+    for key, meta in DEFAULT_SETTINGS.items():
+        if key not in keys_in_db:
+            result.append({
+                "key": key, "value": meta["value"], "type": meta["type"],
+                "description": meta["description"], "updated_at": None,
+            })
+    return jsonify({"settings": result}), 200
+
+
+@app.route("/api/admin/settings/<string:key>", methods=["PUT"])
+@role_required("admin")
+def admin_update_setting(user, key):
+    """Изменить значение настройки.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - name: key
+        in: path
+        type: string
+        required: true
+        example: price_premium
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [value]
+          properties:
+            value: {type: string, example: "599"}
+            type: {type: string, enum: [string, int, bool, json]}
+            description: {type: string}
+    responses:
+      200: {description: Настройка обновлена}
+    """
+    data = request.get_json() or {}
+    if "value" not in data:
+        return validation_error("Требуется поле value")
+    s = set_setting(key, data["value"], data.get("type"), data.get("description"))
+    db.session.commit()
+    return jsonify({"setting": s.to_dict()}), 200
+
+
+@app.route("/api/admin/settings", methods=["PUT"])
+@role_required("admin")
+def admin_bulk_update_settings(user):
+    """Массовое обновление настроек.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          example:
+            price_premium: "599"
+            price_b2b: "12000"
+            free_posting_limit: "5"
+    responses:
+      200: {description: Настройки обновлены}
+    """
+    data = request.get_json() or {}
+    if not isinstance(data, dict):
+        return validation_error("Ожидается объект {key: value}")
+    updated = []
+    for k, v in data.items():
+        s = set_setting(k, v)
+        updated.append(s.to_dict())
+    db.session.commit()
+    return jsonify({"updated": updated}), 200
+
+
+@app.route("/api/admin/stats", methods=["GET"])
+@role_required("admin")
+def admin_stats(user):
+    """Дашборд: ключевые метрики платформы.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    responses:
+      200: {description: Метрики}
+    """
+    students_total = Student.query.count()
+    companies_total = Company.query.count()
+    internships_published = Internship.query.filter_by(moderation_status="published").count()
+    internships_pending = Internship.query.filter_by(moderation_status="pending").count()
+    internships_archived = Internship.query.filter_by(moderation_status="archived").count()
+    applications_total = Application.query.count()
+    apps_by_status = {
+        s: Application.query.filter_by(status=s).count()
+        for s in ("applied", "interview", "offer", "rejected", "withdrawn")
+    }
+    subs_premium = Subscription.query.filter_by(plan="premium", status="active").count()
+    subs_b2b = Subscription.query.filter_by(plan="b2b", status="active").count()
+    payments_paid = Payment.query.filter_by(status="paid").count()
+    payments_pending = Payment.query.filter_by(status="pending").count()
+    revenue = db.session.query(db.func.coalesce(db.func.sum(Payment.amount), 0))\
+        .filter(Payment.status == "paid").scalar()
+    reviews_total = Review.query.count()
+    return jsonify({
+        "users": {
+            "students": students_total,
+            "companies": companies_total,
+            "total": User.query.count(),
+        },
+        "internships": {
+            "published": internships_published,
+            "pending": internships_pending,
+            "archived": internships_archived,
+        },
+        "applications": {
+            "total": applications_total,
+            "by_status": apps_by_status,
+        },
+        "subscriptions": {
+            "premium_active": subs_premium,
+            "b2b_active": subs_b2b,
+        },
+        "payments": {
+            "paid": payments_paid,
+            "pending": payments_pending,
+            "revenue_rub": int(revenue or 0),
+        },
+        "reviews": reviews_total,
+    }), 200
+
+
+@app.route("/api/admin/users", methods=["GET"])
+@role_required("admin")
+def admin_list_users(user):
+    """Список пользователей (с фильтрами и поиском).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - name: role
+        in: query
+        type: string
+        enum: [student, company, admin]
+      - name: search
+        in: query
+        type: string
+        description: Поиск по email
+      - name: page
+        in: query
+        type: integer
+        default: 1
+      - name: per_page
+        in: query
+        type: integer
+        default: 20
+    responses:
+      200: {description: Список пользователей с подпиской}
+    """
+    query = User.query
+    if role := request.args.get("role"):
+        query = query.filter(User.role == role)
+    if search := request.args.get("search"):
+        query = query.filter(User.email.ilike(f"%{search}%"))
+    query = query.order_by(User.created_at.desc())
+
+    def _serialize(u):
+        d = u.to_dict()
+        if u.subscription:
+            d["subscription"] = u.subscription.to_dict()
+        if u.student:
+            d["student"] = {
+                "id": u.student.id,
+                "first_name": u.student.first_name,
+                "last_name": u.student.last_name,
+                "university": u.student.university,
+            }
+        if u.company:
+            d["company"] = {
+                "id": u.company.id, "name": u.company.name,
+                "posting_limit": u.company.posting_limit,
+            }
+        return d
+
+    return jsonify(paginate_query(query, serializer=_serialize)), 200
+
+
+@app.route("/api/admin/users/<int:user_id>", methods=["DELETE"])
+@role_required("admin")
+def admin_delete_user(user, user_id):
+    """Удалить пользователя (каскадно — со всеми его данными).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: user_id, in: path, type: integer, required: true}
+    responses:
+      200: {description: Удалён}
+      400: {description: Нельзя удалить себя}
+      404: {description: Не найден}
+    """
+    if user_id == user.id:
+        return validation_error("Нельзя удалить самого себя")
+    target = db.session.get(User, user_id)
+    if not target:
+        return jsonify({"error": "Не найден"}), 404
+    db.session.delete(target)
+    db.session.commit()
+    return jsonify({"message": "Удалён"}), 200
+
+
+@app.route("/api/admin/users/<int:user_id>/role", methods=["PUT"])
+@role_required("admin")
+def admin_change_role(user, user_id):
+    """Поменять роль пользователя.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: user_id, in: path, type: integer, required: true}
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [role]
+          properties:
+            role: {type: string, enum: [student, company, admin]}
+    responses:
+      200: {description: Роль обновлена}
+    """
+    target = db.session.get(User, user_id)
+    if not target:
+        return jsonify({"error": "Не найден"}), 404
+    new_role = (request.get_json() or {}).get("role")
+    if new_role not in ("student", "company", "admin"):
+        return validation_error("role: student / company / admin")
+    target.role = new_role
+    db.session.commit()
+    return jsonify({"user": target.to_dict()}), 200
+
+
+@app.route("/api/admin/users/<int:user_id>/subscription", methods=["POST"])
+@role_required("admin")
+def admin_grant_subscription(user, user_id):
+    """Выдать или продлить подписку вручную (без оплаты).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: user_id, in: path, type: integer, required: true}
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [plan, days]
+          properties:
+            plan: {type: string, enum: [free, premium, b2b]}
+            days: {type: integer, example: 30}
+    responses:
+      200: {description: Подписка обновлена}
+    """
+    target = db.session.get(User, user_id)
+    if not target:
+        return jsonify({"error": "Не найден"}), 404
+    data = request.get_json() or {}
+    plan = data.get("plan")
+    if plan not in ("free", "premium", "b2b"):
+        return validation_error("plan: free / premium / b2b")
+    try:
+        days = int(data.get("days", 30))
+    except (TypeError, ValueError):
+        return validation_error("days должно быть числом")
+
+    sub = target.subscription
+    now = datetime.now(timezone.utc)
+    expires = now + timedelta(days=days) if plan != "free" else None
+    if sub:
+        sub.plan = plan
+        sub.status = "active"
+        sub.started_at = sub.started_at or now
+        sub.expires_at = expires
+    else:
+        sub = Subscription(user_id=target.id, plan=plan, status="active",
+                           started_at=now, expires_at=expires)
+        db.session.add(sub)
+
+    if plan == "premium" and target.student:
+        target.student.is_boosted = True
+        target.student.boosted_until = expires
+    if plan == "b2b" and target.company:
+        target.company.posting_limit = get_posting_limit(True)
+
+    notify(target.id,
+           f"Администратор активировал подписку {plan} до {(expires.date().isoformat() if expires else 'без срока')}",
+           type_="subscription_granted")
+    db.session.commit()
+    return jsonify({"subscription": sub.to_dict()}), 200
+
+
+@app.route("/api/admin/companies/<int:company_id>/verify", methods=["POST"])
+@role_required("admin")
+def admin_verify_company(user, company_id):
+    """Поднять лимит размещений компании (как «верифицированная»).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: company_id, in: path, type: integer, required: true}
+      - in: body
+        name: body
+        required: false
+        schema:
+          type: object
+          properties:
+            posting_limit: {type: integer, example: 20}
+    """
+    c = db.session.get(Company, company_id)
+    if not c:
+        return jsonify({"error": "Не найдена"}), 404
+    new_limit = (request.get_json() or {}).get("posting_limit")
+    if new_limit is not None:
+        try:
+            c.posting_limit = int(new_limit)
+        except (TypeError, ValueError):
+            return validation_error("posting_limit должно быть числом")
+    db.session.commit()
+    return jsonify({"company": c.to_dict()}), 200
+
+
+@app.route("/api/admin/reviews", methods=["GET"])
+@role_required("admin")
+def admin_list_reviews(user):
+    """Список всех отзывов (для модерации).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: company_id, in: query, type: integer}
+      - {name: min_rating, in: query, type: integer}
+      - {name: max_rating, in: query, type: integer}
+      - {name: page, in: query, type: integer, default: 1}
+      - {name: per_page, in: query, type: integer, default: 20}
+    """
+    query = Review.query
+    if cid := request.args.get("company_id", type=int):
+        query = query.filter(Review.company_id == cid)
+    if mn := request.args.get("min_rating", type=int):
+        query = query.filter(Review.rating >= mn)
+    if mx := request.args.get("max_rating", type=int):
+        query = query.filter(Review.rating <= mx)
+    query = query.order_by(Review.created_at.desc())
+    return jsonify(paginate_query(query, serializer=lambda r: r.to_dict(include_student=True))), 200
+
+
+@app.route("/api/admin/reviews/<int:review_id>", methods=["DELETE"])
+@role_required("admin")
+def admin_delete_review(user, review_id):
+    """Удалить отзыв.
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: review_id, in: path, type: integer, required: true}
+    """
+    r = db.session.get(Review, review_id)
+    if not r:
+        return jsonify({"error": "Не найден"}), 404
+    db.session.delete(r)
+    db.session.commit()
+    return jsonify({"message": "Удалён"}), 200
+
+
+@app.route("/api/admin/payments", methods=["GET"])
+@role_required("admin")
+def admin_list_payments(user):
+    """Все платежи в системе (с фильтрами).
+    ---
+    tags: [14. Админ-панель]
+    security:
+      - Bearer: []
+    parameters:
+      - {name: status, in: query, type: string, enum: [pending, paid, failed, expired]}
+      - {name: plan, in: query, type: string}
+      - {name: user_id, in: query, type: integer}
+      - {name: page, in: query, type: integer, default: 1}
+      - {name: per_page, in: query, type: integer, default: 20}
+    """
+    query = Payment.query
+    if status := request.args.get("status"):
+        query = query.filter(Payment.status == status)
+    if plan := request.args.get("plan"):
+        query = query.filter(Payment.plan == plan)
+    if uid := request.args.get("user_id", type=int):
+        query = query.filter(Payment.user_id == uid)
+    query = query.order_by(Payment.created_at.desc())
+    return jsonify(paginate_query(query)), 200
+
+
 @app.route("/uploads/<path:filename>", methods=["GET"])
 def get_uploaded_file(filename):
     """Отдача файлов из uploads (резюме / логотипы)."""
@@ -1782,21 +2284,26 @@ def list_plans():
     ---
     tags: [13. Подписки]
     """
+    premium = get_plan_price("premium")
+    b2b = get_plan_price("b2b")
+    b2b_limit = get_posting_limit(True)
     return jsonify({
         "plans": [
             {"key": "free", "name": "Бесплатный", "amount": 0, "features": [
                 "поиск стажировок с фильтрами", "уведомления", "базовый профиль",
             ]},
-            {"key": "premium", "name": "Premium (студент)", "amount": PLAN_PRICES["premium"]["amount"],
-             "period_days": PLAN_PRICES["premium"]["period_days"], "features": [
+            {"key": "premium", "name": "Premium (студент)",
+             "amount": premium["amount"], "period_days": premium["period_days"],
+             "features": [
                 "продвинутый подбор по навыкам", "подъём резюме в топ для работодателей",
                 "ИИ-помощник по резюме",
-            ]},
-            {"key": "b2b", "name": "B2B (компания)", "amount": PLAN_PRICES["b2b"]["amount"],
-             "period_days": PLAN_PRICES["b2b"]["period_days"], "features": [
+             ]},
+            {"key": "b2b", "name": "B2B (компания)",
+             "amount": b2b["amount"], "period_days": b2b["period_days"],
+             "features": [
                 "доступ к базе профилей студентов", "приоритетный показ вакансии",
-                "аналитика откликов", f"лимит {B2B_POSTING_LIMIT} активных вакансий",
-            ]},
+                "аналитика откликов", f"лимит {b2b_limit} активных вакансий",
+             ]},
         ]
     }), 200
 
@@ -1847,7 +2354,7 @@ def _activate_subscription_for_payment(payment):
         user.student.is_boosted = True
         user.student.boosted_until = expires
     if payment.plan == "b2b" and user.company:
-        user.company.posting_limit = B2B_POSTING_LIMIT
+        user.company.posting_limit = get_posting_limit(True)
 
     notify(user.id,
            f"Подписка {payment.plan} активирована до {expires.date().isoformat()}",
@@ -1892,14 +2399,16 @@ def checkout():
     user = db.session.get(User, int(get_jwt_identity()))
     data = request.get_json() or {}
     plan = data.get("plan")
-    if plan not in PLAN_PRICES:
-        return validation_error(f"plan: {', '.join(PLAN_PRICES.keys())}")
+    if plan not in ("premium", "b2b"):
+        return validation_error("plan: premium, b2b")
     if plan == "b2b" and user.role != "company":
         return validation_error("План b2b доступен только компаниям")
     if plan == "premium" and user.role != "student":
         return validation_error("План premium доступен только студентам")
 
-    price = PLAN_PRICES[plan]
+    price = get_plan_price(plan)
+    if not price["amount"]:
+        return validation_error(f"План {plan} временно недоступен")
     code = _generate_payment_code()
     provider = "donationalerts" if da_pay.is_configured() else "mock"
 
@@ -2036,7 +2545,7 @@ def poll_donationalerts():
         try:
             return da_pay.match_and_apply(
                 db, Payment, User, Subscription, Notification,
-                B2B_POSTING_LIMIT,
+                get_posting_limit(True),
                 _activate_subscription_for_payment,
             )
         except Exception as e:
@@ -2331,6 +2840,7 @@ if __name__ == "__main__":
     app_port = app.config["APP_PORT"]
     with app.app_context():
         db.create_all()
+        ensure_default_settings()
         print("База данных создана.")
     start_scheduler()
     print(f"Сервер запущен:  http://localhost:{app_port}")

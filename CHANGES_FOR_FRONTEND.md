@@ -279,6 +279,105 @@ Nice-to-have:
 
 ---
 
+## Админ-панель (новое)
+
+Бэкенд готов к UI админ-панели. Все эндпоинты требуют роль `admin`.
+
+### Настройки приложения (key-value в БД)
+
+Цены тарифов, лимиты размещения и пр. больше **не зашиты в код** — лежат в таблице `AppSetting`, меняются через API без перезапуска.
+
+| Метод | URL | Описание |
+|---|---|---|
+| GET  | `/api/admin/settings` | Все настройки + те, что ещё не в БД (с дефолтами) |
+| PUT  | `/api/admin/settings/{key}` | Изменить одну: `{value, type?, description?}` |
+| PUT  | `/api/admin/settings` | Массовое: `{key1: value1, key2: value2, ...}` |
+
+Список ключей с дефолтами:
+
+| Ключ | Тип | Дефолт | Что управляет |
+|---|---|---|---|
+| `price_premium` | int | 499 | Цена premium ₽/мес |
+| `price_b2b` | int | 9900 | Цена B2B ₽/мес |
+| `period_days_premium` | int | 30 | Длительность premium |
+| `period_days_b2b` | int | 30 | Длительность B2B |
+| `free_posting_limit` | int | 3 | Лимит вакансий для бесплатной компании |
+| `b2b_posting_limit` | int | 100 | Лимит вакансий для B2B-компании |
+| `stale_days` | int | 14 | Через сколько дней архивируется неподтверждённая вакансия |
+| `min_payment_amount` | int | 15 | Мин. сумма доната для активации |
+| `platform_name` | string | "Платформа стажировок" | Название |
+| `support_email` | string | "" | Email поддержки |
+
+Каждое значение в JSON хранится как строка с указанием `type` — фронт должен сам касто́вать к нужному типу при отображении в инпуте.
+
+### Дашборд (статистика)
+
+```
+GET /api/admin/stats
+
+{
+  "users": {"students": 4, "companies": 4, "total": 9},
+  "internships": {"published": 8, "pending": 1, "archived": 0},
+  "applications": {"total": 3, "by_status": {"applied": 2, "interview": 1, ...}},
+  "subscriptions": {"premium_active": 1, "b2b_active": 0},
+  "payments": {"paid": 1, "pending": 0, "revenue_rub": 15},
+  "reviews": 2
+}
+```
+
+### Пользователи
+
+| Метод | URL | Описание |
+|---|---|---|
+| GET | `/api/admin/users?role=&search=&page=&per_page=` | Список + пагинация + поиск по email |
+| DELETE | `/api/admin/users/{id}` | Удалить (каскадно) |
+| PUT | `/api/admin/users/{id}/role` | Сменить роль: `{role: "admin"}` |
+| POST | `/api/admin/users/{id}/subscription` | Выдать подписку: `{plan: "premium", days: 30}` |
+
+### Компании
+
+| Метод | URL | Описание |
+|---|---|---|
+| POST | `/api/admin/companies/{id}/verify` | Изменить `posting_limit`: `{posting_limit: 20}` |
+
+### Отзывы
+
+| Метод | URL | Описание |
+|---|---|---|
+| GET | `/api/admin/reviews?company_id=&min_rating=&max_rating=` | Все отзывы для модерации |
+| DELETE | `/api/admin/reviews/{id}` | Удалить (если оскорбительный/спам) |
+
+### Платежи
+
+| Метод | URL | Описание |
+|---|---|---|
+| GET | `/api/admin/payments?status=&plan=&user_id=` | История всех платежей |
+| POST | `/api/admin/payments/{id}/confirm` | Подтвердить вручную (если поллер не справился) |
+| POST | `/api/admin/payments/poll` | Форс-опрос DonationAlerts |
+
+### Вакансии и отклики (уже было)
+
+- `GET /api/admin/internships/pending`
+- `POST /api/admin/internships/{id}/moderate` → `{action: "approve" \| "reject"}`
+- `POST /api/admin/run-stale-check`
+- `GET /api/admin/applications?internship_id=&company_id=&status=`
+
+### Что нужно на фронте
+
+Минимальная админ-страница:
+
+1. **Сайдбар** с разделами: Дашборд / Юзеры / Компании / Вакансии / Платежи / Отзывы / Настройки
+2. **Дашборд** — карточки с цифрами из `/api/admin/stats`
+3. **Юзеры** — таблица + фильтр по роли + поиск + действия (изменить роль, выдать подписку, удалить)
+4. **Настройки** — список ключ-значение с inline-редактированием. После клика «Сохранить» — `PUT /api/admin/settings`
+5. **Платежи** — таблица с фильтрами, кнопка «Подтвердить вручную»
+6. **Модерация вакансий** — список pending + кнопки Approve/Reject
+7. **Отзывы** — список + кнопка удаления
+
+Авторизация под админом: `admin@platform.ru` / `password123` (из seed.py).
+
+---
+
 ## Авторизация — без изменений
 
 JWT в заголовке `Authorization: Bearer <access_token>`. Refresh всё так же — POST `/api/auth/refresh` с refresh-токеном в Authorization. Срок жизни access — 2 часа, refresh — 30 дней.
