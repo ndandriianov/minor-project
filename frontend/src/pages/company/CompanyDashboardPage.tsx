@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { useListCompanyInternshipsQuery, useUploadLogoMutation } from '@/store/api'
+import { useListCompanyInternshipsQuery, useUploadLogoMutation, useListCompanyReviewsQuery } from '@/store/api'
 import { useAppDispatch } from '@/hooks/useAppDispatch'
 import { setUser } from '@/store/authSlice'
 import Card from '@/components/ui/Card'
@@ -11,6 +11,8 @@ export default function CompanyDashboardPage() {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const { data: internships = [] } = useListCompanyInternshipsQuery()
+  const companyId = user?.company?.id
+  const { data: reviewsData } = useListCompanyReviewsQuery(companyId!, { skip: !companyId })
   const [uploadLogo, { isLoading: uploading }] = useUploadLogoMutation()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -104,6 +106,39 @@ export default function CompanyDashboardPage() {
           </Link>
         ))}
       </div>
+
+      {reviewsData && (
+        <div className="mt-8">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Отзывы о компании</h2>
+            {reviewsData.average_rating != null && (
+              <span className="text-sm text-gray-600">
+                {'★'.repeat(Math.round(reviewsData.average_rating))}{'☆'.repeat(5 - Math.round(reviewsData.average_rating))}
+                {' '}<span className="font-medium">{reviewsData.average_rating.toFixed(1)}</span>
+                <span className="text-gray-400"> ({reviewsData.count})</span>
+              </span>
+            )}
+          </div>
+          {reviewsData.reviews.length === 0 ? (
+            <p className="text-sm text-gray-400">Отзывов пока нет</p>
+          ) : (
+            <div className="space-y-3">
+              {reviewsData.reviews.map((r) => (
+                <div key={r.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-gray-700">{r.student_name ?? 'Студент'}</span>
+                    <span className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+                  </div>
+                  <span className="text-yellow-400 text-sm">
+                    {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                  </span>
+                  {r.text && <p className="text-sm text-gray-600 mt-1">{r.text}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
