@@ -381,6 +381,19 @@ export const platformApi = createApi({
       providesTags: ['Article'],
     }),
 
+    createArticle: b.mutation<Article, { title: string; body: string; image_url?: string; category?: string }>({
+      query: (body) => ({ url: '/api/articles', method: 'POST', body }),
+      invalidatesTags: ['Article'],
+    }),
+    updateArticle: b.mutation<Article, { id: number; title: string; body: string; image_url?: string; category?: string }>({
+      query: ({ id, ...body }) => ({ url: `/api/articles/${id}`, method: 'PUT', body }),
+      invalidatesTags: ['Article'],
+    }),
+    deleteArticle: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/articles/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['Article'],
+    }),
+
     // ── Новости ───────────────────────────────────────────────────────────
     listNews: b.query<{ items: NewsPost[]; total: number; page: number; per_page: number; pages: number }, { page?: number; per_page?: number }>({
       query: (params) => ({ url: '/api/news', params }),
@@ -390,6 +403,18 @@ export const platformApi = createApi({
       query: (id) => `/api/news/${id}`,
       transformResponse: (r: unknown) => unwrapObject<NewsPost>(r, 'news'),
       providesTags: ['News'],
+    }),
+    createNews: b.mutation<NewsPost, { title: string; body: string; image_url?: string; category?: string }>({
+      query: (body) => ({ url: '/api/news', method: 'POST', body }),
+      invalidatesTags: ['News'],
+    }),
+    updateNews: b.mutation<NewsPost, { id: number; title: string; body: string; image_url?: string; category?: string }>({
+      query: ({ id, ...body }) => ({ url: `/api/news/${id}`, method: 'PUT', body }),
+      invalidatesTags: ['News'],
+    }),
+    deleteNews: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/news/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['News'],
     }),
 
     // ── Отзывы ───────────────────────────────────────────────────────────
@@ -452,8 +477,14 @@ export const {
   usePromoteInternshipMutation,
   useListArticlesQuery,
   useGetArticleQuery,
+  useCreateArticleMutation,
+  useUpdateArticleMutation,
+  useDeleteArticleMutation,
   useListNewsQuery,
   useGetNewsPostQuery,
+  useCreateNewsMutation,
+  useUpdateNewsMutation,
+  useDeleteNewsMutation,
   useListCompanyReviewsQuery,
   useCreateReviewMutation,
 } = platformApi

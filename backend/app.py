@@ -1674,6 +1674,33 @@ def create_news(user):
     return jsonify({"news": n.to_dict()}), 201
 
 
+@app.route("/api/news/<int:news_id>", methods=["PUT"])
+@role_required("admin")
+def update_news(user, news_id):
+    """Обновить новость (admin)."""
+    n = db.session.get(NewsPost, news_id)
+    if not n:
+        return jsonify({"error": "Новость не найдена"}), 404
+    data = request.get_json() or {}
+    for f in ["title", "body", "image_url", "category"]:
+        if f in data:
+            setattr(n, f, data[f])
+    db.session.commit()
+    return jsonify({"news": n.to_dict()}), 200
+
+
+@app.route("/api/news/<int:news_id>", methods=["DELETE"])
+@role_required("admin")
+def delete_news(user, news_id):
+    """Удалить новость (admin)."""
+    n = db.session.get(NewsPost, news_id)
+    if not n:
+        return jsonify({"error": "Новость не найдена"}), 404
+    db.session.delete(n)
+    db.session.commit()
+    return jsonify({"message": "Удалено"}), 200
+
+
 # ═══════════════════════════════════════════════════════
 #  УВЕДОМЛЕНИЯ
 # ═══════════════════════════════════════════════════════

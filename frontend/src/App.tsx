@@ -40,6 +40,8 @@ import CheckoutPage from '@/pages/subscription/CheckoutPage'
 // Admin
 import AdminModerationPage from '@/pages/admin/AdminModerationPage'
 import AdminApplicationsPage from '@/pages/admin/AdminApplicationsPage'
+import AdminArticlesPage from '@/pages/admin/AdminArticlesPage'
+import AdminNewsPage from '@/pages/admin/AdminNewsPage'
 
 // 404
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -89,6 +91,8 @@ export default function App() {
           <Route element={<RequireRole role="admin" />}>
             <Route path="admin/moderation" element={<AdminModerationPage />} />
             <Route path="admin/applications" element={<AdminApplicationsPage />} />
+            <Route path="admin/articles" element={<AdminArticlesPage />} />
+            <Route path="admin/news" element={<AdminNewsPage />} />
           </Route>
         </Route>
 

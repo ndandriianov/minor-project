@@ -1,7 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import Button from '@/components/ui/Button'
 import NotificationBell from '@/components/notifications/NotificationBell'
+
+const link = ({ isActive }: { isActive: boolean }) =>
+  `text-sm px-3 py-1.5 rounded-lg transition ${
+    isActive
+      ? 'font-medium text-blue-600 bg-blue-50'
+      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+  }`
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -15,20 +22,20 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-40 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-        <Link to="/" className="text-xl font-bold text-blue-600">
+        <NavLink to="/" className="text-xl font-bold text-blue-600">
           Стажировки
-        </Link>
+        </NavLink>
 
-        <div className="flex items-center gap-2">
-          <Link to="/internships" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-            Все стажировки
-          </Link>
-          <Link to="/articles" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-            Статьи
-          </Link>
-          <Link to="/news" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-            Новости
-          </Link>
+        <div className="flex items-center gap-1">
+          <NavLink to="/internships" className={link}>Все стажировки</NavLink>
+
+          {/* Публичные разделы — только для не-админов */}
+          {user?.role !== 'admin' && (
+            <>
+              <NavLink to="/articles" className={link}>Статьи</NavLink>
+              <NavLink to="/news" className={link}>Новости</NavLink>
+            </>
+          )}
 
           {!isAuthenticated ? (
             <>
@@ -41,66 +48,56 @@ export default function Navbar() {
             </>
           ) : user?.role === 'student' ? (
             <>
-              <Link to="/student/recommendations" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Рекомендации
-              </Link>
-              <Link to="/student/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Мои отклики
-              </Link>
-              <Link to="/student/profile" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Профиль
-              </Link>
-              <Link to="/subscription" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Подписка
-              </Link>
-              <Link to="/student/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition flex items-center gap-1">
+              <NavLink to="/student/recommendations" className={link}>Рекомендации</NavLink>
+              <NavLink to="/student/applications" className={link}>Мои отклики</NavLink>
+              <NavLink to="/student/profile" className={link}>Профиль</NavLink>
+              <NavLink to="/subscription" className={link}>Подписка</NavLink>
+              <NavLink
+                to="/student/dashboard"
+                className={({ isActive }) =>
+                  `text-sm px-3 py-1.5 rounded-lg transition font-medium flex items-center gap-1 ${
+                    isActive ? 'text-blue-600 bg-blue-50' : 'text-blue-600 hover:bg-blue-50'
+                  }`
+                }
+              >
                 {user.is_premium && <span title="Premium">⭐</span>}
                 {user.student?.first_name ?? 'Профиль'}
-              </Link>
+              </NavLink>
               <NotificationBell />
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                Выйти
-              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>Выйти</Button>
             </>
           ) : user?.role === 'company' ? (
             <>
-              <Link to="/company/internships" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Мои стажировки
-              </Link>
-              <Link to="/company/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Отклики
-              </Link>
+              <NavLink to="/company/internships" className={link}>Мои стажировки</NavLink>
+              <NavLink to="/company/applications" className={link}>Отклики</NavLink>
               {user.is_b2b && (
-                <Link to="/company/students/search" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                  Поиск студентов
-                </Link>
+                <NavLink to="/company/students/search" className={link}>Поиск студентов</NavLink>
               )}
-              <Link to="/subscription" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Подписка
-              </Link>
-              <Link to="/company/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition flex items-center gap-1">
+              <NavLink to="/subscription" className={link}>Подписка</NavLink>
+              <NavLink
+                to="/company/dashboard"
+                className={({ isActive }) =>
+                  `text-sm px-3 py-1.5 rounded-lg transition font-medium flex items-center gap-1 ${
+                    isActive ? 'text-blue-600 bg-blue-50' : 'text-blue-600 hover:bg-blue-50'
+                  }`
+                }
+              >
                 {user.is_b2b && (
                   <span className="text-xs bg-blue-100 text-blue-700 rounded px-1 font-medium">B2B</span>
                 )}
                 {user.company?.name ?? 'Компания'}
-              </Link>
+              </NavLink>
               <NotificationBell />
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                Выйти
-              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>Выйти</Button>
             </>
           ) : user?.role === 'admin' ? (
             <>
-              <Link to="/admin/moderation" className="text-sm font-medium text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
-                Модерация
-              </Link>
-              <Link to="/admin/applications" className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
-                Отклики
-              </Link>
+              <NavLink to="/admin/moderation" className={link}>Модерация</NavLink>
+              <NavLink to="/admin/applications" className={link}>Отклики</NavLink>
+              <NavLink to="/admin/articles" className={link}>Статьи</NavLink>
+              <NavLink to="/admin/news" className={link}>Новости</NavLink>
               <NotificationBell />
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                Выйти
-              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>Выйти</Button>
             </>
           ) : null}
         </div>
