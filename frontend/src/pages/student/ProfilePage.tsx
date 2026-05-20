@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useUpdateProfileMutation, useUploadResumeMutation } from '@/store/api'
+import {
+  useUpdateProfileMutation,
+  useUploadResumeMutation,
+  useDeleteResumeMutation,
+  useSearchUniversitiesQuery,
+  useSearchFacultiesQuery,
+  useSearchCitiesQuery,
+} from '@/store/api'
 import { useAppDispatch } from '@/hooks/useAppDispatch'
 import { setUser } from '@/store/authSlice'
 import type { Skill, Student } from '@/types'
@@ -10,6 +17,7 @@ import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
 import SkillsAutocomplete from '@/components/skills/SkillsAutocomplete'
+import AutocompleteInput from '@/components/ui/AutocompleteInput'
 import Spinner from '@/components/ui/Spinner'
 import { buildAssetUrl } from '@/config/api'
 
@@ -53,11 +61,24 @@ export default function ProfilePage() {
   const student = user?.student
   const [updateProfile, { isLoading: saving }] = useUpdateProfileMutation()
   const [uploadResume, { isLoading: uploading }] = useUploadResumeMutation()
+  const [deleteResume, { isLoading: deleting }] = useDeleteResumeMutation()
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [resumeFilename, setResumeFilename] = useState(student?.resume_filename ?? '')
   const [form, setForm] = useState(() => createInitialForm(student))
   const [skills, setSkills] = useState<Skill[]>(() => student?.skills ?? [])
+
+  const [uniQuery, setUniQuery] = useState('')
+  const [facultyQuery, setFacultyQuery] = useState('')
+  const [cityQuery, setCityQuery] = useState('')
+  const [selectedUniversityId, setSelectedUniversityId] = useState<number | undefined>()
+
+  const { data: universities = [], isFetching: uniFetching } = useSearchUniversitiesQuery(uniQuery, { skip: uniQuery.length < 2 })
+  const { data: faculties = [], isFetching: facultyFetching } = useSearchFacultiesQuery(
+    { search: facultyQuery, university_id: selectedUniversityId },
+    { skip: facultyQuery.length < 2 },
+  )
+  const { data: cities = [], isFetching: cityFetching } = useSearchCitiesQuery(cityQuery, { skip: cityQuery.length < 2 })
 
   useEffect(() => {
     if (!student) return
@@ -124,6 +145,19 @@ export default function ProfilePage() {
     }
   }
 
+  const handleResumeDelete = async () => {
+    if (!window.confirm('Удалить резюме?')) return
+    try {
+      await deleteResume().unwrap()
+      setResumeFilename('')
+      if (user?.student) {
+        dispatch(setUser({ ...user, student: { ...user.student, resume_filename: '' } }))
+      }
+    } catch {
+      setError('Не удалось удалить резюме')
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6 flex items-start justify-between gap-4">
@@ -153,14 +187,39 @@ export default function ProfilePage() {
             <Input label="Фамилия *" required value={form.last_name} onChange={(e) => set('last_name', e.target.value)} />
           </div>
           <Input label="Отчество" value={form.patronymic} onChange={(e) => set('patronymic', e.target.value)} />
-          <Input label="Университет" value={form.university} onChange={(e) => set('university', e.target.value)} />
+          <AutocompleteInput
+            label="Университет"
+            value={form.university}
+            onChange={(v) => set('university', v)}
+            onSearch={setUniQuery}
+            onSelectItem={(item) => setSelectedUniversityId(item.id)}
+            options={universities}
+            isLoading={uniFetching}
+            placeholder="Начните вводить название вуза"
+          />
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Факультет" value={form.faculty} onChange={(e) => set('faculty', e.target.value)} />
+            <AutocompleteInput
+              label="Факультет"
+              value={form.faculty}
+              onChange={(v) => set('faculty', v)}
+              onSearch={setFacultyQuery}
+              options={faculties}
+              isLoading={facultyFetching}
+              placeholder="Введите название факультета"
+            />
             <Input label="Специальность" value={form.speciality} onChange={(e) => set('speciality', e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input label="Курс" type="number" min={1} max={6} value={form.course} onChange={(e) => set('course', e.target.value)} />
-            <Input label="Город" value={form.city} onChange={(e) => set('city', e.target.value)} />
+            <AutocompleteInput
+              label="Город"
+              value={form.city}
+              onChange={(v) => set('city', v)}
+              onSearch={setCityQuery}
+              options={cities}
+              isLoading={cityFetching}
+              placeholder="Москва"
+            />
           </div>
         </section>
 
@@ -198,26 +257,44 @@ export default function ProfilePage() {
         </section>
 
         {/* Resume */}
-        <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-3">
+        <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">Резюме (PDF)</h2>
-          {resumeFilename && (
-            <p className="text-sm text-gray-500">
-              Текущий файл:{' '}
+          {resumeFilename ? (
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <svg className="w-8 h-8 text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {resumeFilename.replace(/^resume_\d+_[a-f0-9]+_/, '')}
+                </p>
+                <p className="text-xs text-gray-400">PDF-файл</p>
+              </div>
               <a
                 href={buildAssetUrl(`/uploads/${resumeFilename}`)}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-600 hover:underline"
+                className="text-sm text-blue-600 hover:underline whitespace-nowrap"
               >
-                {resumeFilename}
+                Скачать
               </a>
-            </p>
+              <button
+                type="button"
+                onClick={handleResumeDelete}
+                disabled={deleting}
+                className="text-sm text-red-500 hover:text-red-700 transition whitespace-nowrap"
+              >
+                {deleting ? '...' : 'Удалить'}
+              </button>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Резюме не загружено</p>
           )}
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <span className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition">
-              {uploading ? 'Загрузка...' : 'Выбрать файл'}
+              {uploading ? 'Загрузка...' : resumeFilename ? 'Заменить файл' : 'Загрузить PDF'}
             </span>
-            <span className="text-xs text-gray-400">Только PDF</span>
+            <span className="text-xs text-gray-400">Только PDF, до 10 МБ</span>
             <input
               type="file"
               accept=".pdf"

@@ -1,23 +1,30 @@
 """
 Модели базы данных для платформы стажировок.
-Две роли: Студент (Student) и Компания (Company).
+Роли: Студент (Student), Компания (Company), Админ.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
 
-# ─── Связь "многие ко многим": навыки студента ───
+def _aware(dt):
+    """SQLite не сохраняет tzinfo — приводим naive к UTC."""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
 student_skills = db.Table(
     "student_skills",
     db.Column("student_id", db.Integer, db.ForeignKey("students.id"), primary_key=True),
     db.Column("skill_id", db.Integer, db.ForeignKey("skills.id"), primary_key=True),
 )
 
-# ─── Связь "многие ко многим": требуемые навыки вакансии ───
 internship_skills = db.Table(
     "internship_skills",
     db.Column("internship_id", db.Integer, db.ForeignKey("internships.id"), primary_key=True),
@@ -26,9 +33,37 @@ internship_skills = db.Table(
 
 
 class Skill(db.Model):
-    """Справочник навыков (Python, Excel, Figma и т.д.)"""
     __tablename__ = "skills"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
+    def to_dict(self):
+        return {"id": self.id, "name": self.name}
+
+
+class University(db.Model):
+    __tablename__ = "universities"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    city = db.Column(db.String(100), default="")
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name, "city": self.city}
+
+
+class Faculty(db.Model):
+    __tablename__ = "faculties"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    university_id = db.Column(db.Integer, db.ForeignKey("universities.id"), nullable=True)
+    __table_args__ = (db.UniqueConstraint("name", "university_id", name="uq_faculty"),)
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name, "university_id": self.university_id}
+
+
+class City(db.Model):
+    __tablename__ = "cities"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
 
@@ -37,21 +72,18 @@ class Skill(db.Model):
 
 
 class User(db.Model):
-    """
-    Базовая модель пользователя.
-    role: 'student' | 'company' | 'admin'
-    """
     __tablename__ = "users"
-
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # 'student' / 'company' / 'admin'
+    role = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    # Связи
     student = db.relationship("Student", backref="user", uselist=False, cascade="all, delete-orphan")
     company = db.relationship("Company", backref="user", uselist=False, cascade="all, delete-orphan")
+    subscription = db.relationship("Subscription", backref="user", uselist=False, cascade="all, delete-orphan")
+    notifications = db.relationship("Notification", backref="user", cascade="all, delete-orphan")
+    payments = db.relationship("Payment", backref="user", cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -59,41 +91,52 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def has_active_premium(self):
+        sub = self.subscription
+        if not sub or sub.status != "active":
+            return False
+        exp = _aware(sub.expires_at)
+        if exp and exp < datetime.now(timezone.utc):
+            return False
+        return sub.plan in ("premium", "b2b")
+
+    def has_active_b2b(self):
+        sub = self.subscription
+        if not sub or sub.status != "active":
+            return False
+        exp = _aware(sub.expires_at)
+        if exp and exp < datetime.now(timezone.utc):
+            return False
+        return sub.plan == "b2b"
+
     def to_dict(self):
         return {
             "id": self.id,
             "email": self.email,
             "role": self.role,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "is_premium": self.has_active_premium(),
+            "is_b2b": self.has_active_b2b(),
         }
 
 
 class Student(db.Model):
-    """
-    Профиль студента.
-    Базовый: ФИО, вуз, факультет, курс, направление, город, формат, занятость.
-    Расширенный: навыки, портфолио, резюме, опыт.
-    """
     __tablename__ = "students"
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
 
-    # Базовый профиль
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     patronymic = db.Column(db.String(100), default="")
     university = db.Column(db.String(255), nullable=False)
     faculty = db.Column(db.String(255), default="")
-    course = db.Column(db.Integer, nullable=False)  # 1-6
+    course = db.Column(db.Integer, nullable=False)
     speciality = db.Column(db.String(255), default="")
     city = db.Column(db.String(100), nullable=False)
 
-    # Предпочтения по работе
-    work_format = db.Column(db.String(50), default="any")  # office / hybrid / remote / any
-    desired_hours = db.Column(db.String(50), default="any")  # 40 / 20-40 / <20 / any
+    work_format = db.Column(db.String(50), default="any")
+    desired_hours = db.Column(db.String(50), default="any")
 
-    # Расширенный профиль
     bio = db.Column(db.Text, default="")
     portfolio_url = db.Column(db.String(500), default="")
     github_url = db.Column(db.String(500), default="")
@@ -101,10 +144,21 @@ class Student(db.Model):
     experience = db.Column(db.Text, default="")
     certificates = db.Column(db.Text, default="")
 
-    # Связи
+    is_boosted = db.Column(db.Boolean, default=False)
+    boosted_until = db.Column(db.DateTime, nullable=True)
+
     skills = db.relationship("Skill", secondary=student_skills, backref="students")
     applications = db.relationship("Application", backref="student", cascade="all, delete-orphan")
     bookmarks = db.relationship("Bookmark", backref="student", cascade="all, delete-orphan")
+    reviews = db.relationship("Review", backref="student", cascade="all, delete-orphan")
+
+    def is_currently_boosted(self):
+        if not self.is_boosted:
+            return False
+        bu = _aware(self.boosted_until)
+        if bu and bu < datetime.now(timezone.utc):
+            return False
+        return True
 
     def to_dict(self, extended=False):
         data = {
@@ -120,6 +174,7 @@ class Student(db.Model):
             "city": self.city,
             "work_format": self.work_format,
             "desired_hours": self.desired_hours,
+            "is_boosted": self.is_currently_boosted(),
         }
         if extended:
             data.update({
@@ -135,9 +190,7 @@ class Student(db.Model):
 
 
 class Company(db.Model):
-    """Профиль компании / работодателя."""
     __tablename__ = "companies"
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
 
@@ -146,9 +199,10 @@ class Company(db.Model):
     website = db.Column(db.String(500), default="")
     logo_url = db.Column(db.String(500), default="")
     city = db.Column(db.String(100), default="")
+    posting_limit = db.Column(db.Integer, default=3)  # лимит активных вакансий для бесплатного тарифа
 
-    # Связи
     internships = db.relationship("Internship", backref="company", cascade="all, delete-orphan")
+    reviews = db.relationship("Review", backref="company", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -159,57 +213,60 @@ class Company(db.Model):
             "website": self.website,
             "logo_url": self.logo_url,
             "city": self.city,
+            "posting_limit": self.posting_limit,
         }
 
 
 class Internship(db.Model):
-    """
-    Вакансия / стажировка.
-    Статусы модерации: pending, published, rejected, archived.
-    """
     __tablename__ = "internships"
-
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey("companies.id"), nullable=False)
 
-    # Основные поля
     title = db.Column(db.String(255), nullable=False)
-    direction = db.Column(db.String(100), nullable=False)  # IT, маркетинг, аналитика и т.д.
+    direction = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     requirements = db.Column(db.Text, default="")
-    selection_stages = db.Column(db.Text, default="")  # Этапы отбора
+    selection_stages = db.Column(db.Text, default="")
 
-    # Формат и график
-    work_format = db.Column(db.String(50), nullable=False)  # office / hybrid / remote
-    schedule = db.Column(db.String(100), default="")  # Свободный, 5/2, 2/2 и пр.
+    work_format = db.Column(db.String(50), nullable=False)
+    schedule = db.Column(db.String(100), default="")
     min_hours = db.Column(db.Integer, default=0)
     max_hours = db.Column(db.Integer, default=40)
-    compatible_with_study = db.Column(db.Boolean, default=False)  # Совместимо с очным обучением
+    compatible_with_study = db.Column(db.Boolean, default=False)
 
-    # Оплата
     salary_min = db.Column(db.Integer, default=0)
     salary_max = db.Column(db.Integer, default=0)
     is_paid = db.Column(db.Boolean, default=True)
 
-    # Прочее
     city = db.Column(db.String(100), default="")
-    counts_as_practice = db.Column(db.Boolean, default=False)  # Засчитывается за практику
-    required_experience = db.Column(db.String(50), default="none")  # none / <1year / 1-3years
+    counts_as_practice = db.Column(db.Boolean, default=False)
+    required_experience = db.Column(db.String(50), default="none")
     deadline = db.Column(db.Date, nullable=True)
 
-    # Модерация
-    moderation_status = db.Column(db.String(20), default="pending")  # pending / published / rejected / archived
-    is_verified = db.Column(db.Boolean, default=False)  # Метка «проверено»
-    last_confirmed_at = db.Column(db.DateTime, nullable=True)  # Последнее подтверждение актуальности
+    moderation_status = db.Column(db.String(20), default="pending")
+    is_verified = db.Column(db.Boolean, default=False)
+    last_confirmed_at = db.Column(db.DateTime, nullable=True)
+
+    is_promoted = db.Column(db.Boolean, default=False)
+    promoted_until = db.Column(db.DateTime, nullable=True)
+    views_count = db.Column(db.Integer, default=0)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),
                            onupdate=lambda: datetime.now(timezone.utc))
 
-    # Связи
     required_skills = db.relationship("Skill", secondary=internship_skills, backref="internships")
     applications = db.relationship("Application", backref="internship", cascade="all, delete-orphan")
     bookmarks = db.relationship("Bookmark", backref="internship", cascade="all, delete-orphan")
+    reviews = db.relationship("Review", backref="internship", cascade="all, delete-orphan")
+
+    def is_currently_promoted(self):
+        if not self.is_promoted:
+            return False
+        pu = _aware(self.promoted_until)
+        if pu and pu < datetime.now(timezone.utc):
+            return False
+        return True
 
     def to_dict(self, include_company=True):
         data = {
@@ -234,6 +291,9 @@ class Internship(db.Model):
             "deadline": self.deadline.isoformat() if self.deadline else None,
             "moderation_status": self.moderation_status,
             "is_verified": self.is_verified,
+            "is_promoted": self.is_currently_promoted(),
+            "views_count": self.views_count,
+            "last_confirmed_at": self.last_confirmed_at.isoformat() if self.last_confirmed_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "required_skills": [s.to_dict() for s in self.required_skills],
         }
@@ -247,22 +307,16 @@ class Internship(db.Model):
 
 
 class Application(db.Model):
-    """
-    Отклик студента на стажировку.
-    Статусы: applied, interview, offer, rejected, withdrawn.
-    """
     __tablename__ = "applications"
-
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
     internship_id = db.Column(db.Integer, db.ForeignKey("internships.id"), nullable=False)
-    status = db.Column(db.String(20), default="applied")  # applied / interview / offer / rejected / withdrawn
+    status = db.Column(db.String(20), default="applied")
     cover_letter = db.Column(db.Text, default="")
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),
                            onupdate=lambda: datetime.now(timezone.utc))
 
-    # Уникальность: один студент — один отклик на вакансию
     __table_args__ = (db.UniqueConstraint("student_id", "internship_id", name="uq_student_internship"),)
 
     def to_dict(self):
@@ -278,9 +332,7 @@ class Application(db.Model):
 
 
 class Bookmark(db.Model):
-    """Отложенные вакансии студента."""
     __tablename__ = "bookmarks"
-
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
     internship_id = db.Column(db.Integer, db.ForeignKey("internships.id"), nullable=False)
@@ -294,4 +346,153 @@ class Bookmark(db.Model):
             "student_id": self.student_id,
             "internship_id": self.internship_id,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class Article(db.Model):
+    """Раздел Инструменты — статьи (Как написать резюме и т.п.)."""
+    __tablename__ = "articles"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(500), default="")
+    category = db.Column(db.String(100), default="general")
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "body": self.body,
+            "image_url": self.image_url,
+            "category": self.category,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class NewsPost(db.Model):
+    """Новостная лента — апдейты о стажировках, событиях вузов."""
+    __tablename__ = "news_posts"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(500), default="")
+    category = db.Column(db.String(100), default="news")
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "body": self.body,
+            "image_url": self.image_url,
+            "category": self.category,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class Notification(db.Model):
+    """Уведомления: приглашения, смена статуса отклика и т.д."""
+    __tablename__ = "notifications"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    type = db.Column(db.String(50), default="info")
+    text = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    application_id = db.Column(db.Integer, db.ForeignKey("applications.id"), nullable=True)
+    internship_id = db.Column(db.Integer, db.ForeignKey("internships.id"), nullable=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "type": self.type,
+            "text": self.text,
+            "is_read": self.is_read,
+            "application_id": self.application_id,
+            "internship_id": self.internship_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class Review(db.Model):
+    """Отзыв стажёра о компании/стажировке."""
+    __tablename__ = "reviews"
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey("companies.id"), nullable=False)
+    internship_id = db.Column(db.Integer, db.ForeignKey("internships.id"), nullable=True)
+    rating = db.Column(db.Integer, nullable=False)  # 1..5
+    text = db.Column(db.Text, default="")
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self, include_student=False):
+        data = {
+            "id": self.id,
+            "student_id": self.student_id,
+            "company_id": self.company_id,
+            "internship_id": self.internship_id,
+            "rating": self.rating,
+            "text": self.text,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+        if include_student and self.student:
+            data["student_name"] = f"{self.student.first_name} {self.student.last_name[:1]}."
+        return data
+
+
+class Subscription(db.Model):
+    """Подписка пользователя: free / premium / b2b."""
+    __tablename__ = "subscriptions"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    plan = db.Column(db.String(20), default="free")  # free / premium / b2b
+    status = db.Column(db.String(20), default="active")  # active / expired / cancelled
+    started_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    expires_at = db.Column(db.DateTime, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "plan": self.plan,
+            "status": self.status,
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+        }
+
+
+class Payment(db.Model):
+    """Запись о платеже. Шлюз: DonationAlerts (или mock, если не настроен)."""
+    __tablename__ = "payments"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    plan = db.Column(db.String(20), nullable=False)  # premium / b2b
+    amount = db.Column(db.Integer, nullable=False)  # в рублях
+    period_days = db.Column(db.Integer, default=30)
+    status = db.Column(db.String(20), default="pending")  # pending / paid / failed / expired
+    provider = db.Column(db.String(20), default="mock")  # donationalerts / mock
+    external_id = db.Column(db.String(100), default="")  # уникальный код для match по сообщению
+    da_donation_id = db.Column(db.BigInteger, nullable=True)  # ID доната в DonationAlerts
+    da_amount = db.Column(db.Integer, nullable=True)  # фактически уплачено (на случай неполной суммы)
+    da_currency = db.Column(db.String(10), default="")
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    paid_at = db.Column(db.DateTime, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "plan": self.plan,
+            "amount": self.amount,
+            "period_days": self.period_days,
+            "status": self.status,
+            "provider": self.provider,
+            "external_id": self.external_id,
+            "da_donation_id": self.da_donation_id,
+            "da_amount": self.da_amount,
+            "da_currency": self.da_currency,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "paid_at": self.paid_at.isoformat() if self.paid_at else None,
         }

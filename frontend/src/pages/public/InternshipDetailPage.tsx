@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery } from '@/store/api'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useGetInternshipQuery, useApplyMutation, useListApplicationsQuery, useAddBookmarkMutation, useRemoveBookmarkMutation, useListBookmarksQuery, useAiAdaptResumeMutation, useListCompanyReviewsQuery, useCreateReviewMutation } from '@/store/api'
 import Spinner from '@/components/ui/Spinner'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -11,6 +11,117 @@ import { useAuth } from '@/hooks/useAuth'
 
 const FORMAT_LABEL: Record<string, string> = { office: 'Офис', hybrid: 'Гибрид', remote: 'Удалённо' }
 const EXP_LABEL: Record<string, string> = { none: 'Без опыта', '<1year': 'До 1 года', '1-3years': '1–3 года' }
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <span className="text-yellow-400 text-sm">
+      {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
+    </span>
+  )
+}
+
+function CompanyReviews({ companyId, companyName, internshipId, isStudent }: {
+  companyId: number
+  companyName: string
+  internshipId: number
+  isStudent: boolean
+}) {
+  const { data } = useListCompanyReviewsQuery(companyId)
+  const [createReview, { isLoading: submitting }] = useCreateReviewMutation()
+  const [formOpen, setFormOpen] = useState(false)
+  const [rating, setRating] = useState(5)
+  const [text, setText] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = async () => {
+    await createReview({ company_id: companyId, internship_id: internshipId, rating, text })
+    setSubmitted(true)
+    setFormOpen(false)
+    setText('')
+    setRating(5)
+  }
+
+  if (!data) return null
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-6 mt-4">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-gray-900">Отзывы о {companyName}</h2>
+          {data.average_rating != null && (
+            <span className="flex items-center gap-1 text-sm text-gray-600">
+              <StarRating rating={Math.round(data.average_rating)} />
+              <span className="font-medium">{data.average_rating.toFixed(1)}</span>
+              <span className="text-gray-400">({data.count})</span>
+            </span>
+          )}
+        </div>
+        {isStudent && !submitted && !formOpen && (
+          <button
+            onClick={() => setFormOpen(true)}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            + Оставить отзыв
+          </button>
+        )}
+      </div>
+
+      {formOpen && (
+        <div className="bg-gray-50 rounded-xl p-4 mb-4 space-y-3">
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-1">Оценка</p>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setRating(n)}
+                  className={`text-2xl transition ${n <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-1">Комментарий (необязательно)</p>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={3}
+              placeholder="Расскажите о своём опыте..."
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" loading={submitting} onClick={handleSubmit}>Отправить</Button>
+            <Button size="sm" variant="secondary" onClick={() => setFormOpen(false)}>Отмена</Button>
+          </div>
+        </div>
+      )}
+
+      {submitted && (
+        <p className="text-sm text-green-600 mb-4">Спасибо! Ваш отзыв отправлен.</p>
+      )}
+
+      {data.reviews.length === 0 ? (
+        <p className="text-sm text-gray-400">Пока нет отзывов</p>
+      ) : (
+        <div className="space-y-4">
+          {data.reviews.map((r) => (
+            <div key={r.id} className="border-t border-gray-100 pt-4 first:border-t-0 first:pt-0">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium text-gray-700">{r.student_name ?? 'Студент'}</span>
+                <span className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString('ru-RU')}</span>
+              </div>
+              <StarRating rating={r.rating} />
+              {r.text && <p className="text-sm text-gray-600 mt-1">{r.text}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function InternshipDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -29,9 +140,33 @@ export default function InternshipDetailPage() {
 
   const [applyOpen, setApplyOpen] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
+  const [aiOpen, setAiOpen] = useState(false)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [aiAdaptResume, { isLoading: adapting }] = useAiAdaptResumeMutation()
+  const [copied, setCopied] = useState(false)
+  const [aiResult, setAiResult] = useState<{
+    matched_skills: string[]
+    missing_skills: string[]
+    adapted_resume: string
+    tips: string[]
+  } | null>(null)
 
   const alreadyApplied = applications.some((a) => a.internship_id === internshipId)
   const isBookmarked = bookmarks.some((b) => b.internship_id === internshipId)
+  const isPremiumStudent = isStudent && user?.is_premium
+
+  const handleAdaptResume = async () => {
+    try {
+      const result = await aiAdaptResume({ internship_id: internshipId }).unwrap()
+      setAiResult(result)
+      setAiOpen(true)
+    } catch (err: unknown) {
+      const e = err as { status?: number }
+      if (e.status === 402) {
+        setUpgradeOpen(true)
+      }
+    }
+  }
 
   const handleApply = async () => {
     await apply({ internship_id: internshipId, cover_letter: coverLetter || undefined })
@@ -130,11 +265,16 @@ export default function InternshipDetailPage() {
         </div>
 
         {isStudent && (
-          <div className="mb-4">
+          <div className="mb-4 flex flex-wrap gap-3">
             {alreadyApplied ? (
               <Button variant="secondary" disabled>Вы уже откликнулись</Button>
             ) : (
               <Button onClick={() => setApplyOpen(true)}>Откликнуться</Button>
+            )}
+            {isPremiumStudent && (
+              <Button variant="secondary" onClick={handleAdaptResume} loading={adapting}>
+                ✨ Адаптировать резюме
+              </Button>
             )}
           </div>
         )}
@@ -177,6 +317,13 @@ export default function InternshipDetailPage() {
         </div>
       )}
 
+      <CompanyReviews
+        companyId={internship.company.id}
+        companyName={internship.company.name}
+        internshipId={internshipId}
+        isStudent={isStudent}
+      />
+
       <Modal
         isOpen={applyOpen}
         onClose={() => setApplyOpen(false)}
@@ -193,6 +340,79 @@ export default function InternshipDetailPage() {
           value={coverLetter}
           onChange={(e) => setCoverLetter(e.target.value)}
         />
+      </Modal>
+
+      <Modal
+        isOpen={aiOpen}
+        onClose={() => setAiOpen(false)}
+        title="✨ Адаптация резюме"
+      >
+        {aiResult && (
+          <div className="space-y-4 text-sm">
+            {aiResult.matched_skills.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Навыки, которые у вас есть</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {aiResult.matched_skills.map((s) => (
+                    <span key={s} className="bg-green-100 text-green-700 rounded-full px-2 py-0.5 text-xs">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {aiResult.missing_skills.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Стоит освоить</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {aiResult.missing_skills.map((s) => (
+                    <span key={s} className="bg-red-100 text-red-600 rounded-full px-2 py-0.5 text-xs">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {aiResult.adapted_resume && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Адаптированное описание</p>
+                <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3">{aiResult.adapted_resume}</p>
+                <div className="mt-2">
+                  <button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(aiResult.adapted_resume)
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 2000)
+                    }}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition"
+                  >
+                    {copied ? '✓ Скопировано' : 'Копировать'}
+                  </button>
+                </div>
+              </div>
+            )}
+            {aiResult.tips.length > 0 && (
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Советы</p>
+                <ul className="space-y-1">
+                  {aiResult.tips.map((tip, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-blue-500 flex-shrink-0">•</span>
+                      <span className="text-gray-700">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        title="Требуется Premium-подписка"
+      >
+        <p className="mb-4">ИИ-адаптация резюме доступна только пользователям с активной Premium-подпиской.</p>
+        <Link to="/subscription" onClick={() => setUpgradeOpen(false)} className="text-blue-600 hover:underline font-medium">
+          Подключить Premium →
+        </Link>
       </Modal>
     </div>
   )

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRegisterStudentMutation } from '@/store/api'
+import { useRegisterStudentMutation, useSearchUniversitiesQuery, useSearchCitiesQuery } from '@/store/api'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
+import AutocompleteInput from '@/components/ui/AutocompleteInput'
 
 const COURSE_OPTIONS = [
   { value: '1', label: '1 курс' },
@@ -19,9 +20,14 @@ export default function RegisterStudentPage() {
     email: '', password: '', first_name: '', last_name: '',
     university: '', course: '1', city: '',
   })
+  const [uniQuery, setUniQuery] = useState('')
+  const [cityQuery, setCityQuery] = useState('')
   const [error, setError] = useState('')
   const [register, { isLoading }] = useRegisterStudentMutation()
   const navigate = useNavigate()
+
+  const { data: universities = [], isFetching: uniFetching } = useSearchUniversitiesQuery(uniQuery, { skip: uniQuery.length < 2 })
+  const { data: cities = [], isFetching: cityFetching } = useSearchCitiesQuery(cityQuery, { skip: cityQuery.length < 2 })
 
   const set = (field: string, value: string) => setForm((f) => ({ ...f, [field]: value }))
 
@@ -50,10 +56,28 @@ export default function RegisterStudentPage() {
           </div>
           <Input label="Email *" type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} />
           <Input label="Пароль *" type="password" required minLength={6} value={form.password} onChange={(e) => set('password', e.target.value)} />
-          <Input label="Университет *" required value={form.university} onChange={(e) => set('university', e.target.value)} />
+          <AutocompleteInput
+            label="Университет *"
+            value={form.university}
+            onChange={(v) => set('university', v)}
+            onSearch={setUniQuery}
+            options={universities}
+            isLoading={uniFetching}
+            placeholder="Начните вводить название вуза"
+            required
+          />
           <div className="grid grid-cols-2 gap-3">
             <Select label="Курс *" value={form.course} onChange={(e) => set('course', e.target.value)} options={COURSE_OPTIONS} />
-            <Input label="Город *" required value={form.city} onChange={(e) => set('city', e.target.value)} />
+            <AutocompleteInput
+              label="Город *"
+              value={form.city}
+              onChange={(v) => set('city', v)}
+              onSearch={setCityQuery}
+              options={cities}
+              isLoading={cityFetching}
+              placeholder="Москва"
+              required
+            />
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}

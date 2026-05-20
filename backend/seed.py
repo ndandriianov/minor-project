@@ -3,9 +3,12 @@
 Запуск: python seed.py
 """
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime, timezone
 from app import app
-from models import db, User, Student, Company, Internship, Skill, Application, Bookmark
+from models import (
+    db, User, Student, Company, Internship, Skill, Application, Bookmark,
+    University, Faculty, City, Article, NewsPost, Review, Subscription,
+)
 
 SKILLS_LIST = [
     "Python", "JavaScript", "TypeScript", "React", "Vue.js",
@@ -32,11 +35,40 @@ def seed():
             skills[name] = s
         db.session.flush()
 
-        # ── Администратор (модератор) ──
+        # ── Справочники ──
+        cities = ["Москва", "Санкт-Петербург", "Казань", "Новосибирск",
+                  "Екатеринбург", "Нижний Новгород", "Краснодар", "Уфа"]
+        for c in cities:
+            db.session.add(City(name=c))
+
+        universities_data = [
+            {"name": "НИУ ВШЭ", "city": "Москва",
+             "faculties": ["Факультет компьютерных наук", "Экономический факультет",
+                           "Факультет права", "Факультет менеджмента"]},
+            {"name": "МГУ им. М.В. Ломоносова", "city": "Москва",
+             "faculties": ["ВМК", "Экономический факультет", "Физический факультет"]},
+            {"name": "МФТИ", "city": "Москва",
+             "faculties": ["ФПМИ", "ФУПМ", "ФИВТ"]},
+            {"name": "ИТМО", "city": "Санкт-Петербург",
+             "faculties": ["Факультет ИТ", "Факультет программной инженерии"]},
+            {"name": "СПбГУ", "city": "Санкт-Петербург",
+             "faculties": ["Экономический факультет", "Математико-механический факультет"]},
+            {"name": "МГТУ им. Баумана", "city": "Москва",
+             "faculties": ["ИУ", "РК", "ФН"]},
+        ]
+        for ud in universities_data:
+            u = University(name=ud["name"], city=ud["city"])
+            db.session.add(u)
+            db.session.flush()
+            for fname in ud["faculties"]:
+                db.session.add(Faculty(name=fname, university_id=u.id))
+
+        # ── Администратор ──
         admin_user = User(email="admin@platform.ru", role="admin")
         admin_user.set_password("password123")
         db.session.add(admin_user)
         db.session.flush()
+        db.session.add(Subscription(user_id=admin_user.id, plan="free", status="active"))
 
         # ── Студенты ──
         students_data = [
@@ -46,7 +78,10 @@ def seed():
                 "university": "НИУ ВШЭ", "faculty": "Факультет компьютерных наук",
                 "course": 3, "speciality": "Программная инженерия",
                 "city": "Москва", "work_format": "hybrid", "desired_hours": "20-40",
-                "skills": ["Python", "JavaScript", "React", "Git", "SQL"],
+                "skills": ["Python", "SQL", "Git", "JavaScript", "React"],
+                "experience": "Учебные проекты с применением Python и SQL. Разработка клиент-серверных приложений.",
+                "bio": "Стажёр-разработчик Python. Готов развиваться в написании микросервисов и осваивать Docker.",
+                "subscription": "premium",
             },
             {
                 "email": "maria@student.ru", "password": "password123",
@@ -76,14 +111,22 @@ def seed():
             student = Student(
                 user_id=user.id,
                 first_name=sd["first_name"], last_name=sd["last_name"],
-                university=sd["university"], faculty=sd["faculty"],
-                course=sd["course"], speciality=sd["speciality"],
-                city=sd["city"], work_format=sd["work_format"],
-                desired_hours=sd["desired_hours"],
+                university=sd["university"], faculty=sd.get("faculty"),
+                course=sd["course"], speciality=sd.get("speciality"),
+                city=sd["city"], work_format=sd.get("work_format"),
+                desired_hours=sd.get("desired_hours"),
+                experience=sd.get("experience"),
+                bio=sd.get("bio"),
             )
             student.skills = [skills[s] for s in sd["skills"]]
             db.session.add(student)
             student_objects.append(student)
+            plan = sd.get("subscription", "free")
+            expires = datetime.now(timezone.utc) + timedelta(days=30) if plan != "free" else None
+            db.session.add(Subscription(
+                user_id=user.id, plan=plan, status="active",
+                started_at=datetime.now(timezone.utc), expires_at=expires,
+            ))
 
         db.session.flush()
 
@@ -125,6 +168,7 @@ def seed():
             )
             db.session.add(company)
             company_objects.append(company)
+            db.session.add(Subscription(user_id=user.id, plan="free", status="active"))
 
         db.session.flush()
 
@@ -265,6 +309,7 @@ def seed():
                 deadline=d["deadline"],
                 moderation_status=d["status"],
                 is_verified=True,
+                last_confirmed_at=datetime.now(timezone.utc),
             )
             i.required_skills = [skills[s] for s in d["skills"]]
             db.session.add(i)
@@ -297,6 +342,80 @@ def seed():
         bm2 = Bookmark(student_id=student_objects[1].id, internship_id=internship_objects[5].id)
         db.session.add_all([bm1, bm2])
 
+        # ── Статьи (Инструменты) ──
+        articles = [
+            Article(
+                title="Как написать резюме студенту",
+                category="resume",
+                body=(
+                    "Резюме — это первая точка контакта с работодателем. "
+                    "Укажите релевантный опыт (учебные проекты, хакатоны), ключевые навыки, "
+                    "ссылки на портфолио/GitHub. Не растягивайте текст: одна страница, "
+                    "конкретные результаты, цифры. Адаптируйте резюме под каждую вакансию."
+                ),
+                image_url="",
+            ),
+            Article(
+                title="Как подготовиться к собеседованию",
+                category="interview",
+                body=(
+                    "Изучите компанию: продукт, ценности, технологический стек. "
+                    "Подготовьте 2–3 истории по STAR-формату (ситуация → задача → действие → результат). "
+                    "Прорешайте типовые задачи и вопросы по фундаментальным темам. "
+                    "Не бойтесь задавать вопросы интервьюеру — это показывает интерес."
+                ),
+                image_url="",
+            ),
+            Article(
+                title="Что писать в сопроводительном письме",
+                category="resume",
+                body=(
+                    "Короткое (3–5 предложений) письмо, в котором вы объясняете, почему вам интересна "
+                    "именно эта стажировка, и приводите 1–2 конкретных факта из своего опыта, "
+                    "которые подтверждают, что вы справитесь."
+                ),
+                image_url="",
+            ),
+        ]
+        db.session.add_all(articles)
+
+        # ── Новости ──
+        news = [
+            NewsPost(
+                title="Открыт набор на летнюю стажировку Яндекса",
+                body="Яндекс открыл набор на летние стажировки 2026 года для студентов IT-направлений. "
+                     "Подавайте заявки до конца мая.",
+                category="internship",
+            ),
+            NewsPost(
+                title="ВШЭ и Сбер запустили совместный курс по ML",
+                body="Студенты ВШЭ получили возможность пройти курс по машинному обучению "
+                     "с практикой в командах AI Lab Сбера.",
+                category="university",
+            ),
+            NewsPost(
+                title="День карьеры в МФТИ",
+                body="15 апреля в МФТИ пройдёт ярмарка вакансий и стажировок. Участвуют 40+ компаний.",
+                category="event",
+            ),
+        ]
+        db.session.add_all(news)
+
+        # ── Отзывы ──
+        reviews = [
+            Review(student_id=student_objects[0].id,
+                   company_id=company_objects[0].id,
+                   internship_id=internship_objects[0].id,
+                   rating=5,
+                   text="Отличная команда и хорошее наставничество. Рекомендую."),
+            Review(student_id=student_objects[2].id,
+                   company_id=company_objects[1].id,
+                   internship_id=internship_objects[3].id,
+                   rating=4,
+                   text="Интересные задачи, но процесс ревью можно было бы ускорить."),
+        ]
+        db.session.add_all(reviews)
+
         db.session.commit()
         print("Тестовые данные загружены!")
         print(f"  Навыков: {len(SKILLS_LIST)}")
@@ -304,6 +423,8 @@ def seed():
         print(f"  Компаний: {len(companies_data)}")
         print(f"  Стажировок: {len(internships_data)}")
         print(f"  Откликов: 3")
+        print(f"  Городов: {len(cities)}, Вузов: {len(universities_data)}")
+        print(f"  Статей: 3, Новостей: 3, Отзывов: 2")
         print()
         print("Тестовые аккаунты:")
         print("  Студент:  ivan@student.ru / password123")

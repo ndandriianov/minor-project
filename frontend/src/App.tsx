@@ -7,6 +7,10 @@ import RequireRole from '@/guards/RequireRole'
 import HomePage from '@/pages/public/HomePage'
 import InternshipsPage from '@/pages/public/InternshipsPage'
 import InternshipDetailPage from '@/pages/public/InternshipDetailPage'
+import ArticlesPage from '@/pages/public/ArticlesPage'
+import ArticleDetailPage from '@/pages/public/ArticleDetailPage'
+import NewsPage from '@/pages/public/NewsPage'
+import NewsDetailPage from '@/pages/public/NewsDetailPage'
 
 // Auth
 import LoginPage from '@/pages/auth/LoginPage'
@@ -27,10 +31,19 @@ import CreateInternshipPage from '@/pages/company/CreateInternshipPage'
 import EditInternshipPage from '@/pages/company/EditInternshipPage'
 import InternshipApplicantsPage from '@/pages/company/InternshipApplicantsPage'
 import CompanyApplicationsPage from '@/pages/company/CompanyApplicationsPage'
+import StudentSearchPage from '@/pages/company/StudentSearchPage'
+import StudentProfilePage from '@/pages/company/StudentProfilePage'
+import AnalyticsPage from '@/pages/company/AnalyticsPage'
+
+// Subscription
+import SubscriptionPage from '@/pages/subscription/SubscriptionPage'
+import CheckoutPage from '@/pages/subscription/CheckoutPage'
 
 // Admin
 import AdminModerationPage from '@/pages/admin/AdminModerationPage'
 import AdminApplicationsPage from '@/pages/admin/AdminApplicationsPage'
+import AdminArticlesPage from '@/pages/admin/AdminArticlesPage'
+import AdminNewsPage from '@/pages/admin/AdminNewsPage'
 
 // 404
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -43,12 +56,20 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="internships" element={<InternshipsPage />} />
         <Route path="internships/:id" element={<InternshipDetailPage />} />
+        <Route path="articles" element={<ArticlesPage />} />
+        <Route path="articles/:id" element={<ArticleDetailPage />} />
+        <Route path="news" element={<NewsPage />} />
+        <Route path="news/:id" element={<NewsDetailPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register/student" element={<RegisterStudentPage />} />
         <Route path="register/company" element={<RegisterCompanyPage />} />
 
-        {/* Student */}
         <Route element={<RequireAuth />}>
+          {/* Subscription (all authenticated roles) */}
+          <Route path="subscription" element={<SubscriptionPage />} />
+          <Route path="subscription/checkout" element={<CheckoutPage />} />
+
+          {/* Student */}
           <Route element={<RequireRole role="student" />}>
             <Route path="student/dashboard" element={<StudentDashboardPage />} />
             <Route path="student/recommendations" element={<RecommendationsPage />} />
@@ -65,12 +86,17 @@ export default function App() {
             <Route path="company/internships/:id/edit" element={<EditInternshipPage />} />
             <Route path="company/internships/:id/applicants" element={<InternshipApplicantsPage />} />
             <Route path="company/applications" element={<CompanyApplicationsPage />} />
+            <Route path="company/students/search" element={<StudentSearchPage />} />
+            <Route path="company/students/:id" element={<StudentProfilePage />} />
+            <Route path="company/analytics" element={<AnalyticsPage />} />
           </Route>
 
           {/* Admin */}
           <Route element={<RequireRole role="admin" />}>
             <Route path="admin/moderation" element={<AdminModerationPage />} />
             <Route path="admin/applications" element={<AdminApplicationsPage />} />
+            <Route path="admin/articles" element={<AdminArticlesPage />} />
+            <Route path="admin/news" element={<AdminNewsPage />} />
           </Route>
         </Route>
 
