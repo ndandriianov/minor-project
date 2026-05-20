@@ -93,7 +93,10 @@ export default function CompanyDashboardPage() {
           { to: '/company/internships/new', emoji: '➕', label: 'Создать стажировку', desc: 'Разместить новую вакансию' },
           { to: '/company/internships', emoji: '📋', label: 'Мои стажировки', desc: 'Управление и просмотр откликов' },
           { to: '/company/applications', emoji: '📨', label: 'Все отклики', desc: 'Общий inbox по всем вакансиям' },
-          ...(user?.is_b2b ? [{ to: '/company/students/search', emoji: '🔍', label: 'Поиск студентов', desc: 'B2B: поиск кандидатов по фильтрам' }] : []),
+          ...(user?.is_b2b ? [
+            { to: '/company/students/search', emoji: '🔍', label: 'Поиск студентов', desc: 'B2B: поиск кандидатов по фильтрам' },
+            { to: '/company/analytics', emoji: '📊', label: 'Аналитика', desc: 'Конверсии и статистика по вакансиям' },
+          ] : []),
         ].map((item) => (
           <Link key={item.to} to={item.to}>
             <Card className="flex items-center gap-4 hover:border-blue-300 transition-colors">

@@ -73,6 +73,9 @@ export default function Navbar() {
               {user.is_b2b && (
                 <NavLink to="/company/students/search" className={link}>Поиск студентов</NavLink>
               )}
+              {user.is_b2b && (
+                <NavLink to="/company/analytics" className={link}>Аналитика</NavLink>
+              )}
               <NavLink to="/subscription" className={link}>Подписка</NavLink>
               <NavLink
                 to="/company/dashboard"

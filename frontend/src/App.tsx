@@ -32,6 +32,8 @@ import EditInternshipPage from '@/pages/company/EditInternshipPage'
 import InternshipApplicantsPage from '@/pages/company/InternshipApplicantsPage'
 import CompanyApplicationsPage from '@/pages/company/CompanyApplicationsPage'
 import StudentSearchPage from '@/pages/company/StudentSearchPage'
+import StudentProfilePage from '@/pages/company/StudentProfilePage'
+import AnalyticsPage from '@/pages/company/AnalyticsPage'
 
 // Subscription
 import SubscriptionPage from '@/pages/subscription/SubscriptionPage'
@@ -85,6 +87,8 @@ export default function App() {
             <Route path="company/internships/:id/applicants" element={<InternshipApplicantsPage />} />
             <Route path="company/applications" element={<CompanyApplicationsPage />} />
             <Route path="company/students/search" element={<StudentSearchPage />} />
+            <Route path="company/students/:id" element={<StudentProfilePage />} />
+            <Route path="company/analytics" element={<AnalyticsPage />} />
           </Route>
 
           {/* Admin */}

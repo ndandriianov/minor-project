@@ -357,7 +357,17 @@ export const platformApi = createApi({
       transformResponse: (response: unknown) => unwrapArray<Student>(response, 'items'),
     }),
 
-    getAnalytics: b.query<Record<string, unknown>, void>({
+    getAnalytics: b.query<{
+      per_internship: {
+        internship_id: number
+        title: string
+        views: number
+        applications: number
+        by_status: { applied: number; interview: number; offer: number; rejected: number; withdrawn: number }
+        conversion_to_offer_pct: number
+      }[]
+      totals: { views: number; applied: number; interview: number; offer: number; rejected: number }
+    }, void>({
       query: () => '/api/company/analytics',
     }),
 

@@ -142,6 +142,12 @@ export default function StudentSearchPage() {
                     </div>
                   )}
                 </div>
+                <Link
+                  to={`/company/students/${student.id}`}
+                  className="flex-shrink-0 text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
+                >
+                  Открыть →
+                </Link>
               </div>
             </div>
           ))}
