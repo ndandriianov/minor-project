@@ -399,8 +399,10 @@ class Notification(db.Model):
     type = db.Column(db.String(50), default="info")
     text = db.Column(db.Text, nullable=False)
     is_read = db.Column(db.Boolean, default=False)
-    application_id = db.Column(db.Integer, db.ForeignKey("applications.id"), nullable=True)
-    internship_id = db.Column(db.Integer, db.ForeignKey("internships.id"), nullable=True)
+    application_id = db.Column(db.Integer,
+        db.ForeignKey("applications.id", ondelete="SET NULL"), nullable=True)
+    internship_id = db.Column(db.Integer,
+        db.ForeignKey("internships.id", ondelete="SET NULL"), nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     def to_dict(self):
