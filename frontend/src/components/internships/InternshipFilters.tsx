@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import type { InternshipFilters } from '@/types'
+import type { Skill } from '@/types'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
+import SkillsAutocomplete from '@/components/skills/SkillsAutocomplete'
 
 interface InternshipFiltersProps {
   filters: InternshipFilters
@@ -30,6 +33,17 @@ const SORT_OPTIONS = [
 export default function InternshipFilters({ filters, onChange }: InternshipFiltersProps) {
   const set = (key: keyof InternshipFilters, value: string | boolean | number | undefined) =>
     onChange({ ...filters, [key]: value || undefined, page: 1 })
+
+  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([])
+
+  useEffect(() => {
+    if (!filters.skills?.length) setSelectedSkills([])
+  }, [filters.skills?.length])
+
+  const handleSkillsChange = (skills: Skill[]) => {
+    setSelectedSkills(skills)
+    onChange({ ...filters, skills: skills.length ? skills.map((s) => s.name) : undefined, page: 1 })
+  }
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
@@ -80,6 +94,14 @@ export default function InternshipFilters({ filters, onChange }: InternshipFilte
         />
         <label htmlFor="compat" className="text-sm text-gray-700">Совместимо с учёбой</label>
       </div>
+
+      <SkillsAutocomplete
+        label="Навыки"
+        value={selectedSkills}
+        onChange={handleSkillsChange}
+        placeholder="Python, React..."
+        showHint={false}
+      />
 
       <Input
         label="Минимальная зарплата (₽)"

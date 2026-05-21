@@ -371,7 +371,7 @@ class Article(db.Model):
 
 
 class NewsPost(db.Model):
-    """Новостная лента — апдейты о стажировках, событиях вузов."""
+    """Новостная лента — апдейты о вакансиях, событиях вузов."""
     __tablename__ = "news_posts"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
@@ -417,7 +417,7 @@ class Notification(db.Model):
 
 
 class Review(db.Model):
-    """Отзыв стажёра о компании/стажировке."""
+    """Отзыв стажёра о компании/вакансии."""
     __tablename__ = "reviews"
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)

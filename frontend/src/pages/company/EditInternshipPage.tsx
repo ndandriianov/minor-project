@@ -26,7 +26,7 @@ export default function EditInternshipPage() {
       <button onClick={() => navigate(-1)} className="text-sm text-blue-600 hover:underline mb-4 block">
         ← Назад
       </button>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Редактировать стажировку</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Редактировать вакансию</h1>
       <InternshipForm key={internship.id} initial={internship} onSubmit={handleSubmit} loading={saving} />
     </div>
   )

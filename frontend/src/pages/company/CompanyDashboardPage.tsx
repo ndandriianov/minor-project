@@ -90,8 +90,8 @@ export default function CompanyDashboardPage() {
 
       <div className="grid sm:grid-cols-2 gap-3">
         {[
-          { to: '/company/internships/new', emoji: '➕', label: 'Создать стажировку', desc: 'Разместить новую вакансию' },
-          { to: '/company/internships', emoji: '📋', label: 'Мои стажировки', desc: 'Управление и просмотр откликов' },
+          { to: '/company/internships/new', emoji: '➕', label: 'Создать вакансию', desc: 'Разместить новую вакансию' },
+          { to: '/company/internships', emoji: '📋', label: 'Мои вакансии', desc: 'Управление и просмотр откликов' },
           { to: '/company/applications', emoji: '📨', label: 'Все отклики', desc: 'Общий inbox по всем вакансиям' },
           ...(user?.is_b2b ? [
             { to: '/company/students/search', emoji: '🔍', label: 'Поиск студентов', desc: 'B2B: поиск кандидатов по фильтрам' },

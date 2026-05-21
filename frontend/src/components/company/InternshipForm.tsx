@@ -90,7 +90,7 @@ export default function InternshipForm({ initial, onSubmit, loading }: Internshi
         <h2 className="font-semibold text-gray-800">Зарплата и местоположение</h2>
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" checked={form.is_paid} onChange={(e) => set('is_paid', e.target.checked)} className="w-4 h-4 accent-blue-600" />
-          Оплачиваемая стажировка
+          Оплачиваемая вакансия
         </label>
         {form.is_paid && (
           <div className="grid grid-cols-2 gap-3">
@@ -110,7 +110,7 @@ export default function InternshipForm({ initial, onSubmit, loading }: Internshi
       </section>
 
       <Button type="submit" loading={loading} size="lg">
-        {initial ? 'Сохранить изменения' : 'Создать стажировку'}
+        {initial ? 'Сохранить изменения' : 'Создать вакансию'}
       </Button>
     </form>
   )

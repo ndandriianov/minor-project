@@ -16,10 +16,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col items-center text-center py-16 px-4">
       <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-        Найди стажировку своей мечты
+        Найди вакансию своей мечты
       </h1>
       <p className="text-lg text-gray-500 mb-10 max-w-xl">
-        Сотни актуальных стажировок от ведущих компаний. Фильтруй по городу, формату, зарплате и навыкам.
+        Сотни актуальных вакансий от ведущих стартапов. Фильтруй по городу, формату, зарплате и навыкам.
       </p>
 
       <form onSubmit={handleSearch} className="flex gap-2 w-full max-w-lg mb-16">
@@ -37,7 +37,7 @@ export default function HomePage() {
 
       <div className="grid sm:grid-cols-3 gap-6 w-full max-w-3xl text-left">
         {[
-          { emoji: '🎯', title: 'Точные рекомендации', desc: 'Система подбирает стажировки под ваш профиль и навыки' },
+          { emoji: '🎯', title: 'Точные рекомендации', desc: 'Система подбирает вакансии под ваш профиль и навыки' },
           { emoji: '🏢', title: 'Проверенные компании', desc: 'Все работодатели проходят проверку модераторами' },
           { emoji: '📋', title: 'Удобный отклик', desc: 'Откликайтесь в один клик, отслеживайте статус заявок' },
         ].map((item) => (

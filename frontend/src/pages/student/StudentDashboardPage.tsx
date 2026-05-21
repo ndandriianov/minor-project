@@ -37,7 +37,7 @@ export default function StudentDashboardPage() {
       <div className="grid sm:grid-cols-2 gap-3">
         {[
           { to: '/student/recommendations', emoji: '🎯', label: 'Рекомендации', desc: 'Подборка под ваш профиль' },
-          { to: '/internships', emoji: '🔍', label: 'Все стажировки', desc: 'Поиск с фильтрами' },
+          { to: '/internships', emoji: '🔍', label: 'Все вакансии', desc: 'Поиск с фильтрами' },
           { to: '/student/profile', emoji: '👤', label: 'Мой профиль', desc: 'Навыки, резюме, предпочтения' },
           { to: '/student/applications', emoji: '📋', label: 'Мои отклики', desc: 'Статусы и история' },
         ].map((item) => (

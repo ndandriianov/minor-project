@@ -211,6 +211,7 @@ export interface InternshipFilters {
   compatible_with_study?: boolean
   min_salary?: number
   max_hours?: number
+  skills?: string[]
   sort?: 'newest' | 'salary_desc' | 'deadline'
   page?: number
   per_page?: number

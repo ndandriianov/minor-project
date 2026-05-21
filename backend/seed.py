@@ -133,24 +133,24 @@ def seed():
         # ── Компании ──
         companies_data = [
             {
-                "email": "hr@yandex.ru", "password": "password123",
-                "name": "Яндекс", "description": "Технологическая компания",
-                "website": "https://yandex.ru", "city": "Москва",
+                "email": "hr@mindbox.ru", "password": "password123",
+                "name": "Mindbox", "description": "Платформа автоматизации маркетинга",
+                "website": "https://mindbox.ru", "city": "Москва",
             },
             {
-                "email": "hr@sber.ru", "password": "password123",
-                "name": "Сбер", "description": "Крупнейший банк России",
-                "website": "https://sber.ru", "city": "Москва",
+                "email": "hr@calltouch.ru", "password": "password123",
+                "name": "Calltouch", "description": "Платформа аналитики и маркетинга",
+                "website": "https://calltouch.ru", "city": "Москва",
             },
             {
-                "email": "hr@vk.ru", "password": "password123",
-                "name": "VK", "description": "Социальная сеть и экосистема",
-                "website": "https://vk.com", "city": "Санкт-Петербург",
+                "email": "hr@smartcat.io", "password": "password123",
+                "name": "Smartcat", "description": "AI-платформа для локализации контента",
+                "website": "https://smartcat.io", "city": "Санкт-Петербург",
             },
             {
-                "email": "hr@tinkoff.ru", "password": "password123",
-                "name": "Т-Банк", "description": "Онлайн-банк и финтех",
-                "website": "https://tinkoff.ru", "city": "Москва",
+                "email": "hr@sendsay.ru", "password": "password123",
+                "name": "Sendsay", "description": "Платформа омниканальных коммуникаций",
+                "website": "https://sendsay.ru", "city": "Москва",
             },
         ]
 
@@ -177,7 +177,7 @@ def seed():
             {
                 "company": 0, "title": "Стажёр-разработчик Python",
                 "direction": "IT", "work_format": "hybrid",
-                "description": "Разработка микросервисов на Python. Работа в продуктовой команде Яндекс.Маркета.",
+                "description": "Разработка микросервисов на Python. Работа в продуктовой команде Mindbox.",
                 "requirements": "Python, знание SQL, базовое понимание REST API.",
                 "selection_stages": "Тестовое задание → Техническое интервью → Финальное собеседование",
                 "schedule": "Свободный", "min_hours": 20, "max_hours": 40,
@@ -216,7 +216,7 @@ def seed():
             {
                 "company": 1, "title": "Стажёр Data Science",
                 "direction": "IT", "work_format": "remote",
-                "description": "Работа с ML-моделями в команде AI Lab Сбера. Реальные задачи NLP и CV.",
+                "description": "Работа с ML-моделями в аналитической команде Calltouch. Реальные задачи NLP и CV.",
                 "requirements": "Python, библиотеки ML (scikit-learn, PyTorch), математическая статистика.",
                 "selection_stages": "Тестовое → Техническое интервью → Оффер",
                 "schedule": "Свободный", "min_hours": 20, "max_hours": 40,
@@ -229,7 +229,7 @@ def seed():
             {
                 "company": 2, "title": "Стажёр Frontend-разработчик",
                 "direction": "IT", "work_format": "office",
-                "description": "Разработка интерфейсов ВКонтакте. Стек: React, TypeScript.",
+                "description": "Разработка интерфейсов платформы Smartcat. Стек: React, TypeScript.",
                 "requirements": "JavaScript/TypeScript, React, HTML/CSS, Git.",
                 "selection_stages": "Тестовое → Код-ревью → Собеседование",
                 "schedule": "5/2", "min_hours": 40, "max_hours": 40,
@@ -242,7 +242,7 @@ def seed():
             {
                 "company": 3, "title": "Стажёр-дизайнер продукта",
                 "direction": "Дизайн", "work_format": "remote",
-                "description": "Участие в дизайне мобильного приложения Т-Банка. UX-исследования, макеты в Figma.",
+                "description": "Участие в дизайне платформы Sendsay. UX-исследования, макеты в Figma.",
                 "requirements": "Figma, понимание UX/UI, портфолио.",
                 "selection_stages": "Портфолио → Тестовое задание → Финал",
                 "schedule": "Свободный", "min_hours": 10, "max_hours": 20,
@@ -268,7 +268,7 @@ def seed():
             {
                 "company": 2, "title": "Стажёр контент-менеджер",
                 "direction": "Маркетинг", "work_format": "remote",
-                "description": "Создание контента для сообществ VK, работа с редакцией, аналитика публикаций.",
+                "description": "Создание контента для блога и каналов Smartcat, работа с редакцией, аналитика публикаций.",
                 "requirements": "Грамотный русский язык, чувство стиля, знание соцсетей.",
                 "selection_stages": "Тестовое задание → Собеседование",
                 "schedule": "Свободный", "min_hours": 10, "max_hours": 20,
@@ -322,13 +322,13 @@ def seed():
             student_id=student_objects[0].id,
             internship_id=internship_objects[0].id,
             status="interview",
-            cover_letter="Хочу пройти стажировку в Яндексе, у меня есть опыт с Python.",
+            cover_letter="Хочу пройти вакансию в Mindbox, у меня есть опыт с Python.",
         )
         app2 = Application(
             student_id=student_objects[1].id,
             internship_id=internship_objects[2].id,
             status="applied",
-            cover_letter="Интересуюсь маркетингом, веду блог в ВК.",
+            cover_letter="Интересуюсь маркетингом, слежу за трендами в digital-коммуникациях.",
         )
         app3 = Application(
             student_id=student_objects[2].id,
@@ -371,7 +371,7 @@ def seed():
                 category="resume",
                 body=(
                     "Короткое (3–5 предложений) письмо, в котором вы объясняете, почему вам интересна "
-                    "именно эта стажировка, и приводите 1–2 конкретных факта из своего опыта, "
+                    "именно эта вакансия, и приводите 1–2 конкретных факта из своего опыта, "
                     "которые подтверждают, что вы справитесь."
                 ),
                 image_url="",
@@ -382,15 +382,15 @@ def seed():
         # ── Новости ──
         news = [
             NewsPost(
-                title="Открыт набор на летнюю стажировку Яндекса",
-                body="Яндекс открыл набор на летние стажировки 2026 года для студентов IT-направлений. "
+                title="Открыт набор на летнюю вакансию в Mindbox",
+                body="Mindbox открыл набор на летние вакансии 2026 года для студентов IT-направлений. "
                      "Подавайте заявки до конца мая.",
                 category="internship",
             ),
             NewsPost(
-                title="ВШЭ и Сбер запустили совместный курс по ML",
-                body="Студенты ВШЭ получили возможность пройти курс по машинному обучению "
-                     "с практикой в командах AI Lab Сбера.",
+                title="ВШЭ и Calltouch запустили совместный курс по аналитике",
+                body="Студенты ВШЭ получили возможность пройти курс по маркетинговой аналитике "
+                     "с практикой в команде Calltouch.",
                 category="university",
             ),
             NewsPost(
@@ -430,10 +430,10 @@ def seed():
         print("  Студент:  ivan@student.ru / password123")
         print("  Студент:  maria@student.ru / password123")
         print("  Студент:  alex@student.ru / password123")
-        print("  Компания: hr@yandex.ru / password123")
-        print("  Компания: hr@sber.ru / password123")
-        print("  Компания: hr@vk.ru / password123")
-        print("  Компания: hr@tinkoff.ru / password123")
+        print("  Компания: hr@mindbox.ru / password123")
+        print("  Компания: hr@calltouch.ru / password123")
+        print("  Компания: hr@smartcat.io / password123")
+        print("  Компания: hr@sendsay.ru / password123")
         print("  Админ:    admin@platform.ru / password123")
 
 

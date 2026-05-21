@@ -27,7 +27,7 @@ export default function Navbar() {
         </NavLink>
 
         <div className="flex items-center gap-1">
-          <NavLink to="/internships" className={link}>Все стажировки</NavLink>
+          <NavLink to="/internships" className={link}>Все вакансии</NavLink>
 
           {/* Публичные разделы — только для не-админов */}
           {user?.role !== 'admin' && (
@@ -68,7 +68,7 @@ export default function Navbar() {
             </>
           ) : user?.role === 'company' ? (
             <>
-              <NavLink to="/company/internships" className={link}>Мои стажировки</NavLink>
+              <NavLink to="/company/internships" className={link}>Мои вакансии</NavLink>
               <NavLink to="/company/applications" className={link}>Отклики</NavLink>
               {user.is_b2b && (
                 <NavLink to="/company/students/search" className={link}>Поиск студентов</NavLink>

@@ -851,8 +851,15 @@ def list_internships():
     if search := request.args.get("search"):
         pattern = f"%{search}%"
         query = query.filter(
-            db.or_(Internship.title.ilike(pattern), Internship.description.ilike(pattern))
+            db.or_(
+                Internship.title.ilike(pattern),
+                Internship.description.ilike(pattern),
+                Internship.required_skills.any(Skill.name.ilike(pattern)),
+            )
         )
+    if skill_names := request.args.getlist("skills"):
+        for sk in skill_names:
+            query = query.filter(Internship.required_skills.any(Skill.name.ilike(sk)))
 
     sort = request.args.get("sort", "newest")
     # Промо-вакансии всегда сверху
@@ -868,7 +875,7 @@ def list_internships():
 
 @app.route("/api/internships/<int:internship_id>", methods=["GET"])
 def get_internship(internship_id):
-    """Карточка стажировки (увеличивает счётчик просмотров).
+    """Карточка вакансии (увеличивает счётчик просмотров).
     ---
     tags: [3. Стажировки]
     """
@@ -960,7 +967,7 @@ def _compute_recommendations(student, basic=True):
 @app.route("/api/company/internships", methods=["POST"])
 @role_required("company")
 def create_internship(user):
-    """Создать стажировку (учитывает лимит размещения).
+    """Создать вакансию (учитывает лимит размещения).
     ---
     tags: [4. Компания]
     """
@@ -1035,7 +1042,7 @@ def list_company_internships(user):
 @app.route("/api/company/internships/<int:internship_id>", methods=["PUT"])
 @role_required("company")
 def update_internship(user, internship_id):
-    """Редактировать стажировку.
+    """Редактировать вакансию.
     ---
     tags: [4. Компания]
     """
@@ -1072,7 +1079,7 @@ def update_internship(user, internship_id):
 @app.route("/api/company/internships/<int:internship_id>", methods=["DELETE"])
 @role_required("company")
 def delete_internship(user, internship_id):
-    """Удалить стажировку.
+    """Удалить вакансию.
     ---
     tags: [4. Компания]
     """
@@ -1140,7 +1147,7 @@ def promote_internship(user, internship_id):
 @app.route("/api/applications", methods=["POST"])
 @role_required("student")
 def apply_to_internship(user):
-    """Откликнуться на стажировку.
+    """Откликнуться на вакансию.
     ---
     tags: [5. Отклики]
     security:
@@ -1166,7 +1173,7 @@ def apply_to_internship(user):
     if not internship or internship.moderation_status != "published":
         return jsonify({"error": "Стажировка не найдена или не опубликована"}), 404
     if Application.query.filter_by(student_id=user.student.id, internship_id=internship_id).first():
-        return jsonify({"error": "Вы уже откликнулись на эту стажировку"}), 409
+        return jsonify({"error": "Вы уже откликнулись на эту вакансию"}), 409
 
     application = Application(
         student_id=user.student.id, internship_id=internship_id,
@@ -1313,7 +1320,7 @@ def update_application_status(user, application_id):
 @app.route("/api/bookmarks", methods=["POST"])
 @role_required("student")
 def add_bookmark(user):
-    """Отложить стажировку.
+    """Отложить вакансию.
     ---
     tags: [6. Закладки]
     security:
@@ -1759,7 +1766,7 @@ def mark_all_read():
 @app.route("/api/reviews", methods=["POST"])
 @role_required("student")
 def create_review(user):
-    """Оставить отзыв о компании/стажировке.
+    """Оставить отзыв о компании/вакансии.
     ---
     tags: [12. Отзывы]
     security:
@@ -1822,7 +1829,7 @@ def list_company_reviews(company_id):
 
 @app.route("/api/internships/<int:internship_id>/reviews", methods=["GET"])
 def list_internship_reviews(internship_id):
-    """Отзывы по стажировке.
+    """Отзывы по вакансии.
     ---
     tags: [12. Отзывы]
     """
@@ -2204,7 +2211,7 @@ def ai_resume_adapt(user):
     internship_id = data.get("internship_id")
     intern = db.session.get(Internship, internship_id) if internship_id else None
     if not intern:
-        return validation_error("internship_id обязателен и должен указывать на существующую стажировку")
+        return validation_error("internship_id обязателен и должен указывать на существующую вакансию")
 
     student = user.student
     skill_names = [s.name for s in student.skills]

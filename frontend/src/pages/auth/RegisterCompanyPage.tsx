@@ -28,7 +28,7 @@ export default function RegisterCompanyPage() {
     <div className="max-w-md mx-auto mt-12">
       <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Регистрация компании</h1>
-        <p className="text-sm text-gray-500 mb-6">Размещайте стажировки и находите лучших кандидатов</p>
+        <p className="text-sm text-gray-500 mb-6">Размещайте вакансии и находите лучших кандидатов</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input label="Название компании *" required value={name} onChange={(e) => setName(e.target.value)} />
