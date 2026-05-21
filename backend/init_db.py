@@ -1,6 +1,6 @@
 import os
 
-from app import app, ensure_default_settings
+from app import app
 from models import db, User
 from seed import seed
 
@@ -48,7 +48,6 @@ def init_db():
         os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
         db.create_all()
         _migrate_schema()
-        ensure_default_settings()
 
         if os.environ.get("SEED_DB", "1") == "1" and User.query.count() == 0:
             seed()
