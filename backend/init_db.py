@@ -49,7 +49,16 @@ def init_db():
         db.create_all()
         _migrate_schema()
 
-        if os.environ.get("SEED_DB", "1") == "1" and User.query.count() == 0:
+        should_seed = (
+            os.environ.get("SEED_DB", "1") == "1"
+            and User.query.count() == 0
+        )
+        # Освобождаем соединения пула, чтобы seed мог делать
+        # drop_all/create_all без дедлока на Postgres
+        db.session.remove()
+        db.engine.dispose()
+
+        if should_seed:
             seed()
 
 
