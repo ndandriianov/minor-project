@@ -1,12 +1,16 @@
 import os
 
-from app import app
+from app import app, ensure_default_settings
 from models import db, User
 from seed import seed
 
 
 def _migrate_schema():
-    """Add columns that were added after initial schema creation."""
+    """Добавляет колонки, которых нет в существующей схеме.
+    Работает только для SQLite — для Postgres миграции делает SQLAlchemy/Alembic."""
+    if db.engine.dialect.name != "sqlite":
+        return
+
     conn = db.engine.raw_connection()
     cur = conn.cursor()
 
@@ -44,6 +48,7 @@ def init_db():
         os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
         db.create_all()
         _migrate_schema()
+        ensure_default_settings()
 
         if os.environ.get("SEED_DB", "1") == "1" and User.query.count() == 0:
             seed()
