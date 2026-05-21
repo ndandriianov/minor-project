@@ -51,15 +51,15 @@ export default function MyInternshipsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Мои стажировки</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Мои вакансии</h1>
         <Button onClick={() => navigate('/company/internships/new')}>+ Создать</Button>
       </div>
 
       {internships.length === 0 ? (
         <EmptyState
           title="Нет стажировок"
-          description="Создайте первую стажировку, чтобы начать поиск кандидатов"
-          action={<Button onClick={() => navigate('/company/internships/new')}>Создать стажировку</Button>}
+          description="Создайте первую вакансию, чтобы начать поиск кандидатов"
+          action={<Button onClick={() => navigate('/company/internships/new')}>Создать вакансию</Button>}
         />
       ) : (
         <div className="space-y-3">
@@ -128,13 +128,13 @@ export default function MyInternshipsPage() {
       <Modal
         isOpen={deleteId !== null}
         onClose={() => setDeleteId(null)}
-        title="Удалить стажировку"
+        title="Удалить вакансию"
         onConfirm={handleDelete}
         confirmText="Удалить"
         confirmVariant="danger"
         loading={deleting}
       >
-        Это действие нельзя отменить. Все отклики на эту стажировку также будут удалены.
+        Это действие нельзя отменить. Все отклики на эту вакансию также будут удалены.
       </Modal>
 
       <Modal

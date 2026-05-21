@@ -75,10 +75,10 @@ baseUrl: 'http://localhost:5051'
 | Студент  | ivan@student.ru   | password123  |
 | Студент  | maria@student.ru  | password123  |
 | Студент  | alex@student.ru   | password123  |
-| Компания | hr@yandex.ru      | password123  |
-| Компания | hr@sber.ru        | password123  |
-| Компания | hr@vk.ru          | password123  |
-| Компания | hr@tinkoff.ru     | password123  |
+| Компания | hr@mindbox.ru     | password123  |
+| Компания | hr@calltouch.ru   | password123  |
+| Компания | hr@smartcat.io    | password123  |
+| Компания | hr@sendsay.ru     | password123  |
 | Админ    | admin@platform.ru | password123  |
 
 ## Основные маршруты
@@ -87,7 +87,7 @@ baseUrl: 'http://localhost:5051'
 
 - `/` — главная
 - `/internships` — список стажировок
-- `/internships/:id` — карточка стажировки
+- `/internships/:id` — карточка вакансии
 - `/login` — вход
 - `/register/student` — регистрация студента
 - `/register/company` — регистрация компании

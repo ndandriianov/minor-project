@@ -39,10 +39,10 @@ docker compose up --build
 | Студент  | ivan@student.ru   | password123  |
 | Студент  | maria@student.ru  | password123  |
 | Студент  | alex@student.ru   | password123  |
-| Компания | hr@yandex.ru      | password123  |
-| Компания | hr@sber.ru        | password123  |
-| Компания | hr@vk.ru          | password123  |
-| Компания | hr@tinkoff.ru     | password123  |
+| Компания | hr@mindbox.ru     | password123  |
+| Компания | hr@calltouch.ru   | password123  |
+| Компания | hr@smartcat.io    | password123  |
+| Компания | hr@sendsay.ru     | password123  |
 | Админ    | admin@platform.ru | password123  |
 
 ## Структура проекта
@@ -111,7 +111,7 @@ backend/
 
 | Метод | URL | Описание |
 |-------|-----|----------|
-| POST   | `/api/bookmarks` | Отложить стажировку |
+| POST   | `/api/bookmarks` | Отложить вакансию |
 | GET    | `/api/bookmarks` | Список отложенных |
 | DELETE | `/api/bookmarks/<internship_id>` | Убрать из отложенных |
 
@@ -119,7 +119,7 @@ backend/
 
 | Метод | URL | Описание |
 |-------|-----|----------|
-| POST   | `/api/company/internships` | Создать стажировку |
+| POST   | `/api/company/internships` | Создать вакансию |
 | GET    | `/api/company/internships` | Мои вакансии + статусы модерации |
 | PUT    | `/api/company/internships/<id>` | Редактировать |
 | DELETE | `/api/company/internships/<id>` | Удалить |
@@ -164,7 +164,7 @@ backend/
 |-------|-----|----------|
 | POST | `/api/reviews` | Оставить отзыв (rating 1..5) |
 | GET  | `/api/companies/<id>/reviews` | Отзывы по компании |
-| GET  | `/api/internships/<id>/reviews` | Отзывы по стажировке |
+| GET  | `/api/internships/<id>/reviews` | Отзывы по вакансии |
 
 ### Подписки и платежи (Freemium / B2B)
 

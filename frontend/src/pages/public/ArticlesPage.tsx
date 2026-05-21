@@ -33,7 +33,7 @@ export default function ArticlesPage() {
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Статьи</h1>
-          <p className="text-gray-500 text-sm mt-1">Советы по поиску стажировки и карьерному росту</p>
+          <p className="text-gray-500 text-sm mt-1">Советы по поиску вакансии и карьерному росту</p>
         </div>
         <div className="w-full sm:w-48">
           <Select

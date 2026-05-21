@@ -36,7 +36,7 @@ export default function InternshipApplicantsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <button onClick={() => navigate(-1)} className="text-sm text-blue-600 hover:underline mb-4 block">
-        ← Назад к стажировкам
+        ← Назад к вакансиям
       </button>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
         Отклики ({applications.length})

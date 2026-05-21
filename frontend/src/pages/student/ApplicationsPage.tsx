@@ -53,8 +53,8 @@ export default function ApplicationsPage() {
       {applications.length === 0 ? (
         <EmptyState
           title="Откликов пока нет"
-          description="Найдите подходящую стажировку и откликнитесь"
-          action={<Button onClick={() => navigate('/internships')}>Найти стажировку</Button>}
+          description="Найдите подходящую вакансию и откликнитесь"
+          action={<Button onClick={() => navigate('/internships')}>Найти вакансию</Button>}
         />
       ) : (
         <div className="space-y-3">

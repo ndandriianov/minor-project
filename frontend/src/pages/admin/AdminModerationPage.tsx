@@ -25,7 +25,7 @@ export default function AdminModerationPage() {
       <p className="text-sm text-gray-500 mb-6">Стажировок на проверке: {pending.length}</p>
 
       {pending.length === 0 ? (
-        <EmptyState title="Нет заявок на модерацию" description="Все стажировки проверены" />
+        <EmptyState title="Нет заявок на модерацию" description="Все вакансии проверены" />
       ) : (
         <div className="space-y-4">
           {pending.map((internship) => (

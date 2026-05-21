@@ -10,7 +10,7 @@
 1. **Справочники с автокомплитом** — `/api/universities`, `/api/faculties`, `/api/cities`.
 2. **Статьи и новости** — `/api/articles`, `/api/news`.
 3. **Уведомления** — `/api/notifications` (создаются автоматически).
-4. **Отзывы** — `/api/reviews` + список по компании/стажировке.
+4. **Отзывы** — `/api/reviews` + список по компании/вакансии.
 5. **Подписки** — Free / Premium (студент, 499₽/мес) / B2B (компания, 9900₽/мес).
 6. **Платежи через DonationAlerts** — `/api/subscriptions/checkout` возвращает донат-URL и код для сообщения.
 7. **ИИ-резюме** (Premium) — `/api/students/resume/ai-adapt`.

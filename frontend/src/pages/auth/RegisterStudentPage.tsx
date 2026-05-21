@@ -47,7 +47,7 @@ export default function RegisterStudentPage() {
     <div className="max-w-lg mx-auto mt-8">
       <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Регистрация студента</h1>
-        <p className="text-sm text-gray-500 mb-6">Создайте аккаунт, чтобы откликаться на стажировки</p>
+        <p className="text-sm text-gray-500 mb-6">Создайте аккаунт, чтобы откликаться на вакансии</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">

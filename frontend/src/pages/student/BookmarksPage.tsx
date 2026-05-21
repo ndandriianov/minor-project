@@ -16,13 +16,13 @@ export default function BookmarksPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Сохранённые стажировки</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Сохранённые вакансии</h1>
 
       {bookmarks.length === 0 ? (
         <EmptyState
           title="Нет сохранённых стажировок"
-          description="Нажимайте 🤍 на карточках, чтобы сохранять интересные стажировки"
-          action={<Button onClick={() => navigate('/internships')}>Посмотреть стажировки</Button>}
+          description="Нажимайте 🤍 на карточках, чтобы сохранять интересные вакансии"
+          action={<Button onClick={() => navigate('/internships')}>Посмотреть вакансии</Button>}
         />
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -216,7 +216,7 @@ export default function InternshipDetailPage() {
               onClick={() => isBookmarked ? removeBookmark(internship.id) : addBookmark(internship.id)}
               className="text-2xl text-gray-400 hover:text-blue-600 transition-colors"
             >
-              {isBookmarked ? '🔖' : '🏷️'}
+              {isBookmarked ? '❤️' : '🤍'}
             </button>
           )}
         </div>
@@ -327,7 +327,7 @@ export default function InternshipDetailPage() {
       <Modal
         isOpen={applyOpen}
         onClose={() => setApplyOpen(false)}
-        title="Отклик на стажировку"
+        title="Отклик на вакансию"
         onConfirm={handleApply}
         confirmText="Отправить отклик"
         loading={applying}
@@ -335,7 +335,7 @@ export default function InternshipDetailPage() {
         <p className="mb-3">Вы откликаетесь на: <strong>{internship.title}</strong></p>
         <Textarea
           label="Сопроводительное письмо (необязательно)"
-          placeholder="Расскажите, почему вы подходите для этой стажировки..."
+          placeholder="Расскажите, почему вы подходите для этой вакансии..."
           rows={5}
           value={coverLetter}
           onChange={(e) => setCoverLetter(e.target.value)}
