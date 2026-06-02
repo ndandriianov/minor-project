@@ -1,10 +1,98 @@
 [
   {
-    "student_email": "ivan@student.ru",
-    "internship_title": "Стажёр Data Science"
+    "student_email": "ivan.petrov@student.ru",
+    "internship_title": "ML Intern, Conversation Intelligence"
   },
   {
-    "student_email": "maria@student.ru",
-    "internship_title": "Стажёр-дизайнер продукта"
+    "student_email": "ivan.petrov@student.ru",
+    "internship_title": "Backend Intern, Logistics API"
+  },
+  {
+    "student_email": "maria.smirnova@student.ru",
+    "internship_title": "Growth Intern, D2C Brands"
+  },
+  {
+    "student_email": "maria.smirnova@student.ru",
+    "internship_title": "Product Designer Intern, Learning Paths"
+  },
+  {
+    "student_email": "alexey.kozlov@student.ru",
+    "internship_title": "Computer Vision Intern, Satellite Imagery"
+  },
+  {
+    "student_email": "alexey.kozlov@student.ru",
+    "internship_title": "Product Analyst Intern, Retention"
+  },
+  {
+    "student_email": "daria.volkova@student.ru",
+    "internship_title": "Junior Product Manager Intern"
+  },
+  {
+    "student_email": "daria.volkova@student.ru",
+    "internship_title": "No-code Solutions Intern"
+  },
+  {
+    "student_email": "timur.galeev@student.ru",
+    "internship_title": "ML Intern, Conversation Intelligence"
+  },
+  {
+    "student_email": "timur.galeev@student.ru",
+    "internship_title": "Computer Vision Intern, Satellite Imagery"
+  },
+  {
+    "student_email": "polina.orlova@student.ru",
+    "internship_title": "Finance Data Analyst Intern"
+  },
+  {
+    "student_email": "polina.orlova@student.ru",
+    "internship_title": "Business Analyst Intern, HealthTech"
+  },
+  {
+    "student_email": "nikita.sokolov@student.ru",
+    "internship_title": "Frontend Intern, React Dashboard"
+  },
+  {
+    "student_email": "nikita.sokolov@student.ru",
+    "internship_title": "Platform Frontend Intern"
+  },
+  {
+    "student_email": "anna.belova@student.ru",
+    "internship_title": "Junior Product Manager Intern"
+  },
+  {
+    "student_email": "anna.belova@student.ru",
+    "internship_title": "Product Analytics Intern"
+  },
+  {
+    "student_email": "sergey.morozov@student.ru",
+    "internship_title": "QA Intern, Patient App"
+  },
+  {
+    "student_email": "sergey.morozov@student.ru",
+    "internship_title": "QA Intern, Payments Integrations"
+  },
+  {
+    "student_email": "elena.kim@student.ru",
+    "internship_title": "Product Analyst Intern, Demand Forecasting"
+  },
+  {
+    "student_email": "elena.kim@student.ru",
+    "internship_title": "ESG Data Analyst Intern"
+  },
+  {
+    "student_email": "kirill.egorov@student.ru",
+    "internship_title": "Growth Marketing Intern"
+  },
+  {
+    "student_email": "kirill.egorov@student.ru",
+    "internship_title": "Growth Intern, D2C Brands"
+  },
+  {
+    "student_email": "sofia.gromova@student.ru",
+    "internship_title": "Vue Frontend Intern"
+  },
+  {
+    "student_email": "sofia.gromova@student.ru",
+    "internship_title": "Platform Frontend Intern"
   }
 ]

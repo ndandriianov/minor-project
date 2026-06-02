@@ -1,34 +1,102 @@
 [
   {
-    "email": "hr@mindbox.ru",
+    "email": "talent@nexora.ai",
     "password": "password123",
-    "name": "Mindbox",
-    "description": "Платформа автоматизации маркетинга",
-    "website": "https://mindbox.ru",
-    "city": "Москва"
+    "name": "Nexora AI",
+    "description": "B2B SaaS-стартап, который помогает отделам продаж расшифровывать звонки, выделять инсайты и прогнозировать сделки с помощью ML-моделей.",
+    "website": "https://nexora.ai",
+    "city": "Москва",
+    "posting_limit": 8,
+    "subscription": "b2b"
   },
   {
-    "email": "hr@calltouch.ru",
+    "email": "hr@finpilot.app",
     "password": "password123",
-    "name": "Calltouch",
-    "description": "Платформа аналитики и маркетинга",
-    "website": "https://calltouch.ru",
-    "city": "Москва"
+    "name": "FinPilot",
+    "description": "Финтех-приложение для малого бизнеса: платежный календарь, сверка операций, управленческая отчетность и рекомендации по cash flow.",
+    "website": "https://finpilot.app",
+    "city": "Санкт-Петербург",
+    "posting_limit": 6,
+    "subscription": "b2b"
   },
   {
-    "email": "hr@smartcat.io",
+    "email": "people@edumate.io",
     "password": "password123",
-    "name": "Smartcat",
-    "description": "AI-платформа для локализации контента",
-    "website": "https://smartcat.io",
-    "city": "Санкт-Петербург"
+    "name": "EduMate",
+    "description": "EdTech-платформа персональных траекторий обучения для школьников и студентов: диагностика навыков, наставники, AI-подбор курсов.",
+    "website": "https://edumate.io",
+    "city": "Казань",
+    "posting_limit": 6,
+    "subscription": "b2b"
   },
   {
-    "email": "hr@sendsay.ru",
+    "email": "careers@clinichub.health",
     "password": "password123",
-    "name": "Sendsay",
-    "description": "Платформа омниканальных коммуникаций",
-    "website": "https://sendsay.ru",
-    "city": "Москва"
+    "name": "ClinicHub",
+    "description": "HealthTech-стартап для частных клиник: онлайн-запись, CRM для врачей, аналитика загрузки кабинетов и интеграции с медсистемами.",
+    "website": "https://clinichub.health",
+    "city": "Москва",
+    "posting_limit": 7,
+    "subscription": "b2b"
+  },
+  {
+    "email": "jobs@logiq.delivery",
+    "password": "password123",
+    "name": "LogiQ",
+    "description": "Платформа оптимизации городской доставки для e-commerce: маршрутизация, прогноз ETA и контроль SLA в последней миле.",
+    "website": "https://logiq.delivery",
+    "city": "Новосибирск",
+    "posting_limit": 5,
+    "subscription": "premium"
+  },
+  {
+    "email": "team@greenbyte.energy",
+    "password": "password123",
+    "name": "GreenByte",
+    "description": "ClimateTech-команда, которая считает энергопотребление офисов и складов, находит точки экономии и строит панели устойчивого развития.",
+    "website": "https://greenbyte.energy",
+    "city": "Екатеринбург",
+    "posting_limit": 5,
+    "subscription": "premium"
+  },
+  {
+    "email": "hr@marketflow.ru",
+    "password": "password123",
+    "name": "MarketFlow",
+    "description": "MarTech-сервис для D2C-брендов: сквозная аналитика, сегментация покупателей, автоворонки и рекомендации по удержанию.",
+    "website": "https://marketflow.ru",
+    "city": "Москва",
+    "posting_limit": 7,
+    "subscription": "b2b"
+  },
+  {
+    "email": "join@terra-data.io",
+    "password": "password123",
+    "name": "TerraData",
+    "description": "GeoAI-стартап, который анализирует спутниковые снимки для агро, девелопмента и ритейла: от классификации земель до прогнозов спроса.",
+    "website": "https://terra-data.io",
+    "city": "Иннополис",
+    "posting_limit": 6,
+    "subscription": "b2b"
+  },
+  {
+    "email": "careers@foodcast.app",
+    "password": "password123",
+    "name": "Foodcast",
+    "description": "FoodTech-платформа прогнозирования спроса для ресторанных сетей: меню, закупки, списания и рекомендации по сменам.",
+    "website": "https://foodcast.app",
+    "city": "Нижний Новгород",
+    "posting_limit": 4,
+    "subscription": "premium"
+  },
+  {
+    "email": "people@codifylab.dev",
+    "password": "password123",
+    "name": "CodifyLab",
+    "description": "DevTools-стартап: low-code конструктор внутренних инструментов, интеграции с API и шаблоны операционных дашбордов.",
+    "website": "https://codifylab.dev",
+    "city": "Пермь",
+    "posting_limit": 5,
+    "subscription": "premium"
   }
 ]

@@ -1,16 +1,72 @@
 [
   {
-    "student_email": "ivan@student.ru",
-    "company_email": "hr@mindbox.ru",
-    "internship_title": "Стажёр-разработчик Python",
+    "student_email": "alexey.kozlov@student.ru",
+    "company_email": "talent@nexora.ai",
+    "internship_title": "ML Intern, Conversation Intelligence",
     "rating": 5,
-    "text": "Отличная команда и хорошее наставничество. Рекомендую."
+    "text": "Сильный процесс отбора: мини-кейс был похож на реальные задачи, а на интервью подробно разобрали метрики модели и продуктовый контекст."
   },
   {
-    "student_email": "alex@student.ru",
-    "company_email": "hr@calltouch.ru",
-    "internship_title": "Стажёр Data Science",
+    "student_email": "ivan.petrov@student.ru",
+    "company_email": "talent@nexora.ai",
+    "internship_title": "Backend Intern, Python Platform",
+    "rating": 5,
+    "text": "Понравилось, что после тестового дали подробный фидбэк по архитектуре и сразу рассказали, какие задачи будут у стажера в первые недели."
+  },
+  {
+    "student_email": "polina.orlova@student.ru",
+    "company_email": "hr@finpilot.app",
+    "internship_title": "Finance Data Analyst Intern",
+    "rating": 5,
+    "text": "Кейс был честный и практичный: нужно было разобраться в платежах и объяснить выводы бизнес-языком. Команда отвечает быстро."
+  },
+  {
+    "student_email": "daria.volkova@student.ru",
+    "company_email": "people@edumate.io",
+    "internship_title": "Product Designer Intern, Learning Paths",
     "rating": 4,
-    "text": "Интересные задачи, но процесс ревью можно было бы ускорить."
+    "text": "Хорошее портфолио-интервью и живой продуктовый разговор. Хотелось бы чуть заранее получать критерии оценки дизайн-задания."
+  },
+  {
+    "student_email": "anna.belova@student.ru",
+    "company_email": "careers@clinichub.health",
+    "internship_title": "Junior Product Manager Intern",
+    "rating": 5,
+    "text": "На интервью спрашивали не теорию, а как я бы разобрала фидбэк клиник и приоритизировала проблемы. Было полезно даже как тренировка."
+  },
+  {
+    "student_email": "sergey.morozov@student.ru",
+    "company_email": "careers@clinichub.health",
+    "internship_title": "QA Intern, Patient App",
+    "rating": 4,
+    "text": "Понятный QA-кейс и доброжелательная команда. Процесс занял около недели, статусы отклика обновлялись вовремя."
+  },
+  {
+    "student_email": "kirill.egorov@student.ru",
+    "company_email": "hr@marketflow.ru",
+    "internship_title": "Growth Intern, D2C Brands",
+    "rating": 4,
+    "text": "Интересный growth-кейс с реальными метриками. Интервью динамичное, но перед финалом хотелось бы больше информации о графике."
+  },
+  {
+    "student_email": "sofia.gromova@student.ru",
+    "company_email": "hr@marketflow.ru",
+    "internship_title": "Vue Frontend Intern",
+    "rating": 5,
+    "text": "Тестовое небольшое, но показательное: состояние фильтров, верстка и edge cases. После code review стало понятно, над чем расти."
+  },
+  {
+    "student_email": "nikita.sokolov@student.ru",
+    "company_email": "hr@finpilot.app",
+    "internship_title": "Frontend Intern, React Dashboard",
+    "rating": 5,
+    "text": "Очень предметный разговор про таблицы, графики и финансовые сценарии. Видно, что у команды взрослая инженерная культура."
+  },
+  {
+    "student_email": "timur.galeev@student.ru",
+    "company_email": "join@terra-data.io",
+    "internship_title": "Computer Vision Intern, Satellite Imagery",
+    "rating": 4,
+    "text": "Сложный, но честный ML-кейс. Понравилось, что обсуждали не только accuracy, но и ошибки на конкретных типах снимков."
   }
 ]
