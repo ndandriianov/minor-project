@@ -1,0 +1,16 @@
+[
+  {
+    "student_email": "ivan@student.ru",
+    "company_email": "hr@mindbox.ru",
+    "internship_title": "Стажёр-разработчик Python",
+    "rating": 5,
+    "text": "Отличная команда и хорошее наставничество. Рекомендую."
+  },
+  {
+    "student_email": "alex@student.ru",
+    "company_email": "hr@calltouch.ru",
+    "internship_title": "Стажёр Data Science",
+    "rating": 4,
+    "text": "Интересные задачи, но процесс ревью можно было бы ускорить."
+  }
+]

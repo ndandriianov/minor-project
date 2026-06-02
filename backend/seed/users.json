@@ -1,0 +1,8 @@
+[
+  {
+    "email": "admin@platform.ru",
+    "password": "password123",
+    "role": "admin",
+    "subscription": "free"
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "email": "ivan@student.ru",
+    "password": "password123",
+    "first_name": "Иван",
+    "last_name": "Петров",
+    "university": "НИУ ВШЭ",
+    "faculty": "Факультет компьютерных наук",
+    "course": 3,
+    "speciality": "Программная инженерия",
+    "city": "Москва",
+    "work_format": "hybrid",
+    "desired_hours": "20-40",
+    "skills": [
+      "Python",
+      "SQL",
+      "Git",
+      "JavaScript",
+      "React"
+    ],
+    "experience": "Учебные проекты с применением Python и SQL. Разработка клиент-серверных приложений.",
+    "bio": "Стажёр-разработчик Python. Готов развиваться в написании микросервисов и осваивать Docker.",
+    "subscription": "premium"
+  },
+  {
+    "email": "maria@student.ru",
+    "password": "password123",
+    "first_name": "Мария",
+    "last_name": "Сидорова",
+    "university": "МГУ",
+    "faculty": "Экономический факультет",
+    "course": 2,
+    "speciality": "Маркетинг",
+    "city": "Москва",
+    "work_format": "remote",
+    "desired_hours": "<20",
+    "skills": [
+      "Excel",
+      "Google Analytics",
+      "SMM",
+      "Копирайтинг",
+      "Figma"
+    ]
+  },
+  {
+    "email": "alex@student.ru",
+    "password": "password123",
+    "first_name": "Алексей",
+    "last_name": "Козлов",
+    "university": "ИТМО",
+    "faculty": "Факультет ИТ",
+    "course": 4,
+    "speciality": "Data Science",
+    "city": "Санкт-Петербург",
+    "work_format": "any",
+    "desired_hours": "20-40",
+    "skills": [
+      "Python",
+      "SQL",
+      "Machine Learning",
+      "Data Analysis",
+      "R",
+      "Power BI"
+    ]
+  }
+]

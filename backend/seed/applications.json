@@ -1,0 +1,19 @@
+[
+  {
+    "student_email": "ivan@student.ru",
+    "internship_title": "Стажёр-разработчик Python",
+    "status": "interview",
+    "cover_letter": "Хочу пройти вакансию в Mindbox, у меня есть опыт с Python."
+  },
+  {
+    "student_email": "maria@student.ru",
+    "internship_title": "Стажёр в команду маркетинга",
+    "status": "applied",
+    "cover_letter": "Интересуюсь маркетингом, слежу за трендами в digital-коммуникациях."
+  },
+  {
+    "student_email": "alex@student.ru",
+    "internship_title": "Стажёр Data Science",
+    "status": "applied"
+  }
+]

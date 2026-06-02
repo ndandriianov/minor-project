@@ -18,6 +18,15 @@ export APP_PORT=5051
 python3 app.py
 ```
 
+Seed-данные лежат в `backend/seed/` отдельными JSON-файлами:
+
+- `skills.json`, `cities.json`, `universities.json` — справочники.
+- `users.json`, `students.json`, `companies.json` — аккаунты и профили.
+- `internships.json`, `applications.json`, `bookmarks.json`, `reviews.json` — стажировки и связанные данные.
+- `articles.json`, `news.json` — контентные разделы.
+
+Связи между файлами задаются читаемыми ключами: `student_email`, `company_email`, `internship_title`.
+
 Сервер будет доступен на `http://localhost:<APP_PORT>` (по умолчанию `http://localhost:5051`).
 
 ## Запуск в Docker
@@ -52,6 +61,7 @@ backend/
 ├── app.py            # Главное приложение + все маршруты API
 ├── models.py         # Модели SQLAlchemy (User, Student, Company, Internship, ...)
 ├── seed.py           # Заполнение БД тестовыми данными
+├── seed/             # JSON-файлы с seed-данными
 ├── requirements.txt  # Зависимости Python
 └── uploads/          # Загруженные резюме (создаётся автоматически)
 ```

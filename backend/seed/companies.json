@@ -1,0 +1,34 @@
+[
+  {
+    "email": "hr@mindbox.ru",
+    "password": "password123",
+    "name": "Mindbox",
+    "description": "Платформа автоматизации маркетинга",
+    "website": "https://mindbox.ru",
+    "city": "Москва"
+  },
+  {
+    "email": "hr@calltouch.ru",
+    "password": "password123",
+    "name": "Calltouch",
+    "description": "Платформа аналитики и маркетинга",
+    "website": "https://calltouch.ru",
+    "city": "Москва"
+  },
+  {
+    "email": "hr@smartcat.io",
+    "password": "password123",
+    "name": "Smartcat",
+    "description": "AI-платформа для локализации контента",
+    "website": "https://smartcat.io",
+    "city": "Санкт-Петербург"
+  },
+  {
+    "email": "hr@sendsay.ru",
+    "password": "password123",
+    "name": "Sendsay",
+    "description": "Платформа омниканальных коммуникаций",
+    "website": "https://sendsay.ru",
+    "city": "Москва"
+  }
+]
