@@ -1,73 +1,73 @@
 [
   {
     "student_email": "lev.romanov@student.ru",
-    "internship_title": "Junior Backend Developer, Inventory Services",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "interview",
-    "cover_letter": "Здравствуйте! У меня есть учебный проект на FastAPI и PostgreSQL, Docker Compose и опыт интеграции с внешним API. Задачи ShelfMate с REST API, импортами данных и расчетными модулями хорошо совпадают с тем, куда я хочу расти как backend-разработчик."
+    "cover_letter": "Здравствуйте! У меня есть учебный проект на FastAPI и PostgreSQL, Docker Compose и опыт интеграции с внешним API. Задачи СкладМаркет с REST API, импортами данных и расчетными модулями хорошо совпадают с тем, куда я хочу расти как backend-разработчик."
   },
   {
     "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior Product Analyst, Rental Operations",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "applied",
-    "cover_letter": "Добрый день! У меня сильная база в SQL, анализе данных и A/B-тестах, поэтому интересны продуктовые метрики LeaseKit и работа с воронками заявок. С доменом недвижимости пока знаком поверхностно, но быстро разбираюсь в новых данных."
+    "cover_letter": "Добрый день! У меня сильная база в SQL, анализе данных и A/B-тестах, поэтому интересны продуктовые метрики ДомУчет и работа с воронками заявок. С доменом недвижимости пока знаком поверхностно, но быстро разбираюсь в новых данных."
   },
   {
     "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior Backend Developer, Inventory Services",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "applied",
     "cover_letter": "Здравствуйте! Я больше из data/ML-направления, но уверенно пишу на Python и SQL, работал с данными и хочу усилить инженерную часть. Понимаю, что FastAPI и PostgreSQL нужно будет подтянуть под ваши стандарты, готов показать код и быстро доучиться."
   },
   {
     "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior Data Analyst, Retail Forecasting",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "interview",
-    "cover_letter": "Здравствуйте! Делал модель прогнозирования оттока и анализировал метрики в Tableau, поэтому мне близки задачи прогноза спроса, ошибок модели и поиска аномалий. Готов сделать практический кейс на данных ShelfMate."
+    "cover_letter": "Здравствуйте! Делал модель прогнозирования оттока и анализировал метрики в Tableau, поэтому мне близки задачи по продажам, остаткам и поиску аномалий. Готов сделать практический кейс на данных СкладМаркет."
   },
   {
     "student_email": "timur.galeev@student.ru",
-    "internship_title": "Junior Backend Developer, Inventory Services",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "applied",
     "cover_letter": "Добрый день! У меня есть Python, PostgreSQL и Docker, а также опыт прототипа сервиса обработки заявок. Хочу развиваться ближе к production backend, поэтому задачи с импортом данных и фоновыми обработчиками выглядят подходящими."
   },
   {
     "student_email": "timur.galeev@student.ru",
-    "internship_title": "Junior Data Analyst, Retail Forecasting",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "rejected",
     "cover_letter": "Здравствуйте! Мне интересны прогнозирование и анализ ошибок, есть опыт ML-проектов и Data Analysis. При этом понимаю, что у меня меньше опыта с Excel/Power BI и регулярной операционной отчетностью, но готов закрывать этот пробел."
   },
   {
     "student_email": "polina.orlova@student.ru",
-    "internship_title": "Junior Product Analyst, Rental Operations",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "interview",
-    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт описания требований для CRM-проекта. Задачи LeaseKit с воронками, заявками жильцов и платежными сценариями хорошо ложатся на мой опыт в business/product analytics."
+    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт описания требований для CRM-проекта. Задачи ДомУчет с воронками, заявками жильцов и платежными сценариями хорошо ложатся на мой опыт в business/product analytics."
   },
   {
     "student_email": "polina.orlova@student.ru",
-    "internship_title": "Junior Data Analyst, Retail Forecasting",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "applied",
     "cover_letter": "Добрый день! Уверенно работаю с SQL, Excel и Power BI, поэтому могу помогать с выгрузками, отчетами и поиском аномалий. Ритейл-домен для меня новый, но задачи по метрикам и качеству данных очень интересны."
   },
   {
     "student_email": "anna.belova@student.ru",
-    "internship_title": "Junior Product Analyst, Rental Operations",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "withdrawn",
     "cover_letter": "Здравствуйте! У меня есть опыт customer development, backlog и базовой продуктовой аналитики в студенческом marketplace. После отклика поняла, что сейчас могу стабильно выделять меньше 20 часов в неделю, поэтому не хочу обещать нагрузку, которую не потяну."
   },
   {
     "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior Product Analyst, Rental Operations",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "interview",
-    "cover_letter": "Добрый день! Я работала с финансовой моделью, платежами, SQL и Power BI, поэтому мне близки платежные сценарии LeaseKit и отчеты для продуктовой команды. Хотела бы применить финансовую аналитику в B2B SaaS."
+    "cover_letter": "Добрый день! Я работала с финансовой моделью, платежами, SQL и Power BI, поэтому мне близки платежные сценарии ДомУчет и отчеты для продуктовой команды. Хотела бы применить финансовую аналитику в B2B-сервисе."
   },
   {
     "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior Data Analyst, Retail Forecasting",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "interview",
-    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт анализа платежей и cash flow. В вакансии ShelfMate заинтересовали прогнозы, остатки и понятные отчеты для клиентов; готова выполнить кейс в таблицах."
+    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт анализа платежей и cash flow. В вакансии СкладМаркет заинтересовали продажи, остатки и понятные отчеты для клиентов; готова выполнить кейс в таблицах."
   },
   {
     "student_email": "sergey.morozov@student.ru",
-    "internship_title": "Junior Backend Developer, Inventory Services",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "rejected",
     "cover_letter": "Здравствуйте! Я больше специализируюсь на QA, но работал с REST API, Postman, SQL и Git, поэтому хочу попробовать себя рядом с backend-командой. Понимаю, что Python и FastAPI пока не основной мой стек."
   }

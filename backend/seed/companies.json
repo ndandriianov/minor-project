@@ -1,20 +1,20 @@
 [
   {
-    "email": "hr@leasekit.ru",
+    "email": "hr@domuchet.ru",
     "password": "password123",
-    "name": "LeaseKit",
-    "description": "PropTech-стартап для управляющих компаний и арендодателей: учет договоров, заявки жильцов, сверка платежей и понятная отчетность по объектам.",
-    "website": "https://leasekit.ru",
+    "name": "ДомУчет",
+    "description": "Сервис для управляющих компаний и арендодателей: учет квартир, договоров, платежей и заявок жильцов в одном кабинете.",
+    "website": "https://domuchet.ru",
     "city": "Москва",
     "posting_limit": 4,
     "subscription": "free"
   },
   {
-    "email": "careers@shelfmate.io",
+    "email": "careers@skladmarket.ru",
     "password": "password123",
-    "name": "ShelfMate",
-    "description": "RetailTech-сервис для небольших сетей магазинов: прогноз остатков, контроль полок, рекомендации по заказам и отчеты для категорийных менеджеров.",
-    "website": "https://shelfmate.io",
+    "name": "СкладМаркет",
+    "description": "Онлайн-сервис для небольших магазинов: учет товаров, продажи, остатки на складе и простые отчеты по закупкам.",
+    "website": "https://skladmarket.ru",
     "city": "Онлайн",
     "posting_limit": 5,
     "subscription": "b2b"
