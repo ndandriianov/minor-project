@@ -98,5 +98,25 @@
     "city": "Пермь",
     "posting_limit": 5,
     "subscription": "premium"
+  },
+  {
+    "email": "hr@leasekit.ru",
+    "password": "password123",
+    "name": "LeaseKit",
+    "description": "PropTech-стартап для управляющих компаний и арендодателей: учет договоров, заявки жильцов, сверка платежей и понятная отчетность по объектам.",
+    "website": "https://leasekit.ru",
+    "city": "Москва",
+    "posting_limit": 4,
+    "subscription": "premium"
+  },
+  {
+    "email": "careers@shelfmate.io",
+    "password": "password123",
+    "name": "ShelfMate",
+    "description": "RetailTech-сервис для небольших сетей магазинов: прогноз остатков, контроль полок, рекомендации по заказам и отчеты для категорийных менеджеров.",
+    "website": "https://shelfmate.io",
+    "city": "Санкт-Петербург",
+    "posting_limit": 5,
+    "subscription": "b2b"
   }
 ]
