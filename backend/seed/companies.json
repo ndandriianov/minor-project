@@ -1,20 +1,20 @@
 [
   {
-    "email": "hr@domuchet.ru",
+    "email": "hr@kvinta.app",
     "password": "password123",
-    "name": "ДомУчет",
+    "name": "Kvinta",
     "description": "Сервис для управляющих компаний и арендодателей: учет квартир, договоров, платежей и заявок жильцов в одном кабинете.",
-    "website": "https://domuchet.ru",
+    "website": "https://kvinta.app",
     "city": "Москва",
     "posting_limit": 4,
     "subscription": "free"
   },
   {
-    "email": "careers@skladmarket.ru",
+    "email": "careers@nordstack.io",
     "password": "password123",
-    "name": "СкладМаркет",
+    "name": "Nordstack",
     "description": "Онлайн-сервис для небольших магазинов: учет товаров, продажи, остатки на складе и простые отчеты по закупкам.",
-    "website": "https://skladmarket.ru",
+    "website": "https://nordstack.io",
     "city": "Онлайн",
     "posting_limit": 5,
     "subscription": "b2b"
