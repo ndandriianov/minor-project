@@ -58,7 +58,7 @@ docker compose up --build
 | Студент | Елена Ким | `elena.kim@student.ru` | `password123` | premium |
 | Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
-| Компания | LeaseKit | `hr@leasekit.ru` | `password123` | premium |
+| Компания | LeaseKit | `hr@leasekit.ru` | `password123` | free |
 | Компания | ShelfMate | `careers@shelfmate.io` | `password123` | b2b |
 | Админ | Модератор | `admin@platform.ru` | `password123` | free |
 
