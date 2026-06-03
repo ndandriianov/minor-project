@@ -1,206 +1,74 @@
 [
   {
-    "student_email": "ivan.petrov@student.ru",
-    "internship_title": "Junior Backend Developer, Python Platform",
+    "student_email": "bondarenko.dmitry@student.ru",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "interview",
-    "cover_letter": "Здравствуйте! Делал учебный сервис на FastAPI и PostgreSQL, поэтому хочу попробовать себя в backend-команде Nexora AI. Особенно интересны интеграции и работа с реальными продуктовым метриками."
+    "cover_letter": "Здравствуйте! У меня есть учебный проект на FastAPI и PostgreSQL, Docker Compose и опыт интеграции с внешним API. Задачи Nordstack с REST API, импортами данных и расчетными модулями хорошо совпадают с тем, куда я хочу расти как backend-разработчик."
   },
   {
-    "student_email": "ivan.petrov@student.ru",
-    "internship_title": "Junior Backend Developer, Forecasting Services",
+    "student_email": "dunaev.egor@student.ru",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "applied",
-    "cover_letter": "Мне близок стек Python/FastAPI и интересны сервисы, где backend напрямую влияет на продуктовую ценность."
+    "cover_letter": "Добрый день! У меня сильная база в SQL, анализе данных и A/B-тестах, поэтому интересны продуктовые метрики Kvinta и работа с воронками заявок. С доменом недвижимости пока знаком поверхностно, но быстро разбираюсь в новых данных."
   },
   {
-    "student_email": "ivan.petrov@student.ru",
-    "internship_title": "Junior Backend Developer, Logistics API",
+    "student_email": "dunaev.egor@student.ru",
+    "internship_title": "Junior Backend Developer, учет товаров",
+    "status": "applied",
+    "cover_letter": "Здравствуйте! Я больше из data/ML-направления, но уверенно пишу на Python и SQL, работал с данными и хочу усилить инженерную часть. Понимаю, что FastAPI и PostgreSQL нужно будет подтянуть под ваши стандарты, готов показать код и быстро доучиться."
+  },
+  {
+    "student_email": "dunaev.egor@student.ru",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
+    "status": "interview",
+    "cover_letter": "Здравствуйте! Делал модель прогнозирования оттока и анализировал метрики в Tableau, поэтому мне близки задачи по продажам, остаткам и поиску аномалий. Готов сделать практический кейс на данных Nordstack."
+  },
+  {
+    "student_email": "ibragimov.timur@student.ru",
+    "internship_title": "Junior Backend Developer, учет товаров",
+    "status": "applied",
+    "cover_letter": "Добрый день! У меня есть Python, PostgreSQL и Docker, а также опыт прототипа сервиса обработки заявок. Хочу развиваться ближе к production backend, поэтому задачи с импортом данных и фоновыми обработчиками выглядят подходящими."
+  },
+  {
+    "student_email": "ibragimov.timur@student.ru",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "rejected",
-    "cover_letter": "Хочу развиваться в backend для операционных систем и готов быстро вникнуть в логистический домен."
+    "cover_letter": "Здравствуйте! Мне интересны прогнозирование и анализ ошибок, есть опыт ML-проектов и Data Analysis. При этом понимаю, что у меня меньше опыта с Excel/Power BI и регулярной операционной отчетностью, но готов закрывать этот пробел."
   },
   {
-    "student_email": "maria.smirnova@student.ru",
-    "internship_title": "Junior Growth Marketer",
+    "student_email": "skorik.egor@student.ru",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "interview",
-    "cover_letter": "Вела студенческий канал и запускала контентные активности. Хочу научиться строить growth-процессы в EdTech и работать с воронкой привлечения."
+    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт описания требований для CRM-проекта. Задачи Kvinta с воронками, заявками жильцов и платежными сценариями хорошо ложатся на мой опыт в business/product analytics."
   },
   {
-    "student_email": "maria.smirnova@student.ru",
-    "internship_title": "Junior Growth Specialist, D2C Brands",
+    "student_email": "skorik.egor@student.ru",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "applied",
-    "cover_letter": "Интересны e-commerce и удержание. Могу помогать с контентом, UTM-разметкой и отчетами по кампаниям."
+    "cover_letter": "Добрый день! Уверенно работаю с SQL, Excel и Power BI, поэтому могу помогать с выгрузками, отчетами и поиском аномалий. Ритейл-домен для меня новый, но задачи по метрикам и качеству данных очень интересны."
   },
   {
-    "student_email": "maria.smirnova@student.ru",
-    "internship_title": "Junior Product Designer, Learning Paths",
+    "student_email": "mironov.alexander@student.ru",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "withdrawn",
-    "cover_letter": "Рассматривала дизайн-направление, но решила сфокусироваться на growth и маркетинговой аналитике."
+    "cover_letter": "Здравствуйте! У меня есть опыт customer development, backlog и базовой продуктовой аналитики в студенческом marketplace. После отклика понял, что сейчас могу стабильно выделять меньше 20 часов в неделю, поэтому не хочу обещать нагрузку, которую не потяну."
   },
   {
-    "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior ML Engineer, Conversation Intelligence",
-    "status": "offer",
-    "cover_letter": "Есть опыт с ML-проектами и A/B-тестами, хочу работать с прикладными NLP-задачами и видеть влияние моделей на продукт."
-  },
-  {
-    "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior Computer Vision Engineer, Satellite Imagery",
+    "student_email": "elena.kim@student.ru",
+    "internship_title": "Junior продуктовый аналитик",
     "status": "interview",
-    "cover_letter": "Интересны ML-задачи на реальных данных и анализ ошибок моделей. Готов быстро разобраться в домене спутниковых снимков."
+    "cover_letter": "Добрый день! Я работала с финансовой моделью, платежами, SQL и Power BI, поэтому мне близки платежные сценарии Kvinta и отчеты для продуктовой команды. Хотела бы применить финансовую аналитику в B2B-сервисе."
   },
   {
-    "student_email": "alexey.kozlov@student.ru",
-    "internship_title": "Junior Product Analyst",
-    "status": "applied",
-    "cover_letter": "Проходил курс по продуктовой аналитике и хочу применить SQL, A/B Testing и Tableau на реальном B2B SaaS-продукте."
-  },
-  {
-    "student_email": "daria.volkova@student.ru",
-    "internship_title": "Junior Product Designer, Learning Paths",
+    "student_email": "elena.kim@student.ru",
+    "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "interview",
-    "cover_letter": "Проводила интервью и собирала CJM для учебного сервиса. Хочу развиваться в UX для образовательных продуктов."
+    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт анализа платежей и cash flow. В вакансии Nordstack заинтересовали продажи, остатки и понятные отчеты для клиентов; готова выполнить кейс в таблицах."
   },
   {
-    "student_email": "daria.volkova@student.ru",
-    "internship_title": "Junior Product Manager",
-    "status": "applied",
-    "cover_letter": "Интересно поработать рядом с PM: discovery, гипотезы и анализ фидбэка пользователей."
-  },
-  {
-    "student_email": "timur.galeev@student.ru",
-    "internship_title": "Junior ML Engineer, Conversation Intelligence",
-    "status": "applied",
-    "cover_letter": "Собирал MVP AI-ассистента для поддержки и хочу развиваться в applied ML с пользовательским контекстом."
-  },
-  {
-    "student_email": "timur.galeev@student.ru",
-    "internship_title": "Junior Computer Vision Engineer, Satellite Imagery",
-    "status": "applied",
-    "cover_letter": "Готов работать с данными, экспериментами и разбором качества моделей. Интересны GeoAI-задачи."
-  },
-  {
-    "student_email": "timur.galeev@student.ru",
-    "internship_title": "Junior Backend Developer, Python Platform",
-    "status": "interview",
-    "cover_letter": "Хочу усилить инженерную часть ML-профиля и поработать с backend-сервисами AI-платформы."
-  },
-  {
-    "student_email": "polina.orlova@student.ru",
-    "internship_title": "Junior Business Analyst, HealthTech",
-    "status": "interview",
-    "cover_letter": "Умею описывать требования и user stories, интересен HealthTech и работа с реальными процессами клиник."
-  },
-  {
-    "student_email": "polina.orlova@student.ru",
-    "internship_title": "Junior Product Analyst, Retention",
-    "status": "applied",
-    "cover_letter": "Хочу развиваться на стыке аналитики и продукта. Есть опыт Power BI и описания продуктовых требований."
-  },
-  {
-    "student_email": "polina.orlova@student.ru",
-    "internship_title": "Junior Finance Data Analyst",
-    "status": "offer",
-    "cover_letter": "Интересны финтех и работа с cash flow малого бизнеса. Уверенно работаю с таблицами и SQL."
-  },
-  {
-    "student_email": "nikita.sokolov@student.ru",
-    "internship_title": "Junior Frontend Developer, React Dashboard",
-    "status": "interview",
-    "cover_letter": "Пишу на React и TypeScript, люблю аккуратные интерфейсы и code review. Хочу работать над сложными таблицами и дашбордами."
-  },
-  {
-    "student_email": "nikita.sokolov@student.ru",
-    "internship_title": "Junior Platform Frontend Developer",
-    "status": "applied",
-    "cover_letter": "Интересны интерфейсы конструкторов и сложные UI-состояния. Есть опыт с React-компонентами и тестами."
-  },
-  {
-    "student_email": "nikita.sokolov@student.ru",
-    "internship_title": "Junior Fullstack Developer, Energy Dashboard",
-    "status": "applied",
-    "cover_letter": "Хочу попробовать fullstack в climate tech и поработать с графиками и данными."
-  },
-  {
-    "student_email": "anna.belova@student.ru",
-    "internship_title": "Junior Product Manager",
-    "status": "interview",
-    "cover_letter": "Запускала студенческий marketplace и хочу перенести этот опыт в HealthTech: discovery, backlog и продуктовые метрики."
-  },
-  {
-    "student_email": "anna.belova@student.ru",
-    "internship_title": "Junior Product Analyst, Retention",
-    "status": "applied",
-    "cover_letter": "Мне интересны retention-гипотезы и продуктовая аналитика. Есть опыт приоритизации и базовой юнит-экономики."
-  },
-  {
-    "student_email": "anna.belova@student.ru",
-    "internship_title": "Junior Growth Specialist, D2C Brands",
+    "student_email": "fedyanin.valery@student.ru",
+    "internship_title": "Junior Backend Developer, учет товаров",
     "status": "rejected",
-    "cover_letter": "Хочу понять growth-процессы на реальных e-commerce клиентах и помогать запускать эксперименты."
-  },
-  {
-    "student_email": "sergey.morozov@student.ru",
-    "internship_title": "Junior QA Engineer, Payments Integrations",
-    "status": "applied",
-    "cover_letter": "Писал тест-кейсы для API и работал с Postman. Хочу развиваться в QA для финтех-интеграций."
-  },
-  {
-    "student_email": "sergey.morozov@student.ru",
-    "internship_title": "Junior QA Engineer, Patient App",
-    "status": "interview",
-    "cover_letter": "Интересны пользовательские сценарии, API и аккуратная документация дефектов. Готов подключиться к регрессам."
-  },
-  {
-    "student_email": "sergey.morozov@student.ru",
-    "internship_title": "Junior No-code Solutions Specialist",
-    "status": "withdrawn",
-    "cover_letter": "Рассматривал no-code направление, но решил сфокусироваться на QA."
-  },
-  {
-    "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior Finance Data Analyst",
-    "status": "interview",
-    "cover_letter": "Есть опыт финансовой модели и отчетов по cash flow. Хочу работать с транзакционными данными в финтехе."
-  },
-  {
-    "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior Product Analyst, Demand Forecasting",
-    "status": "applied",
-    "cover_letter": "Интересны прогнозирование спроса и операционные метрики. Уверенно работаю с SQL и Power BI."
-  },
-  {
-    "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior ESG Data Analyst",
-    "status": "applied",
-    "cover_letter": "Хочу применить аналитику данных в climate tech и научиться готовить отчеты для B2B-клиентов."
-  },
-  {
-    "student_email": "kirill.egorov@student.ru",
-    "internship_title": "Junior Growth Marketer",
-    "status": "applied",
-    "cover_letter": "Умею писать тексты, вести контент-план и анализировать охваты. Интересен EdTech и студенческая аудитория."
-  },
-  {
-    "student_email": "kirill.egorov@student.ru",
-    "internship_title": "Junior Growth Specialist, D2C Brands",
-    "status": "interview",
-    "cover_letter": "Хочу прокачаться в growth для D2C-брендов: контент, UTM, SEO и отчеты по кампаниям."
-  },
-  {
-    "student_email": "sofia.gromova@student.ru",
-    "internship_title": "Junior Vue Frontend Developer",
-    "status": "interview",
-    "cover_letter": "Верстала адаптивные страницы и писала Vue-компоненты. Хочу развиваться во frontend продуктовой платформы."
-  },
-  {
-    "student_email": "sofia.gromova@student.ru",
-    "internship_title": "Junior Platform Frontend Developer",
-    "status": "applied",
-    "cover_letter": "Интересны low-code интерфейсы, аккуратная верстка и сценарии onboarding."
-  },
-  {
-    "student_email": "sofia.gromova@student.ru",
-    "internship_title": "Junior Frontend Developer, React Dashboard",
-    "status": "applied",
-    "cover_letter": "Хочу расширить опыт с Vue до React и поработать над финансовыми дашбордами."
+    "cover_letter": "Здравствуйте! Я больше специализируюсь на QA, но работал с REST API, Postman, SQL и Git, поэтому хочу попробовать себя рядом с backend-командой. Понимаю, что Python и FastAPI пока не основной мой стек."
   }
 ]

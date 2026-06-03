@@ -26,6 +26,7 @@ Seed-данные лежат в `backend/seed/` отдельными JSON-фай
 - `articles.json`, `news.json` — контентные разделы.
 
 Связи между файлами задаются читаемыми ключами: `student_email`, `company_email`, `internship_title`.
+В текущем seed-наборе оставлены 2 компании, 3 вакансии и реалистичные отклики студентов без офферов; предзагруженных закладок и отзывов нет.
 
 Сервер будет доступен на `http://localhost:<APP_PORT>` (по умолчанию `http://localhost:5051`).
 
@@ -45,28 +46,20 @@ docker compose up --build
 
 | Роль | Аккаунт | Email | Пароль | Тариф |
 |------|---------|-------|--------|-------|
-| Студент | Иван Петров | `ivan.petrov@student.ru` | `password123` | premium |
+| Студент | Дмитрий Бондаренко | `bondarenko.dmitry@student.ru` | `password123` | premium |
 | Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
-| Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | premium |
+| Студент | Егор Дунаев | `dunaev.egor@student.ru` | `password123` | free |
 | Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |
-| Студент | Тимур Галеев | `timur.galeev@student.ru` | `password123` | premium |
-| Студент | Полина Орлова | `polina.orlova@student.ru` | `password123` | free |
-| Студент | Никита Соколов | `nikita.sokolov@student.ru` | `password123` | premium |
-| Студент | Анна Белова | `anna.belova@student.ru` | `password123` | free |
-| Студент | Сергей Морозов | `sergey.morozov@student.ru` | `password123` | free |
-| Студент | Елена Ким | `elena.kim@student.ru` | `password123` | premium |
-| Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
+| Студент | Тимур Ибрагимов | `ibragimov.timur@student.ru` | `password123` | free |
+| Студент | Егор Скорик | `skorik.egor@student.ru` | `password123` | free |
+| Студент | Акылбек Ысаков | `ysakov.akylbek@student.ru` | `password123` | free |
+| Студент | Александр Миронов | `mironov.alexander@student.ru` | `password123` | free |
+| Студент | Валерий Федянин | `fedyanin.valery@student.ru` | `password123` | free |
+| Студент | Елена Ким | `elena.kim@student.ru` | `password123` | free |
+| Студент | Алексей Чёрный | `cherny.alexey@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
-| Компания | Nexora AI | `talent@nexora.ai` | `password123` | b2b |
-| Компания | FinPilot | `hr@finpilot.app` | `password123` | b2b |
-| Компания | EduMate | `people@edumate.io` | `password123` | b2b |
-| Компания | ClinicHub | `careers@clinichub.health` | `password123` | b2b |
-| Компания | LogiQ | `jobs@logiq.delivery` | `password123` | premium |
-| Компания | GreenByte | `team@greenbyte.energy` | `password123` | premium |
-| Компания | MarketFlow | `hr@marketflow.ru` | `password123` | b2b |
-| Компания | TerraData | `join@terra-data.io` | `password123` | b2b |
-| Компания | Foodcast | `careers@foodcast.app` | `password123` | premium |
-| Компания | CodifyLab | `people@codifylab.dev` | `password123` | premium |
+| Компания | Kvinta | `hr@kvinta.app` | `password123` | free |
+| Компания | Nordstack | `careers@nordstack.io` | `password123` | b2b |
 | Админ | Модератор | `admin@platform.ru` | `password123` | free |
 
 ## Структура проекта
@@ -347,7 +340,7 @@ BASE_URL="http://localhost:${APP_PORT:-5051}"
 # Логин
 curl -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"ivan.petrov@student.ru","password":"password123"}'
+  -d '{"email":"bondarenko.dmitry@student.ru","password":"password123"}'
 
 # Лента вакансий в стартапах с фильтрами
 curl "$BASE_URL/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
