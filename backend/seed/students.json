@@ -81,7 +81,7 @@
     "experience": "Собрал модель прогнозирования оттока пользователей для учебного проекта, делал A/B-тесты в курсе продуктовой аналитики, визуализировал метрики в Tableau.",
     "bio": "Интересны ML и продуктовая аналитика в ранних командах, где начинающий специалист видит путь от данных до решения в продукте.",
     "github_url": "https://github.com/alexkozlov-ds",
-    "subscription": "premium"
+    "subscription": "free"
   },
   {
     "email": "daria.volkova@student.ru",
@@ -133,7 +133,7 @@
     "experience": "Делал MVP ассистента для обработки заявок поддержки: классификация тем, поиск похожих обращений, простая RAG-логика на открытых эмбеддингах.",
     "bio": "Хочу попасть в AI-стартап и развиваться в applied ML: данные, прототипы, эксперименты и продакшен.",
     "github_url": "https://github.com/timur-ml",
-    "subscription": "premium",
+    "subscription": "free",
     "is_boosted": true
   },
   {
@@ -186,7 +186,7 @@
     "experience": "Поддерживал open-source виджет для визуализации расписаний, писал компоненты на React и покрывал критические функции unit-тестами.",
     "bio": "Хочу fullstack-вакансию в стартапе с сильной инженерной культурой и code review.",
     "github_url": "https://github.com/nikitasokolov",
-    "subscription": "premium"
+    "subscription": "free"
   },
   {
     "email": "anna.belova@student.ru",
@@ -263,7 +263,7 @@
     ],
     "experience": "Собирала финансовую модель для учебного стартапа, анализировала платежи и строила отчеты по cash flow в Power BI.",
     "bio": "Ищу аналитическую вакансию в стартапе в финтехе или SaaS, где можно работать с реальными транзакционными данными.",
-    "subscription": "premium"
+    "subscription": "free"
   },
   {
     "email": "kirill.egorov@student.ru",

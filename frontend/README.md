@@ -74,14 +74,14 @@ baseUrl: 'http://localhost:5051'
 |------|---------|-------|--------|-------|
 | Студент | Лев Романов | `lev.romanov@student.ru` | `password123` | premium |
 | Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
-| Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | premium |
+| Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | free |
 | Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |
-| Студент | Тимур Галеев | `timur.galeev@student.ru` | `password123` | premium |
+| Студент | Тимур Галеев | `timur.galeev@student.ru` | `password123` | free |
 | Студент | Полина Орлова | `polina.orlova@student.ru` | `password123` | free |
-| Студент | Никита Соколов | `nikita.sokolov@student.ru` | `password123` | premium |
+| Студент | Никита Соколов | `nikita.sokolov@student.ru` | `password123` | free |
 | Студент | Анна Белова | `anna.belova@student.ru` | `password123` | free |
 | Студент | Сергей Морозов | `sergey.morozov@student.ru` | `password123` | free |
-| Студент | Елена Ким | `elena.kim@student.ru` | `password123` | premium |
+| Студент | Елена Ким | `elena.kim@student.ru` | `password123` | free |
 | Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
 | Компания | ДомУчет | `hr@domuchet.ru` | `password123` | free |
