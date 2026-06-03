@@ -29,7 +29,7 @@ export default function StudentDashboardPage() {
         <Link to="/student/bookmarks">
           <Card className="hover:border-blue-300 transition-colors">
             <div className="text-3xl font-bold text-blue-600 mb-1">{bookmarks.length}</div>
-            <div className="font-medium text-gray-800">Сохранённых стажировок</div>
+            <div className="font-medium text-gray-800">Сохранённых вакансий в стартапах</div>
           </Card>
         </Link>
       </div>

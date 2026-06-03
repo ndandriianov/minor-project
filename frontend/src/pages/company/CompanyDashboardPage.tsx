@@ -75,7 +75,7 @@ export default function CompanyDashboardPage() {
         <Link to="/company/internships">
           <Card className="hover:border-blue-300 transition-colors">
             <div className="text-3xl font-bold text-blue-600 mb-1">{internships.length}</div>
-            <div className="font-medium text-gray-800">Всего стажировок</div>
+            <div className="font-medium text-gray-800">Всего вакансий в стартапах</div>
           </Card>
         </Link>
         <Card>

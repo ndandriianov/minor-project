@@ -1,10 +1,10 @@
 [
   {
     "company_email": "talent@nexora.ai",
-    "title": "Backend Intern, Python Platform",
+    "title": "Junior Backend Developer, Python Platform",
     "direction": "Разработка",
     "work_format": "hybrid",
-    "description": "Команда платформы Nexora AI ищет стажера, который поможет развивать сервисы обработки звонков и CRM-событий. Задачи: новые REST-эндпоинты, фоновые задачи, миграции БД, интеграции с внешними системами и улучшение observability для продуктовых команд.",
+    "description": "Команда платформы Nexora AI ищет начинающего backend-разработчика, который поможет развивать сервисы обработки звонков и CRM-событий. Задачи: новые REST-эндпоинты, фоновые задачи, миграции БД, интеграции с внешними системами и улучшение observability для продуктовых команд.",
     "requirements": "Уверенный Python, базовый SQL, понимание HTTP и REST API, опыт с Git. Будет плюсом FastAPI, Docker и опыт учебных проектов с PostgreSQL.",
     "selection_stages": "Скрининг резюме, короткое техническое задание, интервью с backend-инженером, финальный разговор с тимлидом",
     "schedule": "4 дня в неделю, гибкое начало дня",
@@ -32,10 +32,10 @@
   },
   {
     "company_email": "talent@nexora.ai",
-    "title": "ML Intern, Conversation Intelligence",
+    "title": "Junior ML Engineer, Conversation Intelligence",
     "direction": "Data Science",
     "work_format": "remote",
-    "description": "Стажировка в applied ML-команде, которая извлекает из звонков sales-инсайты: классификация интентов, суммаризация, поиск рисков сделки. Нужно готовить датасеты, запускать эксперименты и оформлять результаты для продакт-менеджера.",
+    "description": "Вакансия в стартапе в applied ML-команде, которая извлекает из звонков sales-инсайты: классификация интентов, суммаризация, поиск рисков сделки. Нужно готовить датасеты, запускать эксперименты и оформлять результаты для продакт-менеджера.",
     "requirements": "Python, основы ML, аккуратность в работе с данными, понимание метрик качества. Плюсом будет опыт NLP, prompt engineering или участие в ML-хакатонах.",
     "selection_stages": "Анкета, мини-кейс на анализ датасета, техническое интервью, встреча с ML lead",
     "schedule": "20-30 часов в неделю",
@@ -61,7 +61,7 @@
   },
   {
     "company_email": "talent@nexora.ai",
-    "title": "Product Analytics Intern",
+    "title": "Junior Product Analyst",
     "direction": "Аналитика",
     "work_format": "hybrid",
     "description": "Помогать продуктовой команде измерять активацию, retention и влияние AI-фич на конверсию в оплату. В задачах будут SQL-запросы, дашборды, когортный анализ и подготовка выводов для еженедельного product review.",
@@ -91,10 +91,10 @@
   },
   {
     "company_email": "hr@finpilot.app",
-    "title": "Frontend Intern, React Dashboard",
+    "title": "Junior Frontend Developer, React Dashboard",
     "direction": "Разработка",
     "work_format": "hybrid",
-    "description": "FinPilot развивает кабинет предпринимателя с платежным календарем, прогнозом кассовых разрывов и отчетностью. Стажер будет делать интерфейсные задачи в React, помогать с таблицами, фильтрами, графиками и состояниями загрузки.",
+    "description": "FinPilot развивает кабинет предпринимателя с платежным календарем, прогнозом кассовых разрывов и отчетностью. Junior-специалист будет делать интерфейсные задачи в React, помогать с таблицами, фильтрами, графиками и состояниями загрузки.",
     "requirements": "TypeScript, React, HTML/CSS, Git. Важно умение доводить интерфейс до аккуратного состояния и задавать вопросы по бизнес-логике.",
     "selection_stages": "Портфолио или GitHub, небольшая версточная задача, code review, интервью с frontend lead",
     "schedule": "Гибрид, 3 дня в офисе или удаленно по договоренности",
@@ -120,7 +120,7 @@
   },
   {
     "company_email": "hr@finpilot.app",
-    "title": "Finance Data Analyst Intern",
+    "title": "Junior Finance Data Analyst",
     "direction": "Аналитика",
     "work_format": "remote",
     "description": "Работа с транзакционными данными малого бизнеса: классификация платежей, сверка источников, поиск аномалий и подготовка отчетов по cash flow для продуктовой и customer success команд.",
@@ -149,7 +149,7 @@
   },
   {
     "company_email": "hr@finpilot.app",
-    "title": "QA Intern, Payments Integrations",
+    "title": "Junior QA Engineer, Payments Integrations",
     "direction": "QA",
     "work_format": "hybrid",
     "description": "Помогать проверять платежные интеграции, выгрузки банковских операций и сценарии ошибок. Нужно писать тест-кейсы, заводить понятные баг-репорты, проверять API в Postman и участвовать в релизных регрессах.",
@@ -179,7 +179,7 @@
   },
   {
     "company_email": "people@edumate.io",
-    "title": "Product Designer Intern, Learning Paths",
+    "title": "Junior Product Designer, Learning Paths",
     "direction": "Дизайн",
     "work_format": "remote",
     "description": "Помогать улучшать пользовательские сценарии диагностики навыков и выбора траекторий обучения. В задачах будут интервью со студентами, быстрые прототипы, дизайн UI-состояний и подготовка макетов для разработки.",
@@ -208,7 +208,7 @@
   },
   {
     "company_email": "people@edumate.io",
-    "title": "Growth Marketing Intern",
+    "title": "Junior Growth Marketer",
     "direction": "Маркетинг",
     "work_format": "remote",
     "description": "Запускать и анализировать эксперименты в привлечении студентов: лендинги, email-цепочки, Telegram-посевы, контент для партнерских школ и первые performance-гипотезы.",
@@ -237,10 +237,10 @@
   },
   {
     "company_email": "people@edumate.io",
-    "title": "Node.js Intern, Mentor Tools",
+    "title": "Junior Node.js Developer, Mentor Tools",
     "direction": "Разработка",
     "work_format": "hybrid",
-    "description": "Разработка внутренних инструментов для наставников: расписание консультаций, заметки по прогрессу студентов, события и уведомления. Команда небольшая, поэтому стажер будет видеть весь путь задачи от описания до релиза.",
+    "description": "Разработка внутренних инструментов для наставников: расписание консультаций, заметки по прогрессу студентов, события и уведомления. Команда небольшая, поэтому начинающий специалист будет видеть весь путь задачи от описания до релиза.",
     "requirements": "JavaScript или TypeScript, основы Node.js, SQL, Git. Плюсом будет React или опыт с GraphQL.",
     "selection_stages": "Тестовая API-задача, техническое интервью, встреча с командой продукта",
     "schedule": "3-4 дня в неделю",
@@ -267,7 +267,7 @@
   },
   {
     "company_email": "careers@clinichub.health",
-    "title": "Business Analyst Intern, HealthTech",
+    "title": "Junior Business Analyst, HealthTech",
     "direction": "Аналитика",
     "work_format": "hybrid",
     "description": "Собирать и описывать требования для модулей онлайн-записи, расписания врачей и отчетности клиник. Нужно общаться с пользователями, раскладывать процессы, писать user stories и помогать команде разработки уточнять edge cases.",
@@ -296,7 +296,7 @@
   },
   {
     "company_email": "careers@clinichub.health",
-    "title": "QA Intern, Patient App",
+    "title": "Junior QA Engineer, Patient App",
     "direction": "QA",
     "work_format": "remote",
     "description": "Тестировать мобильные и веб-сценарии пациента: запись к врачу, перенос приема, уведомления и оплата. Нужно обновлять чек-листы, проверять API и помогать готовить релизные заметки.",
@@ -325,7 +325,7 @@
   },
   {
     "company_email": "careers@clinichub.health",
-    "title": "Junior Product Manager Intern",
+    "title": "Junior Product Manager",
     "direction": "Продукт",
     "work_format": "hybrid",
     "description": "Поддерживать PM в discovery по клиникам: интервью, анализ обращений поддержки, подготовка гипотез, постановка небольших задач и разбор продуктовых метрик после релизов.",
@@ -354,10 +354,10 @@
   },
   {
     "company_email": "jobs@logiq.delivery",
-    "title": "Routing Data Analyst Intern",
+    "title": "Junior Routing Data Analyst",
     "direction": "Аналитика",
     "work_format": "hybrid",
-    "description": "Анализировать маршруты курьеров, причины опозданий и SLA по районам. Стажер будет готовить витрины, проверять качество данных и делать выводы для команды алгоритмов и операционного отдела.",
+    "description": "Анализировать маршруты курьеров, причины опозданий и SLA по районам. Junior-специалист будет готовить витрины, проверять качество данных и делать выводы для команды алгоритмов и операционного отдела.",
     "requirements": "SQL, Python или R, таблицы, базовая визуализация. Важно спокойно относиться к грязным данным и разбираться в деталях.",
     "selection_stages": "SQL-тест, интервью с аналитиком, встреча с ops lead",
     "schedule": "20-30 часов в неделю",
@@ -383,7 +383,7 @@
   },
   {
     "company_email": "jobs@logiq.delivery",
-    "title": "Backend Intern, Logistics API",
+    "title": "Junior Backend Developer, Logistics API",
     "direction": "Разработка",
     "work_format": "remote",
     "description": "Помогать команде платформы развивать API для заказов, маршрутов и статусов доставки. В задачах будут новые эндпоинты, оптимизация запросов и интеграции с партнерами.",
@@ -413,10 +413,10 @@
   },
   {
     "company_email": "team@greenbyte.energy",
-    "title": "ESG Data Analyst Intern",
+    "title": "Junior ESG Data Analyst",
     "direction": "Аналитика",
     "work_format": "remote",
-    "description": "Стажировка для тех, кому интересны данные и устойчивое развитие. Нужно очищать данные по энергопотреблению, готовить отчеты для клиентов и искать закономерности в потреблении офисов и складов.",
+    "description": "Вакансия в стартапе для тех, кому интересны данные и устойчивое развитие. Нужно очищать данные по энергопотреблению, готовить отчеты для клиентов и искать закономерности в потреблении офисов и складов.",
     "requirements": "Excel, SQL, Power BI или Tableau, внимательность к данным. Плюсом будет Python и интерес к climate tech.",
     "selection_stages": "Кейс на данные, интервью с аналитиком, знакомство с customer success",
     "schedule": "15-25 часов в неделю",
@@ -442,7 +442,7 @@
   },
   {
     "company_email": "team@greenbyte.energy",
-    "title": "Fullstack Intern, Energy Dashboard",
+    "title": "Junior Fullstack Developer, Energy Dashboard",
     "direction": "Разработка",
     "work_format": "hybrid",
     "description": "Разработка клиентских дашбордов для мониторинга энергопотребления: графики, фильтры, уведомления об аномалиях и небольшие backend-задачи для агрегации данных.",
@@ -472,7 +472,7 @@
   },
   {
     "company_email": "hr@marketflow.ru",
-    "title": "Growth Intern, D2C Brands",
+    "title": "Junior Growth Specialist, D2C Brands",
     "direction": "Маркетинг",
     "work_format": "hybrid",
     "description": "Помогать запускать growth-эксперименты для D2C-брендов: сегменты, email-цепочки, лендинги, UTM-разметка, отчеты по удержанию и идеи для повторных покупок.",
@@ -502,10 +502,10 @@
   },
   {
     "company_email": "hr@marketflow.ru",
-    "title": "Product Analyst Intern, Retention",
+    "title": "Junior Product Analyst, Retention",
     "direction": "Аналитика",
     "work_format": "remote",
-    "description": "Анализировать удержание покупателей, сегменты, повторные заказы и эффективность автоматических кампаний. Стажер будет писать SQL-запросы, проверять гипотезы и собирать дашборды для клиентов.",
+    "description": "Анализировать удержание покупателей, сегменты, повторные заказы и эффективность автоматических кампаний. Junior-специалист будет писать SQL-запросы, проверять гипотезы и собирать дашборды для клиентов.",
     "requirements": "SQL, Product Analytics, A/B Testing, умение объяснять результаты бизнес-языком. Плюсом будет Amplitude или Tableau.",
     "selection_stages": "SQL-кейс, интервью с senior analyst, встреча с CPO",
     "schedule": "20-30 часов в неделю",
@@ -531,7 +531,7 @@
   },
   {
     "company_email": "hr@marketflow.ru",
-    "title": "Vue Frontend Intern",
+    "title": "Junior Vue Frontend Developer",
     "direction": "Разработка",
     "work_format": "hybrid",
     "description": "Развивать интерфейс маркетинговой платформы: конструктор сегментов, карточки кампаний, таблицы результатов и визуальные состояния для ошибок интеграций.",
@@ -560,7 +560,7 @@
   },
   {
     "company_email": "join@terra-data.io",
-    "title": "Computer Vision Intern, Satellite Imagery",
+    "title": "Junior Computer Vision Engineer, Satellite Imagery",
     "direction": "Data Science",
     "work_format": "remote",
     "description": "Работа с геоданными и спутниковыми снимками: подготовка датасетов, обучение моделей классификации, проверка качества разметки и анализ ошибок на реальных клиентских кейсах.",
@@ -589,7 +589,7 @@
   },
   {
     "company_email": "join@terra-data.io",
-    "title": "Data Operations Intern",
+    "title": "Junior Data Operations Specialist",
     "direction": "Аналитика",
     "work_format": "remote",
     "description": "Поддерживать data pipeline: проверять качество разметки, описывать правила для подрядчиков, собирать отчеты по покрытию датасетов и помогать аналитикам готовить данные для моделей.",
@@ -618,7 +618,7 @@
   },
   {
     "company_email": "careers@foodcast.app",
-    "title": "Product Analyst Intern, Demand Forecasting",
+    "title": "Junior Product Analyst, Demand Forecasting",
     "direction": "Аналитика",
     "work_format": "remote",
     "description": "Считать метрики точности прогноза спроса, анализировать списания и влияние рекомендаций на закупки ресторанов. Нужно писать SQL, проверять гипотезы и готовить понятные выводы для PM.",
@@ -647,7 +647,7 @@
   },
   {
     "company_email": "careers@foodcast.app",
-    "title": "Backend Intern, Forecasting Services",
+    "title": "Junior Backend Developer, Forecasting Services",
     "direction": "Разработка",
     "work_format": "hybrid",
     "description": "Помогать развивать сервисы прогноза спроса и интеграции с POS-системами ресторанов. В задачах будут API, очереди задач, оптимизация запросов и тесты для расчетных модулей.",
@@ -677,10 +677,10 @@
   },
   {
     "company_email": "people@codifylab.dev",
-    "title": "Platform Frontend Intern",
+    "title": "Junior Platform Frontend Developer",
     "direction": "Разработка",
     "work_format": "remote",
-    "description": "CodifyLab делает low-code конструктор внутренних инструментов. Стажер будет развивать редактор форм, таблицы, настройки интеграций и UX пустых состояний для новых пользователей.",
+    "description": "CodifyLab делает low-code конструктор внутренних инструментов. Junior-специалист будет развивать редактор форм, таблицы, настройки интеграций и UX пустых состояний для новых пользователей.",
     "requirements": "React, TypeScript, HTML/CSS, Git, внимательность к UX. Плюсом будет Figma и опыт с drag-and-drop интерфейсами.",
     "selection_stages": "Портфолио или GitHub, тестовая задача, code review, встреча с продуктовой командой",
     "schedule": "20-30 часов в неделю",
@@ -706,7 +706,7 @@
   },
   {
     "company_email": "people@codifylab.dev",
-    "title": "No-code Solutions Intern",
+    "title": "Junior No-code Solutions Specialist",
     "direction": "Продукт",
     "work_format": "remote",
     "description": "Собирать демо-приложения для клиентов на платформе CodifyLab, описывать шаблоны, проверять сценарии интеграций и помогать команде продукта находить узкие места в onboarding.",
@@ -735,7 +735,7 @@
   },
   {
     "company_email": "people@codifylab.dev",
-    "title": "QA Intern, Low-code Builder",
+    "title": "Junior QA Engineer, Low-code Builder",
     "direction": "QA",
     "work_format": "remote",
     "description": "Проверять сценарии конструктора: создание таблиц, формы, права доступа, интеграции и публикация внутренних приложений. Нужно писать чек-листы и помогать команде не ломать существующие шаблоны.",

@@ -1,5 +1,5 @@
 """
-Бэкенд платформы стажировок (Стадия 3).
+Бэкенд платформы вакансий в стартапах (Стадия 3).
 Flask + SQLAlchemy + JWT + Swagger + Flask-Migrate + APScheduler.
 """
 
@@ -151,9 +151,9 @@ swagger_config = {
 
 swagger_template = {
     "info": {
-        "title": "Платформа стажировок — API",
+        "title": "Платформа вакансий в стартапах — API",
         "description": (
-            "REST API агрегатора стажировок.\n\n"
+            "REST API агрегатора вакансий в стартапах.\n\n"
             "**Тестовые аккаунты:**\n"
             "- Студент: `ivan@student.ru` / `password123`\n"
             "- Компания: `hr@yandex.ru` / `password123`\n"
@@ -208,7 +208,7 @@ _SWAGGER_UI_HTML = """<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>API — Платформа стажировок</title>
+  <title>API — Платформа вакансий в стартапах</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
   <style>body { margin: 0; }</style>
 </head>
@@ -824,9 +824,9 @@ def upload_logo(user):
 
 @app.route("/api/internships", methods=["GET"])
 def list_internships():
-    """Лента стажировок с фильтрацией.
+    """Лента вакансий в стартапах с фильтрацией.
     ---
-    tags: [3. Стажировки]
+    tags: [3. Вакансии в стартапах]
     """
     query = Internship.query.filter_by(moderation_status="published")
 
@@ -877,11 +877,11 @@ def list_internships():
 def get_internship(internship_id):
     """Карточка вакансии (увеличивает счётчик просмотров).
     ---
-    tags: [3. Стажировки]
+    tags: [3. Вакансии в стартапах]
     """
     internship = db.session.get(Internship, internship_id)
     if not internship:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     internship.views_count = (internship.views_count or 0) + 1
     db.session.commit()
     return jsonify({"internship": internship.to_dict()}), 200
@@ -892,7 +892,7 @@ def get_internship(internship_id):
 def get_recommendations(user):
     """Базовые рекомендации (доступны всем студентам).
     ---
-    tags: [3. Стажировки]
+    tags: [3. Вакансии в стартапах]
     """
     return jsonify({"recommendations": _compute_recommendations(user.student, basic=True)}), 200
 
@@ -1048,7 +1048,7 @@ def update_internship(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship or internship.company_id != user.company.id:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     data = request.get_json() or {}
     if (e := validate_enum(data.get("work_format"), WORK_FORMATS - {"any"}, "work_format")):
         return validation_error(e)
@@ -1085,10 +1085,10 @@ def delete_internship(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship or internship.company_id != user.company.id:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     db.session.delete(internship)
     db.session.commit()
-    return jsonify({"message": "Стажировка удалена"}), 200
+    return jsonify({"message": "Вакансия в стартапе удалена"}), 200
 
 
 @app.route("/api/company/internships/<int:internship_id>/confirm", methods=["POST"])
@@ -1100,7 +1100,7 @@ def confirm_internship(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship or internship.company_id != user.company.id:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     internship.last_confirmed_at = datetime.now(timezone.utc)
     if internship.moderation_status == "archived":
         internship.moderation_status = "published"
@@ -1132,7 +1132,7 @@ def promote_internship(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship or internship.company_id != user.company.id:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     days = int(request.get_json().get("days", 7)) if request.is_json else 7
     internship.is_promoted = True
     internship.promoted_until = datetime.now(timezone.utc) + timedelta(days=days)
@@ -1161,17 +1161,17 @@ def apply_to_internship(user):
           required: [internship_id]
           properties:
             internship_id: {type: integer, example: 1}
-            cover_letter: {type: string, example: "Хочу у вас стажироваться, есть опыт с Python!"}
+            cover_letter: {type: string, example: "Хочу у вас работать в стартапе, есть опыт с Python!"}
     responses:
       201: {description: Отклик создан}
-      404: {description: Стажировка не найдена}
+      404: {description: Вакансия в стартапе не найдена}
       409: {description: Уже откликались}
     """
     data = request.get_json() or {}
     internship_id = data.get("internship_id")
     internship = db.session.get(Internship, internship_id) if internship_id else None
     if not internship or internship.moderation_status != "published":
-        return jsonify({"error": "Стажировка не найдена или не опубликована"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена или не опубликована"}), 404
     if Application.query.filter_by(student_id=user.student.id, internship_id=internship_id).first():
         return jsonify({"error": "Вы уже откликнулись на эту вакансию"}), 409
 
@@ -1232,7 +1232,7 @@ def list_internship_applications(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship or internship.company_id != user.company.id:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     query = Application.query.filter_by(internship_id=internship_id)
     if status := request.args.get("status"):
         query = query.filter_by(status=status)
@@ -1421,7 +1421,7 @@ def moderate_internship(user, internship_id):
     """
     internship = db.session.get(Internship, internship_id)
     if not internship:
-        return jsonify({"error": "Стажировка не найдена"}), 404
+        return jsonify({"error": "Вакансия в стартапе не найдена"}), 404
     action = (request.get_json() or {}).get("action")
     if action == "approve":
         internship.moderation_status = "published"
@@ -1851,7 +1851,7 @@ def list_plans():
     return jsonify({
         "plans": [
             {"key": "free", "name": "Бесплатный", "amount": 0, "features": [
-                "поиск стажировок с фильтрами", "уведомления", "базовый профиль",
+                "поиск вакансий в стартапах с фильтрами", "уведомления", "базовый профиль",
             ]},
             {"key": "premium", "name": "Premium (студент)", "amount": PLAN_PRICES["premium"]["amount"],
              "period_days": PLAN_PRICES["premium"]["period_days"], "features": [

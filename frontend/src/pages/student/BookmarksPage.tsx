@@ -20,7 +20,7 @@ export default function BookmarksPage() {
 
       {bookmarks.length === 0 ? (
         <EmptyState
-          title="Нет сохранённых стажировок"
+          title="Нет сохранённых вакансий в стартапах"
           description="Нажимайте 🤍 на карточках, чтобы сохранять интересные вакансии"
           action={<Button onClick={() => navigate('/internships')}>Посмотреть вакансии</Button>}
         />

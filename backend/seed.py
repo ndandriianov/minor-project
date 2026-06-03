@@ -287,7 +287,7 @@ def seed():
         print(f"  Навыков: {len(seed_data['skills'])}")
         print(f"  Студентов: {len(seed_data['students'])}")
         print(f"  Компаний: {len(seed_data['companies'])}")
-        print(f"  Стажировок: {len(seed_data['internships'])}")
+        print(f"  Вакансий в стартапах: {len(seed_data['internships'])}")
         print(f"  Откликов: {len(seed_data['applications'])}")
         print(f"  Городов: {len(seed_data['cities'])}, Вузов: {len(seed_data['universities'])}")
         print(

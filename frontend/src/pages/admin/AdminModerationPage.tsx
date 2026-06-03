@@ -22,7 +22,7 @@ export default function AdminModerationPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Модерация</h1>
-      <p className="text-sm text-gray-500 mb-6">Стажировок на проверке: {pending.length}</p>
+      <p className="text-sm text-gray-500 mb-6">Вакансий в стартапах на проверке: {pending.length}</p>
 
       {pending.length === 0 ? (
         <EmptyState title="Нет заявок на модерацию" description="Все вакансии проверены" />

@@ -1,6 +1,6 @@
-# Бэкенд — Платформа стажировок для студентов
+# Бэкенд — Платформа вакансий в стартапах для студентов
 
-REST API на Flask + SQLAlchemy + JWT для агрегатора стажировок.
+REST API на Flask + SQLAlchemy + JWT для агрегатора вакансий в стартапах.
 
 ## Быстрый старт
 
@@ -22,7 +22,7 @@ Seed-данные лежат в `backend/seed/` отдельными JSON-фай
 
 - `skills.json`, `cities.json`, `universities.json` — справочники.
 - `users.json`, `students.json`, `companies.json` — аккаунты и профили.
-- `internships.json`, `applications.json`, `bookmarks.json`, `reviews.json` — стажировки и связанные данные.
+- `internships.json`, `applications.json`, `bookmarks.json`, `reviews.json` — вакансии в стартапах и связанные данные.
 - `articles.json`, `news.json` — контентные разделы.
 
 Связи между файлами задаются читаемыми ключами: `student_email`, `company_email`, `internship_title`.
@@ -86,7 +86,7 @@ backend/
 | GET  | `/api/students/<id>` | Просмотр профиля студента |
 | POST | `/api/students/resume` | Загрузка резюме (PDF, multipart) |
 
-### Стажировки — публичные
+### Вакансии в стартапах — публичные
 
 | Метод | URL | Описание |
 |-------|-----|----------|
@@ -125,7 +125,7 @@ backend/
 | GET    | `/api/bookmarks` | Список отложенных |
 | DELETE | `/api/bookmarks/<internship_id>` | Убрать из отложенных |
 
-### Компания — CRUD стажировок
+### Компания — CRUD вакансий в стартапах
 
 | Метод | URL | Описание |
 |-------|-----|----------|
@@ -334,12 +334,12 @@ curl -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"ivan@student.ru","password":"password123"}'
 
-# Лента стажировок с фильтрами
+# Лента вакансий в стартапах с фильтрами
 curl "$BASE_URL/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
 
 # Откликнуться (с токеном)
 curl -X POST "$BASE_URL/api/applications" \
   -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
-  -d '{"internship_id": 1, "cover_letter": "Хочу у вас стажироваться!"}'
+  -d '{"internship_id": 1, "cover_letter": "Хочу у вас работать в стартапе!"}'
 ```

@@ -175,7 +175,7 @@ export default function InternshipDetailPage() {
   }
 
   if (isLoading) return <Spinner />
-  if (!internship) return <div className="text-center py-16 text-gray-500">Стажировка не найдена</div>
+  if (!internship) return <div className="text-center py-16 text-gray-500">Вакансия в стартапе не найдена</div>
 
   const salary =
     internship.salary_min && internship.salary_max

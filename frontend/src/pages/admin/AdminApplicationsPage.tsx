@@ -52,7 +52,7 @@ export default function AdminApplicationsPage() {
                     {app.student?.first_name} {app.student?.last_name}
                   </p>
                   <p className="text-sm text-gray-600 truncate">
-                    {app.internship?.title ?? `Стажировка #${app.internship_id}`}
+                    {app.internship?.title ?? `Вакансия в стартапе #${app.internship_id}`}
                   </p>
                   <p className="text-xs text-gray-500">
                     Компания: {app.internship?.company?.name ?? '—'}

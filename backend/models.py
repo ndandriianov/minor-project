@@ -1,5 +1,5 @@
 """
-Модели базы данных для платформы стажировок.
+Модели базы данных для платформы вакансий в стартапах.
 Роли: Студент (Student), Компания (Company), Админ.
 """
 
@@ -417,7 +417,7 @@ class Notification(db.Model):
 
 
 class Review(db.Model):
-    """Отзыв стажёра о компании/вакансии."""
+    """Отзыв junior-специалиста о компании/вакансии."""
     __tablename__ = "reviews"
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)

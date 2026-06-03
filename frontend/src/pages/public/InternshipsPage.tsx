@@ -43,7 +43,7 @@ export default function InternshipsPage() {
       {/* Results */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Стажировки</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Вакансии в стартапах</h1>
           {data && (
             <span className="text-sm text-gray-500">Найдено: {data.total}</span>
           )}
@@ -58,7 +58,7 @@ export default function InternshipsPage() {
           <Spinner />
         ) : internships.length === 0 ? (
           <EmptyState
-            title="Стажировки не найдены"
+            title="Вакансии в стартапах не найдены"
             description="Попробуйте изменить параметры поиска"
           />
         ) : (
