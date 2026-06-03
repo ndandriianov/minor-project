@@ -72,17 +72,17 @@ baseUrl: 'http://localhost:5051'
 
 | Роль | Аккаунт | Email | Пароль | Тариф |
 |------|---------|-------|--------|-------|
-| Студент | Лев Романов | `lev.romanov@student.ru` | `password123` | premium |
+| Студент | Дмитрий Бондаренко | `bondarenko.dmitry@student.ru` | `password123` | premium |
 | Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
-| Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | free |
+| Студент | Егор Дунаев | `dunaev.egor@student.ru` | `password123` | free |
 | Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |
-| Студент | Тимур Галеев | `timur.galeev@student.ru` | `password123` | free |
-| Студент | Полина Орлова | `polina.orlova@student.ru` | `password123` | free |
-| Студент | Никита Соколов | `nikita.sokolov@student.ru` | `password123` | free |
-| Студент | Анна Белова | `anna.belova@student.ru` | `password123` | free |
-| Студент | Сергей Морозов | `sergey.morozov@student.ru` | `password123` | free |
+| Студент | Тимур Ибрагимов | `ibragimov.timur@student.ru` | `password123` | free |
+| Студент | Егор Скорик | `skorik.egor@student.ru` | `password123` | free |
+| Студент | Акылбек Ысаков | `ysakov.akylbek@student.ru` | `password123` | free |
+| Студент | Александр Миронов | `mironov.alexander@student.ru` | `password123` | free |
+| Студент | Валерий Федянин | `fedyanin.valery@student.ru` | `password123` | free |
 | Студент | Елена Ким | `elena.kim@student.ru` | `password123` | free |
-| Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
+| Студент | Алексей Чёрный | `cherny.alexey@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
 | Компания | Kvinta | `hr@kvinta.app` | `password123` | free |
 | Компания | Nordstack | `careers@nordstack.io` | `password123` | b2b |
