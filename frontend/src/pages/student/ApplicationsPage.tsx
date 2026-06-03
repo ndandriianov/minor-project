@@ -66,7 +66,7 @@ export default function ApplicationsPage() {
                     onClick={() => navigate(`/internships/${app.internship_id}`)}
                     className="font-semibold text-gray-900 hover:text-blue-600 text-left truncate block"
                   >
-                    {app.internship?.title ?? `Стажировка #${app.internship_id}`}
+                    {app.internship?.title ?? `Вакансия в стартапе #${app.internship_id}`}
                   </button>
                   <p className="text-sm text-gray-500">
                     {app.internship?.company?.name}

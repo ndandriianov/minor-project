@@ -11,6 +11,13 @@ const CATEGORY_COLOR: Record<string, 'blue' | 'green' | 'yellow' | 'gray'> = {
   news: 'gray',
 }
 
+const CATEGORY_LABEL: Record<string, string> = {
+  internship: 'Вакансии',
+  university: 'Вузы',
+  event: 'События',
+  news: 'Новости',
+}
+
 export default function NewsDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -26,7 +33,7 @@ export default function NewsDetailPage() {
       </Button>
       <div className="bg-white border border-gray-200 rounded-xl p-8">
         <div className="flex items-center gap-3 mb-4">
-          <Badge color={CATEGORY_COLOR[post.category] ?? 'gray'}>{post.category}</Badge>
+          <Badge color={CATEGORY_COLOR[post.category] ?? 'gray'}>{CATEGORY_LABEL[post.category] ?? post.category}</Badge>
           <span className="text-sm text-gray-400">{new Date(post.created_at).toLocaleDateString('ru-RU')}</span>
         </div>
         {post.image_url && (

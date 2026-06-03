@@ -81,7 +81,7 @@ export default function CompanyApplicationsPage() {
                     </div>
                     <p className="font-semibold text-gray-900 truncate">{student?.first_name} {student?.last_name}</p>
                     <Link to={`/company/internships/${app.internship_id}/applicants`} className="text-sm text-blue-600 hover:underline">
-                      {internship?.title ?? `Стажировка #${app.internship_id}`}
+                      {internship?.title ?? `Вакансия в стартапе #${app.internship_id}`}
                     </Link>
                     {internship?.company?.name && <p className="text-xs text-gray-500">{internship.company.name}</p>}
                     <p className="text-xs text-gray-400 mt-1">

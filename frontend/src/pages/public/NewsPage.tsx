@@ -13,6 +13,13 @@ const CATEGORY_COLOR: Record<string, 'blue' | 'green' | 'yellow' | 'gray'> = {
   news: 'gray',
 }
 
+const CATEGORY_LABEL: Record<string, string> = {
+  internship: 'Вакансии',
+  university: 'Вузы',
+  event: 'События',
+  news: 'Новости',
+}
+
 export default function NewsPage() {
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
@@ -24,7 +31,7 @@ export default function NewsPage() {
     <div className="max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Новости</h1>
-        <p className="text-gray-500 text-sm mt-1">Актуальные события в мире стажировок и карьеры</p>
+        <p className="text-gray-500 text-sm mt-1">Актуальные события в мире вакансий в стартапах и карьеры</p>
       </div>
 
       {isLoading ? (
@@ -44,7 +51,7 @@ export default function NewsPage() {
                   <img src={p.image_url} alt={p.title} className="w-full h-36 object-cover rounded-lg" />
                 )}
                 <div className="flex items-center justify-between gap-2">
-                  <Badge color={CATEGORY_COLOR[p.category] ?? 'gray'}>{p.category}</Badge>
+                  <Badge color={CATEGORY_COLOR[p.category] ?? 'gray'}>{CATEGORY_LABEL[p.category] ?? p.category}</Badge>
                   <span className="text-xs text-gray-400">{new Date(p.created_at).toLocaleDateString('ru-RU')}</span>
                 </div>
                 <h2 className="font-semibold text-gray-900 leading-snug">{p.title}</h2>

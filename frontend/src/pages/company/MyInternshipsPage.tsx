@@ -57,7 +57,7 @@ export default function MyInternshipsPage() {
 
       {internships.length === 0 ? (
         <EmptyState
-          title="Нет стажировок"
+          title="Нет вакансий в стартапах"
           description="Создайте первую вакансию, чтобы начать поиск кандидатов"
           action={<Button onClick={() => navigate('/company/internships/new')}>Создать вакансию</Button>}
         />

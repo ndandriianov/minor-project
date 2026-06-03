@@ -19,7 +19,7 @@ export default function EditInternshipPage() {
   }
 
   if (isLoading) return <Spinner />
-  if (!internship) return <div className="text-center py-16 text-gray-500">Стажировка не найдена</div>
+  if (!internship) return <div className="text-center py-16 text-gray-500">Вакансия в стартапе не найдена</div>
 
   return (
     <div className="max-w-2xl mx-auto">

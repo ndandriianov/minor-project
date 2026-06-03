@@ -21,7 +21,7 @@ export default function RecommendationsPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Рекомендации</h1>
         <p className="text-sm text-gray-500">
-          Стажировки, подобранные под ваш профиль. Заполните{' '}
+          Вакансии, подобранные под ваш профиль. Заполните{' '}
           <button onClick={() => navigate('/student/profile')} className="text-blue-600 hover:underline">профиль</button>
           {' '}для лучших результатов.
         </p>
