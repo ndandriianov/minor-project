@@ -1,10 +1,10 @@
 [
   {
-    "email": "ivan.petrov@student.ru",
+    "email": "lev.romanov@student.ru",
     "password": "password123",
-    "first_name": "Иван",
-    "last_name": "Петров",
-    "patronymic": "Андреевич",
+    "first_name": "Лев",
+    "last_name": "Романов",
+    "patronymic": "Миронович",
     "university": "НИУ ВШЭ",
     "faculty": "Факультет компьютерных наук",
     "course": 3,

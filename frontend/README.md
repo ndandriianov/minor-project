@@ -72,7 +72,7 @@ baseUrl: 'http://localhost:5051'
 
 | Роль | Аккаунт | Email | Пароль | Тариф |
 |------|---------|-------|--------|-------|
-| Студент | Иван Петров | `ivan.petrov@student.ru` | `password123` | premium |
+| Студент | Лев Романов | `lev.romanov@student.ru` | `password123` | premium |
 | Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
 | Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | premium |
 | Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |

@@ -46,7 +46,7 @@ docker compose up --build
 
 | Роль | Аккаунт | Email | Пароль | Тариф |
 |------|---------|-------|--------|-------|
-| Студент | Иван Петров | `ivan.petrov@student.ru` | `password123` | premium |
+| Студент | Лев Романов | `lev.romanov@student.ru` | `password123` | premium |
 | Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
 | Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | premium |
 | Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |
@@ -340,7 +340,7 @@ BASE_URL="http://localhost:${APP_PORT:-5051}"
 # Логин
 curl -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"ivan.petrov@student.ru","password":"password123"}'
+  -d '{"email":"lev.romanov@student.ru","password":"password123"}'
 
 # Лента вакансий в стартапах с фильтрами
 curl "$BASE_URL/api/internships?city=Москва&compatible_with_study=true&sort=salary_desc"
