@@ -26,6 +26,7 @@ Seed-данные лежат в `backend/seed/` отдельными JSON-фай
 - `articles.json`, `news.json` — контентные разделы.
 
 Связи между файлами задаются читаемыми ключами: `student_email`, `company_email`, `internship_title`.
+В текущем seed-наборе оставлены 2 компании; предзагруженных вакансий, откликов, закладок и отзывов нет.
 
 Сервер будет доступен на `http://localhost:<APP_PORT>` (по умолчанию `http://localhost:5051`).
 
@@ -57,16 +58,8 @@ docker compose up --build
 | Студент | Елена Ким | `elena.kim@student.ru` | `password123` | premium |
 | Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
-| Компания | Nexora AI | `talent@nexora.ai` | `password123` | b2b |
-| Компания | FinPilot | `hr@finpilot.app` | `password123` | b2b |
-| Компания | EduMate | `people@edumate.io` | `password123` | b2b |
-| Компания | ClinicHub | `careers@clinichub.health` | `password123` | b2b |
-| Компания | LogiQ | `jobs@logiq.delivery` | `password123` | premium |
-| Компания | GreenByte | `team@greenbyte.energy` | `password123` | premium |
-| Компания | MarketFlow | `hr@marketflow.ru` | `password123` | b2b |
-| Компания | TerraData | `join@terra-data.io` | `password123` | b2b |
-| Компания | Foodcast | `careers@foodcast.app` | `password123` | premium |
-| Компания | CodifyLab | `people@codifylab.dev` | `password123` | premium |
+| Компания | LeaseKit | `hr@leasekit.ru` | `password123` | premium |
+| Компания | ShelfMate | `careers@shelfmate.io` | `password123` | b2b |
 | Админ | Модератор | `admin@platform.ru` | `password123` | free |
 
 ## Структура проекта
