@@ -70,16 +70,31 @@ baseUrl: 'http://localhost:5051'
 
 ## Тестовые аккаунты
 
-| Роль     | Email             | Пароль       |
-|----------|-------------------|--------------|
-| Студент  | ivan@student.ru   | password123  |
-| Студент  | maria@student.ru  | password123  |
-| Студент  | alex@student.ru   | password123  |
-| Компания | hr@mindbox.ru     | password123  |
-| Компания | hr@calltouch.ru   | password123  |
-| Компания | hr@smartcat.io    | password123  |
-| Компания | hr@sendsay.ru     | password123  |
-| Админ    | admin@platform.ru | password123  |
+| Роль | Аккаунт | Email | Пароль | Тариф |
+|------|---------|-------|--------|-------|
+| Студент | Иван Петров | `ivan.petrov@student.ru` | `password123` | premium |
+| Студент | Мария Смирнова | `maria.smirnova@student.ru` | `password123` | free |
+| Студент | Алексей Козлов | `alexey.kozlov@student.ru` | `password123` | premium |
+| Студент | Дарья Волкова | `daria.volkova@student.ru` | `password123` | free |
+| Студент | Тимур Галеев | `timur.galeev@student.ru` | `password123` | premium |
+| Студент | Полина Орлова | `polina.orlova@student.ru` | `password123` | free |
+| Студент | Никита Соколов | `nikita.sokolov@student.ru` | `password123` | premium |
+| Студент | Анна Белова | `anna.belova@student.ru` | `password123` | free |
+| Студент | Сергей Морозов | `sergey.morozov@student.ru` | `password123` | free |
+| Студент | Елена Ким | `elena.kim@student.ru` | `password123` | premium |
+| Студент | Кирилл Егоров | `kirill.egorov@student.ru` | `password123` | free |
+| Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
+| Компания | Nexora AI | `talent@nexora.ai` | `password123` | b2b |
+| Компания | FinPilot | `hr@finpilot.app` | `password123` | b2b |
+| Компания | EduMate | `people@edumate.io` | `password123` | b2b |
+| Компания | ClinicHub | `careers@clinichub.health` | `password123` | b2b |
+| Компания | LogiQ | `jobs@logiq.delivery` | `password123` | premium |
+| Компания | GreenByte | `team@greenbyte.energy` | `password123` | premium |
+| Компания | MarketFlow | `hr@marketflow.ru` | `password123` | b2b |
+| Компания | TerraData | `join@terra-data.io` | `password123` | b2b |
+| Компания | Foodcast | `careers@foodcast.app` | `password123` | premium |
+| Компания | CodifyLab | `people@codifylab.dev` | `password123` | premium |
+| Админ | Модератор | `admin@platform.ru` | `password123` | free |
 
 ## Основные маршруты
 
@@ -133,4 +148,3 @@ src/
 
 - Алиас `@` настроен на `src` в `frontend/vite.config.ts`.
 - Если backend недоступен, авторизованные запросы и страницы с данными будут отдавать ошибки загрузки.
-
