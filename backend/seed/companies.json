@@ -1,15 +1,5 @@
 [
   {
-    "email": "hr@kvinta.app",
-    "password": "password123",
-    "name": "Kvinta",
-    "description": "Сервис для управляющих компаний и арендодателей: учет квартир, договоров, платежей и заявок жильцов в одном кабинете.",
-    "website": "https://kvinta.app",
-    "city": "Москва",
-    "posting_limit": 4,
-    "subscription": "free"
-  },
-  {
     "email": "careers@nordstack.io",
     "password": "password123",
     "name": "Nordstack",
