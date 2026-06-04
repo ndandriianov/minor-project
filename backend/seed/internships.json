@@ -28,7 +28,7 @@
     ],
     "status": "published",
     "is_promoted": true,
-    "views_count": 680
+    "views_count": 8
   },
   {
     "company_email": "careers@nordstack.io",
@@ -57,6 +57,6 @@
     ],
     "status": "published",
     "is_promoted": false,
-    "views_count": 510
+    "views_count": 9
   }
 ]
