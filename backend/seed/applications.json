@@ -7,12 +7,6 @@
   },
   {
     "student_email": "dunaev.egor@student.ru",
-    "internship_title": "Junior продуктовый аналитик",
-    "status": "applied",
-    "cover_letter": "Добрый день! У меня сильная база в SQL, анализе данных и A/B-тестах, поэтому интересны продуктовые метрики Kvinta и работа с воронками заявок. С доменом недвижимости пока знаком поверхностно, но быстро разбираюсь в новых данных."
-  },
-  {
-    "student_email": "dunaev.egor@student.ru",
     "internship_title": "Junior Backend Developer, учет товаров",
     "status": "applied",
     "cover_letter": "Здравствуйте! Я больше из data/ML-направления, но уверенно пишу на Python и SQL, работал с данными и хочу усилить инженерную часть. Понимаю, что FastAPI и PostgreSQL нужно будет подтянуть под ваши стандарты, готов показать код и быстро доучиться."
@@ -37,27 +31,9 @@
   },
   {
     "student_email": "skorik.egor@student.ru",
-    "internship_title": "Junior продуктовый аналитик",
-    "status": "interview",
-    "cover_letter": "Здравствуйте! У меня есть SQL, Excel, Power BI и опыт описания требований для CRM-проекта. Задачи Kvinta с воронками, заявками жильцов и платежными сценариями хорошо ложатся на мой опыт в business/product analytics."
-  },
-  {
-    "student_email": "skorik.egor@student.ru",
     "internship_title": "Junior аналитик данных, продажи и остатки",
     "status": "applied",
     "cover_letter": "Добрый день! Уверенно работаю с SQL, Excel и Power BI, поэтому могу помогать с выгрузками, отчетами и поиском аномалий. Ритейл-домен для меня новый, но задачи по метрикам и качеству данных очень интересны."
-  },
-  {
-    "student_email": "mironov.alexander@student.ru",
-    "internship_title": "Junior продуктовый аналитик",
-    "status": "withdrawn",
-    "cover_letter": "Здравствуйте! У меня есть опыт customer development, backlog и базовой продуктовой аналитики в студенческом marketplace. После отклика понял, что сейчас могу стабильно выделять меньше 20 часов в неделю, поэтому не хочу обещать нагрузку, которую не потяну."
-  },
-  {
-    "student_email": "elena.kim@student.ru",
-    "internship_title": "Junior продуктовый аналитик",
-    "status": "interview",
-    "cover_letter": "Добрый день! Я работала с финансовой моделью, платежами, SQL и Power BI, поэтому мне близки платежные сценарии Kvinta и отчеты для продуктовой команды. Хотела бы применить финансовую аналитику в B2B-сервисе."
   },
   {
     "student_email": "elena.kim@student.ru",

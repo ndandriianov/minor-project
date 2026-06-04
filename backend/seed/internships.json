@@ -1,34 +1,5 @@
 [
   {
-    "company_email": "hr@kvinta.app",
-    "title": "Junior продуктовый аналитик",
-    "direction": "Аналитика",
-    "work_format": "hybrid",
-    "description": "Kvinta ищет начинающего аналитика в команду сервиса для управляющих компаний и арендодателей. Задачи: разбирать обращения клиентов, считать воронки заявок жильцов, проверять платежные сценарии и готовить понятные отчеты для PM.",
-    "requirements": "SQL на уровне join/group by, Excel или Google Sheets, базовое понимание продуктовых метрик, аккуратность в выводах. Плюсом будет опыт учебного проекта в недвижимости, финтехе или B2B-сервисе.",
-    "selection_stages": "Короткий SQL-кейс, интервью с продуктовым аналитиком, финальная встреча с PM",
-    "schedule": "3-4 дня в неделю, гибкое начало дня",
-    "min_hours": 20,
-    "max_hours": 30,
-    "compatible_with_study": true,
-    "salary_min": 50000,
-    "salary_max": 70000,
-    "city": "Москва",
-    "counts_as_practice": true,
-    "required_experience": "none",
-    "deadline_days_from_today": 28,
-    "skills": [
-      "SQL",
-      "Excel",
-      "Google Sheets",
-      "Product Analytics",
-      "Data Analysis"
-    ],
-    "status": "published",
-    "is_promoted": false,
-    "views_count": 420
-  },
-  {
     "company_email": "careers@nordstack.io",
     "title": "Junior Backend Developer, учет товаров",
     "direction": "Разработка",
@@ -57,7 +28,7 @@
     ],
     "status": "published",
     "is_promoted": true,
-    "views_count": 680
+    "views_count": 8
   },
   {
     "company_email": "careers@nordstack.io",
@@ -86,6 +57,6 @@
     ],
     "status": "published",
     "is_promoted": false,
-    "views_count": 510
+    "views_count": 9
   }
 ]

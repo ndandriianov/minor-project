@@ -84,11 +84,10 @@ baseUrl: 'http://localhost:5051'
 | Студент | Елена Ким | `elena.kim@student.ru` | `password123` | free |
 | Студент | Алексей Чёрный | `cherny.alexey@student.ru` | `password123` | free |
 | Студент | София Громова | `sofia.gromova@student.ru` | `password123` | free |
-| Компания | Kvinta | `hr@kvinta.app` | `password123` | free |
 | Компания | Nordstack | `careers@nordstack.io` | `password123` | b2b |
 | Админ | Модератор | `admin@platform.ru` | `password123` | free |
 
-В текущем seed-наборе есть 2 компании, 3 вакансии и реалистичные отклики студентов без офферов; предзагруженных закладок и отзывов нет.
+В текущем seed-наборе есть 1 компания, 2 вакансии и реалистичные отклики студентов без офферов; предзагруженных закладок и отзывов нет.
 
 ## Основные маршруты
 
